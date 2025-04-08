@@ -43,6 +43,7 @@ jobs:
           script: |
             sudo chmod -R 777 /var/www/html
             sudo rm -rf /var/www/html/* # Clear previous contents in html folder
+            sudo rm -rf /var/www/source/*
             exit 0 # Ensure clean exit before file transfer
 
       # Copy the built files to the server
@@ -53,9 +54,23 @@ jobs:
           username: ${{ secrets.ACME_USERNAME }}
           key: ${{ secrets.ACME_SSH }}
           source: "dist/machine-checklist/browser/*" # Adjust if your app name differs
-          target: "/var/www/html"            # Deploy directly to html folder
+          target: "/var/www/source"            # Deploy directly to html folder
           strip_components: 1                # Remove the 'dist/machine-checklist' prefix
 
+      # Deploy to Azure server using SSH
+      - name: Prepare Server via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ACME_HOST }}        # Azure server hostname or IP
+          username: ${{ secrets.ACME_USERNAME }} # SSH username
+          key: ${{ secrets.ACME_SSH }}          # SSH private key
+          script: |
+            sudo chmod -R 777 /var/www/html
+            sudo rm -rf /var/www/html/* # Clear previous contents in html folder
+            sudo cp -r /var/www/source/machine-checklist/* /var/www/html/ # Copy files from source to html
+            exit 0 # Ensure clean exit before file transfer
+
+            
       # Restart Nginx
       - name: Restart Server
         uses: appleboy/ssh-action@master
