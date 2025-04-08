@@ -31,7 +31,7 @@ jobs:
 
       # Build the Angular app in production mode
       - name: Build Angular App
-        run: ng build --prod
+        run: ng build
 
       # Deploy to Azure server using SSH
       - name: Deploy to Azure Server via SSH
