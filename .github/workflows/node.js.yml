@@ -1,0 +1,67 @@
+name: Deploy Angular App to Azure Server
+
+# Trigger the workflow on push to the main branch
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository code
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Set up Node.js 22.14.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.14.0' # Specific Node.js version
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Install Angular CLI 19.1.0 globally
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli@19.1.0
+
+      # Build the Angular app in production mode
+      - name: Build Angular App
+        run: ng build
+
+      # Deploy to Azure server using SSH
+      - name: Deploy to Azure Server via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ACME_HOST }}        # Azure server hostname or IP
+          username: ${{ secrets.ACME_USERNAME }} # SSH username
+          key: ${{ secrets.ACME_SSH }}          # SSH private key
+          script: |
+            mkdir -p /var/www/machine-checklist
+            rm -rf /var/www/machine-checklist/* # Clear previous deployment
+            exit 0 # Ensure clean exit before file transfer
+
+      # Copy the built files to the server
+      - name: Copy Files to Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.ACME_HOST }}
+          username: ${{ secrets.ACME_USERNAME }}
+          key: ${{ secrets.ACME_SSH }}
+          source: "dist/machine-checklist/*" # Adjust if your app name differs
+          target: "/var/www/machine-checklist"
+          strip_components: 1 # Remove the 'dist/machine-checklist' prefix
+
+      # Restart Nginx (optional, adjust based on your server setup)
+      - name: Restart Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ACME_HOST }}
+          username: ${{ secrets.ACME_USERNAME }}
+          key: ${{ secrets.ACME_SSH }}
+          script: |
+            sudo systemctl restart nginx # Restart web server if applicable
