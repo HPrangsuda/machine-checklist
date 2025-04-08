@@ -34,16 +34,15 @@ jobs:
         run: ng build
 
       # Deploy to Azure server using SSH
-      - name: Deploy to Azure Server via SSH
+      - name: Prepare Server via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.ACME_HOST }}        # Azure server hostname or IP
           username: ${{ secrets.ACME_USERNAME }} # SSH username
           key: ${{ secrets.ACME_SSH }}          # SSH private key
           script: |
-            sudo chmod -R 777 /var/www
-            sudo mkdir -p /var/www/machine-checklist
-            sudo rm -rf /var/www/machine-checklist/* # Clear previous deployment
+            sudo chmod -R 777 /var/www/html
+            sudo rm -rf /var/www/html/* # Clear previous contents in html folder
             exit 0 # Ensure clean exit before file transfer
 
       # Copy the built files to the server
@@ -54,10 +53,10 @@ jobs:
           username: ${{ secrets.ACME_USERNAME }}
           key: ${{ secrets.ACME_SSH }}
           source: "dist/machine-checklist/*" # Adjust if your app name differs
-          target: "/var/www/machine-checklist"
-          strip_components: 1 # Remove the 'dist/machine-checklist' prefix
+          target: "/var/www/html"            # Deploy directly to html folder
+          strip_components: 1                # Remove the 'dist/machine-checklist' prefix
 
-      # Restart Nginx (optional, adjust based on your server setup)
+      # Restart Nginx
       - name: Restart Server
         uses: appleboy/ssh-action@master
         with:
@@ -65,4 +64,4 @@ jobs:
           username: ${{ secrets.ACME_USERNAME }}
           key: ${{ secrets.ACME_SSH }}
           script: |
-            sudo systemctl restart nginx # Restart web server if applicable
+            sudo systemctl restart nginx # Restart web server
