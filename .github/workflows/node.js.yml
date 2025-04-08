@@ -41,8 +41,8 @@ jobs:
           username: ${{ secrets.ACME_USERNAME }} # SSH username
           key: ${{ secrets.ACME_SSH }}          # SSH private key
           script: |
-            mkdir -p /var/www/machine-checklist
-            rm -rf /var/www/machine-checklist/* # Clear previous deployment
+            sudo mkdir -p /var/www/machine-checklist
+            sudo rm -rf /var/www/machine-checklist/* # Clear previous deployment
             exit 0 # Ensure clean exit before file transfer
 
       # Copy the built files to the server
