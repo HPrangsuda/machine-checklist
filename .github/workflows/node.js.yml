@@ -67,7 +67,8 @@ jobs:
           script: |
             sudo chmod -R 777 /var/www/html
             sudo rm -rf /var/www/html/* # Clear previous contents in html folder
-            sudo cp -r /var/www/source/machine-checklist/* /var/www/html/ # Copy files from source to html
+            sudo cp -r /var/www/source/machine-checklist/browser/* /var/www/html/ # Copy files from source to html
+            sudo chmod -R 777 /var/www/html
             exit 0 # Ensure clean exit before file transfer
 
             
