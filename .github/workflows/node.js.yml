@@ -52,7 +52,7 @@ jobs:
           host: ${{ secrets.ACME_HOST }}
           username: ${{ secrets.ACME_USERNAME }}
           key: ${{ secrets.ACME_SSH }}
-          source: "dist/machine-checklist/*" # Adjust if your app name differs
+          source: "dist/machine-checklist/machine-checklist/browser/*" # Adjust if your app name differs
           target: "/var/www/html"            # Deploy directly to html folder
           strip_components: 1                # Remove the 'dist/machine-checklist' prefix
 
