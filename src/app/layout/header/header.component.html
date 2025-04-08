@@ -1,0 +1,24 @@
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+<header class="app-header">
+    <div class="header-left">
+        <div class="brand">
+            <img src="/assets/images/acme.png" />
+            <span class="app-name">MACHINE CHECKLIST</span>
+        </div>
+    </div>
+    <div class="header-right">
+        <p-button (click)="op.toggle($event)">
+            <div class="flex flex-column align-items-center cursor-pointer">
+                <i class="icon icon-menu text-600 text-xl"></i>
+                <span class="text-xs text-600 pt-1"></span>
+            </div>
+        </p-button>
+        <p-popover #op>
+            <div class="flex flex-col gap-4 text-xs">
+                <div class="card flex justify-center">
+                    <p-menu [model]="items" />
+                </div>
+            </div>
+        </p-popover>
+    </div>
+</header>

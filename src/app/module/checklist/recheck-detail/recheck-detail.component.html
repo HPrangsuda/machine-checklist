@@ -1,0 +1,61 @@
+<div class="go-back text-sm">
+  <p (click)="goBack()"><i class="icon icon-undo-2"></i> ย้อนกลับ</p>
+</div>
+
+<div *ngIf="loading" class="text-center">กำลังโหลด...</div>
+<div *ngIf="!loading && !error && record">
+  <div class="break-word">
+    <p-fieldset>
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+          <img src="assets/images/engineerings.png" style="width: 24px; height: 24px;" />
+          <span class="font-bold text-sm">{{ record.machineName }}</span>
+        </div>
+      </ng-template>
+      
+      <div class="machine-detail checklist text-xs">
+        <small class="div-p-tag mb-1">สถานะเครื่องจักร : <p-tag [ngClass]="getRoleClass(record.machineStatus)" [value]="record.machineStatus"></p-tag> </small><br>
+        <small class="mb-1">รหัสเครื่อง : {{ record.machineCode }} </small><br>
+        <small class="mb-1"><i class="icon icon-user"></i> {{ record.userName }}</small><br>
+        <small class="mb-1"><i class="icon icon-calendar-clock"></i> {{ record.dateCreated | date:'dd/MM/yyyy hh:mm' }}</small>
+      </div>
+      <div class="checklist">
+        <div *ngFor="let item of checklistItems" class="question text-xs mb-2">
+          <p class="text-xs font-bold white-space-normal mb-1">{{ item.questionDetail }}</p>
+          <div class="div-p-tag gap-1">
+            <p-tag [ngClass]="getRoleClass(item.answerChoice)" [value]="item.answerChoice"></p-tag>
+          </div>
+        </div>
+      </div>
+      <div class="mt-1 mb-1">
+        <span class="text-xs">หมายเหตุ</span>
+        <div>
+          <textarea [(ngModel)]="record.machineNote" rows="2" pTextarea class="text-xs w-full" [disabled]="true"></textarea>
+        </div>
+      </div>
+      <div class="flex justify-content-center flex-wrap">
+        <div class="flex align-items-center justify-content-center">
+          <img 
+          [src]="record.machineImage ? record.machineImage : 'assets/images/default-machine.jpg'" 
+          style="width: 100%;" 
+          [alt]="record.machineImage + ' image'"
+          />
+        </div>    
+      </div>
+    </p-fieldset>
+  </div>
+  
+  <div class="flex justify-content-center flex-wrap">
+    <div class="flex align-items-center justify-content-center">
+        <p-button pButton pRipple class="p-0 mt-3" (onClick)="approveChecklist(record.checklistId)">
+            <i class="pi pi-check"></i>
+            <span class="text-xs font-bold">อนุมัติ</span>
+        </p-button>
+    </div>    
+  </div>
+</div>
+
+<!-- แสดงเมื่อไม่มีข้อมูล -->
+<div *ngIf="!loading && !error && !record" class="text-center">
+  ไม่พบข้อมูลเครื่องจักร
+</div>

@@ -1,0 +1,78 @@
+<div class="go-back text-sm">
+  <p (click)="goBack()"><i class="icon icon-undo-2"></i> ย้อนกลับ</p>
+</div>
+
+<div class="transactions">
+  <div class="list-header">
+    <div class="flex align-items-center justify-content-between mb-1">
+      <h4 class="text-sm text-surface-900 m-0">เครื่องจักรที่รับผิดชอบทั้งหมด</h4>
+      <button pButton type="button" class="p-button-outlined clear-button" (click)="clearFilters()"><i class="pi pi-filter-slash text-xs"></i></button>
+    </div>
+  </div>
+  <div *ngIf="loading">Loading...</div>
+  <div class="filter-row text-xs mb-2">
+    <div class="p-field search-field">
+      <input type="text" pInputText [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()" placeholder="ค้นหาชื่อ/รหัสเครื่องจักร" class="text-xs w-full mb-1">
+    </div>
+    <div class="p-field dropdown-field">
+      <p-dropdown
+        [options]="machineStatusOptions"
+        [(ngModel)]="selectedMachineStatus"
+        (ngModelChange)="applyFilters()"
+        placeholder="เลือกสถานะเครื่องจักร"
+        [showClear]="true"
+        class="w-full mb-1"
+      ></p-dropdown>
+    </div>
+    <div class="p-field dropdown-field">
+      <p-dropdown
+        [options]="checkStatusOptions"
+        [(ngModel)]="selectedCheckStatus"
+        (ngModelChange)="applyFilters()"
+        placeholder="เลือกสถานะการตรวจสอบ"
+        [showClear]="true"
+        class="w-full mb-1"
+      ></p-dropdown>
+    </div>
+  </div>
+  <div class="list-container" *ngIf="!loading">
+    <p-dataview 
+      [value]="filteredMachines" 
+      [emptyMessage]="'ไม่พบข้อมูล'"
+      [paginator]="true"
+      [rows]="rows"
+      [rowsPerPageOptions]="rowsPerPageOptions"
+      [totalRecords]="totalRecords"
+      (onPage)="onPageChange($event)"
+      styleClass="custom-dataview-h-full text-sm"
+    >
+      <ng-template #list>
+        <div class="card-list-wrap">
+          <div class="col-12 custom-col-12" *ngFor="let machine of filteredMachines">
+            <div class="custom-card" (click)="machine.id ? onMachineDetail(machine.id) : null">
+              <div class="card-left">
+                <img src="assets/images/engineerings.png">
+              </div>
+              <div class="card-right">
+                <span class="card-header text-xs">{{ machine.machineName }}</span>
+                <div class="custom-card-subtitle">
+                  <span class="card-subtitle">{{ machine.machineCode }}</span>
+                  <div class="div-p-tag gap-1">
+                    <p-tag [ngClass]="getRoleClass(machine.machineStatus)" [value]="machine.machineStatus"></p-tag>
+                    <p-tag [ngClass]="getRoleClass(machine.checkStatus)" [value]="machine.checkStatus"></p-tag>
+                  </div>
+                </div>                      
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="empty">
+        <div class="text-center p-3">
+          <i class="pi pi-exclamation-circle text-2xl text-gray-500"></i>
+          <p class="mt-2">ไม่พบข้อมูล</p>
+        </div>
+      </ng-template>        
+    </p-dataview>
+  </div>
+</div>

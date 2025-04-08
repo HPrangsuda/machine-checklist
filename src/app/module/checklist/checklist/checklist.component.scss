@@ -1,0 +1,17 @@
+.upload p-fileupload {
+    font-size: 12px !important;
+}
+::ng-deep .p-fileupload .p-button {
+    font-size: 12px !important;
+}
+label, small {
+    display: block;
+    width: 100%;
+}
+.question p,small {
+    letter-spacing: 0.2px;
+}
+.machine-detail .p-tag {
+    font-size: 10px !important;
+    margin-right: 2px;
+} 

@@ -1,0 +1,94 @@
+
+<div class="flex align-items-center justify-content-end go-back text-sm">
+    <p class="mb-0" (click)="onCancel()"><i class="pi pi-times"></i> ยกเลิก</p>
+</div>
+
+<div *ngIf="!machine">กำลังโหลด...</div>
+<div *ngIf="machine">
+    <div class="break-word">
+        <p-fieldset>
+            <ng-template pTemplate="header">
+                <div class="flex items-center gap-2">
+                    <img src="assets/images/engineerings.png" style="width: 24px; height: 24px;" />
+                    <span class="font-bold text-sm">{{ machine?.machineName }}</span>
+                </div>
+            </ng-template>
+            <div class="machine-detail text-xs">
+                <small class="mb-1">รหัส : {{ machine?.machineCode }}</small>
+                <small>ความถี่ : {{ machine?.frequency }}</small>
+            </div>
+            <div *ngIf="checklist.length > 0" class="checklist-items">
+                <div class="question text-xs mb-2">
+                    <p class="text-xs font-bold white-space-normal mb-1">สถานะเครื่องจักร</p>
+                </div>
+                <p-select 
+                    [options]="machineStatus" 
+                    [(ngModel)]="selectedStatus" 
+                    optionLabel="name" 
+                    placeholder="กรุณาเลือก" 
+                    class="text-xs w-full md:w-56" />
+                    <div *ngFor="let item of checklist" class="checklist-item mb-3">
+                        <div class="question text-xs mb-2">
+                            <p class="text-xs font-bold white-space-normal mb-1">{{ item.question?.questionDetail || 'N/A' }}</p>
+                            <small class="white-space-normal">{{ item.question?.questionDescription || 'N/A' }}</small>
+                        </div>
+                        <div class="answer">
+                            <ng-container *ngIf="shouldUseDropdown(item); else inputField">
+                                <p-select 
+                                    [options]="choices" 
+                                    [ngModel]="item.answerChoice" 
+                                    (ngModelChange)="updateAnswerChoice(item, $event)" 
+                                    optionLabel="name" 
+                                    optionValue="value" 
+                                    placeholder="กรุณาเลือก" 
+                                    class="text-xs w-full md:w-56" />
+                            </ng-container>
+                            <ng-template #inputField>
+                                <input 
+                                    type="text" 
+                                    pInputText 
+                                    [(ngModel)]="item.answerChoice" 
+                                    class="w-full text-xs" 
+                                    placeholder="กรุณาระบุ" 
+                                    required/>
+                            </ng-template>
+                        </div>
+                    </div>
+            </div>
+            <div class="mt-1">
+                <span class="text-xs">หมายเหตุ</span>
+                <div>
+                    <textarea [(ngModel)]="note" rows="2" pTextarea class="text-xs w-full"></textarea>
+                </div>
+            </div>
+            <div class="mt-1 upload">
+                <span class="text-xs mb-2">รูปภาพแนบเพิ่มเติม</span>
+                <p-card>
+                    <div class="upload">
+                        <p-fileUpload #fu 
+                            mode="basic" 
+                            chooseLabel="อัปโหลดรูปภาพ" 
+                            chooseIcon="pi pi-upload" 
+                            [auto]="true"
+                            [customUpload]="true"
+                            (uploadHandler)="uploadFiles($event)"
+                            accept="image/*" 
+                            [maxFileSize]="1000000"
+                            (onSelect)="onSelectedFiles($event)"
+                            (onUpload)="onTemplatedUpload($event)"
+                            (onRemove)="onRemoveTemplatingFile($event.file)"
+                            (onClear)="onClearTemplatingUpload(fu.clear)" />
+                    </div>
+                </p-card>
+            </div>
+        </p-fieldset>
+        <div class="flex justify-content-center flex-wrap">
+            <div class="flex align-items-center justify-content-center">
+                <p-button pButton pRipple class="p-0 mt-3" (click)="saveChecklist()" >
+                    <i class="pi pi-save"></i>
+                    <span class="text-xs font-bold">บันทึก</span>
+                </p-button>
+            </div>    
+        </div>
+    </div>
+</div>

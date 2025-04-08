@@ -1,0 +1,531 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+body {
+  font-family: 'Sarabun', sans-serif;
+  margin: 0;
+  color: #333;
+
+  small{
+    color: #666;
+  }
+}
+.main-wrap {
+  background-color: #f7f7f7;
+}
+.acme-logo img {
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+}
+.signin{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.break-word {
+  width:100%;
+  word-wrap: break-word;
+}
+.break-word legend {
+  display: flex;
+  max-width: 100%;
+  flex-wrap: wrap;
+  word-break: break-word;
+  white-space: normal;
+}
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #f5f5f5;
+}
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(to bottom, #89090a, #740808);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .menu-button {
+      background: none;
+      border: none;
+      padding: 0.5rem;
+      cursor: pointer;
+      color: #666;
+
+      .pi-bars {
+        font-size: 1.25rem;
+      }
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .logo {
+        background: #FF9F43;
+        color: white;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.125rem;
+      }
+
+      .app-name {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #fff;
+      }
+
+      img {
+        border-radius: 8px;
+      }
+    }
+  }
+
+  .header-right {
+    margin-left: auto; 
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 0;
+  }
+}
+
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  margin-top: 3rem; // Height of header
+  margin-bottom: 4rem; // Height of footer
+
+  // Hide scrollbar for Chrome, Safari and Opera
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  // Hide scrollbar for IE, Edge and Firefox
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  padding: 0.75rem 0;
+}
+.footer {
+  color: #333;
+}
+.signin-bg {
+  background-image: url('../images/273072-P66U9K-422.png');
+  background-size: cover;       
+  background-repeat: no-repeat; 
+  background-position: center; 
+}
+.dashboard-card {
+  background-image: url('../images/90dde823-6c38-4190-b1e6-8037814ba14e.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 18vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 100%;
+  color: #89090a;
+  margin-top: 0.8rem;
+  .total {
+    color: #333;
+  }
+  p {
+    letter-spacing: 0.15px;
+  }
+}
+
+.transactions {
+  margin-bottom: 1rem;
+
+  .transaction-item {
+    background: #ffffff;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    // ... rest of transaction styles
+  }
+}
+
+.custom-dataview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // Hide overflow on the wrapper
+
+  .p-dataview {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .p-dataview-content {
+    background: transparent;
+    border: none;
+    height: 280px;
+    overflow-y: auto;
+    scroll-behavior: auto;
+    scrollbar-color: transparent transparent;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE & Edge */
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      background: transparent;
+      /* Hide scrollbar track */
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+      /* Hide scrollbar thumb */
+      border-radius: 4px;
+    }
+
+    /* Show scrollbar when hovering */
+    &:hover {
+      scrollbar-width: thin;
+    }
+
+    &:hover::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &:hover::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      /* Visible scrollbar */
+    }
+
+    &:hover::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+  }
+
+  .p-grid {
+    margin: 0;
+  }
+}
+.custom-dataview-h-full {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; 
+
+  .p-dataview {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .p-dataview-content {
+    background: transparent;
+    border: none;
+    height: 470px;
+    overflow-y: auto;
+    scroll-behavior: auto;
+    scrollbar-color: transparent transparent;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE & Edge */
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      background: transparent;
+      /* Hide scrollbar track */
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+      /* Hide scrollbar thumb */
+      border-radius: 4px;
+    }
+
+    /* Show scrollbar when hovering */
+    &:hover {
+      scrollbar-width: thin;
+    }
+
+    &:hover::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &:hover::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      /* Visible scrollbar */
+    }
+
+    &:hover::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+  }
+
+  .p-grid {
+    margin: 0;
+  }
+}
+.acme-scroll {
+  height: 300px;
+}
+
+.logo-small {
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 auto;
+  line-height: 44px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9;
+  border-radius: 15px 15px 0 0;
+  border: 0;
+  background-color: #ffffffe7;
+  box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.07);
+  -moz-box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.07);
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card-list-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  scroll-behavior: auto;
+
+  .custom-col-12 {
+    padding: 0.25rem 0;
+  }
+}
+
+.custom-card {
+  padding: 0.5rem;
+}
+
+.custom-card-subtitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  .div-p-tag {
+    display: flex;
+
+    p-tag {
+      font-size: 0.6rem;
+    }
+  }
+}
+p-fieldset{
+  max-width: 100%;
+}
+p-fieldset .p-fieldset-legend {
+  background: transparent !important;
+}
+textarea[pTextarea] {
+  width: 100%;
+  margin-top: 5px;
+}
+.p-popover {
+  top: 40px !important;
+}
+.p-popover-content {
+  padding: 3px !important;
+}
+.p-popover:after, .p-popover:before {
+  display: none !important;
+  content: none !important;
+}
+.p-menu {
+  min-width: 7.5rem !important;
+  border: none !important;
+}
+.action .p-toolbar {
+  flex-wrap: wrap;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  gap: 0.1rem;
+}
+.p-paginator {
+  padding: 10px 0 !important;
+}
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last,
+.p-paginator .p-paginator-page {
+  font-size: 12px;  
+  padding: 0;  
+  min-width: 1.4rem;
+  height: 1.4rem;
+}
+
+.p-paginator .p-dropdown {
+  font-size: 14px;
+  padding: 0.1rem;
+}
+.p-dialog-header {
+  padding: 0 !important; 
+}
+.p-dialog-footer {
+  padding: 10px 0 !important; 
+}
+.upload p-fileupload {
+  font-size: 12px !important;
+}
+.p-fileupload .p-button {
+  font-size: 12px !important;
+}
+.p-dialog {
+  width: 220px;  
+  max-width: 90vw; 
+  padding: 5px; 
+  font-size: 14px;   
+}
+.p-dialog-header {
+  height: 30px;
+}
+.machine-list .p-datatable-thead > tr > th {
+  padding: 0.2rem 0.5rem;
+}
+.machine-list .p-datatable-tbody > tr > td {
+  padding: 0.2rem 0.5rem;
+}
+.machine-list .p-inputtext {
+  font-size: 12px;
+}
+.tag-success { background-color: #d5f5e3 !important; color: #27ae60 !important; }
+.tag-warn { background-color: #fcf3cf !important; color: #f39c12 !important; }
+.tag-danger { background-color: #fadbd8 !important; color: #cb4335 !important; }
+.tag-info { background-color: #ebf5fb !important; color: #3498db !important; }
+.tag-secondary { background-color: #f2f4f4 !important; color: #909497 !important; }
+.tag-orange { background-color: #fae5d3 !important; color: #dc7633 !important; }
+
+input:disabled {
+  background-color: #fafafa !important;
+  cursor: not-allowed;
+}
+
+.go-back {
+  color: #89090a;
+  font-weight: 600;
+}
+
+.machine-detail .p-iftalabel label {
+  color: #333;
+}
+.custom-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+
+  .card-left {
+    flex: 1;
+    max-width: 36px;
+
+    img {
+      width: 32px;
+      height: auto;
+      border-radius: 8px;
+    }
+  }
+
+  .card-right {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+
+    .card-header {
+      font-size: 13px;
+      font-weight: 500;
+      color: #333;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: #666;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      margin: 2px 0;
+    }
+
+  }
+}
+.mc-list .p-button-icon-only {
+  width: 1.5rem;
+  .icon {
+    color: #94a3b8;
+  }
+}
+
+.machine-add .p-dialog-content{
+  padding: 0 0.8rem 0.8rem 0.8rem;
+}
+
+.qr-dialog .p-dialog-content{
+  padding: 0 0.75rem 0.75rem 0.75rem;
+}
+.qr-dialog .p-dialog-title{
+  padding-left: 0.75rem;
+}
+
+.checklist .div-p-tag {
+  p-tag {
+    font-size: 0.6rem;
+  }
+}

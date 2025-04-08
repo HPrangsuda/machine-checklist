@@ -1,0 +1,54 @@
+<div class="footer fixed bottom-0 left-0 w-full bg-white border-top-1 surface-border">
+    <div class="flex justify-content-between align-items-center px-3 py-2">
+
+      <div class="flex flex-column align-items-center cursor-pointer" (click)="onHome()">
+        <i class="icon icon-house text-600 text-xl"></i>
+        <span class="text-xs text-600 pt-1">หน้าแรก</span>
+      </div>
+
+      <div class="flex flex-column align-items-center cursor-pointer" (click)="onRecheck()">
+        <i class="icon icon-copy-check text-600 text-xl"></i>
+        <span class="text-xs text-600 pt-1">รออนุมัติ</span>
+      </div>
+
+      <div class="flex flex-column align-items-center relative" style="margin-top: -2rem;" (click)="onChecklist()">
+        <button pButton 
+                class="p-button-rounded p-button-primary"
+                style="width: 3.5rem; height: 3.5rem;">
+          <i class="icon icon-scan-line text-xl"></i>
+        </button>
+      </div>
+    
+      <div class="flex flex-column align-items-center cursor-pointer" (click)="onHistory()">
+        <i class="icon icon-history text-600 text-xl"></i>
+        <span class="text-xs text-600 pt-1">ประวัติ</span>
+      </div>
+
+      <div class="flex flex-column align-items-center cursor-pointer" (click)="onSetting()">
+        <i class="icon icon-settings-2 text-600 text-xl"></i>
+        <span class="text-xs text-600 pt-1">ตั้งค่า</span>
+      </div>
+    </div>
+</div>
+<p-dialog
+  header="Scan QR"
+  [modal]="true"
+  [(visible)]="isScannerVisible"
+  [style]="{ width: '25rem' }"
+  (onHide)="stopScanner()"
+  class="qr-dialog"
+>
+  <div class="mt-2 mb-2">
+    <zxing-scanner
+      [formats]="allowedFormats"
+      [enable]="isScannerEnabled"
+      (scanSuccess)="onScanSuccess($event)"
+      (scanError)="onScanError($event)"
+      [tryHarder]="true"
+      style="max-width: 400px; margin: auto;"
+    ></zxing-scanner>
+  </div>
+  <div class="flex justify-content-end">
+    <p-button label="ยกเลิก" severity="secondary" (click)="stopScanner()" />
+  </div>
+</p-dialog>

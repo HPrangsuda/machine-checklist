@@ -1,0 +1,50 @@
+.custom-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+  
+    .card-left {
+      flex: 1;
+      max-width: 36px;
+  
+      img {
+        width: 32px;
+        height: auto;
+        border-radius: 8px;
+      }
+    }
+  
+    .card-right {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow: hidden;
+  
+      .card-header {
+        font-size: 13px;
+        font-weight: 500;
+        color: #333;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+  
+      .card-subtitle {
+        font-size: 12px;
+        color: #666;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        margin: 2px 0;
+      }
+
+    }
+  
+}
+  

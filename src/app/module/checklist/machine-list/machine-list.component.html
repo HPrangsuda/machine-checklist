@@ -1,0 +1,178 @@
+<div class="transactions mt-2">
+  <div class="list-header">
+    <div class="flex align-items-center justify-content-between mb-1">
+      <h4 class="text-sm text-surface-900 m-0">รายการเครื่องจักรทั้งหมด</h4>
+      <div>
+        <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="onAdd()"><i class="pi pi-plus text-sm"></i></button>
+        <button pButton type="button" class="p-button-outlined clear-button p-1" (click)="clearFilters()"><i class="pi pi-filter-slash text-sm"></i></button>    
+      </div>
+    </div>
+  </div>
+  <div *ngIf="loading">กำลังโหลดข้อมูล...</div>
+  <div class="filter-row text-xs mb-2">
+    <div class="p-field search-field">
+      <input type="text" pInputText [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()" placeholder="ค้นหา" class="text-xs w-full mb-1">
+    </div>
+    <div class="p-field dropdown-field">
+      <p-dropdown
+        [options]="machineStatusOptions"
+        [(ngModel)]="selectedMachineStatus"
+        (ngModelChange)="applyFilters()"
+        placeholder="เลือกสถานะเครื่องจักร"
+        [showClear]="true"
+        class="w-full mb-1"
+      ></p-dropdown>
+    </div>
+    <div class="p-field dropdown-field">
+      <p-dropdown
+        [options]="checkStatusOptions"
+        [(ngModel)]="selectedCheckStatus"
+        (ngModelChange)="applyFilters()"
+        placeholder="เลือกสถานะการตรวจสอบ"
+        [showClear]="true"
+        class="w-full mb-1"
+      ></p-dropdown>
+    </div>
+  </div>
+  <div class="list-container" *ngIf="!loading">
+    <p-dataview 
+      [value]="filteredMachines" 
+      [emptyMessage]="'ไม่พบข้อมูล'" 
+      styleClass="custom-dataview-h-full text-sm"
+    >
+      <ng-template #list>
+        <div class="card-list-wrap">
+          <div class="col-12 custom-col-12" *ngFor="let machine of filteredMachines">
+            <div class="custom-card">
+              <div class="card-right">
+                <span class="card-header text-xs" (click)="machine.id ? onMachineDetail(machine.id) : null">{{ machine.machineName }}</span>
+                <div class="custom-card-subtitle">
+                  <span class="card-subtitle">{{ machine.machineCode }}</span>
+                  <div class="div-p-tag gap-1">
+                    <p-tag [ngClass]="getRoleClass(machine.machineStatus)" [value]="machine.machineStatus"></p-tag>
+                    <p-tag [ngClass]="getRoleClass(machine.checkStatus)" [value]="machine.checkStatus"></p-tag>
+                  </div>
+                </div>   
+                <div class="custom-card-subtitle">
+                  <span class="card-subtitle">{{ machine.responsiblePersonName }}</span>
+                  <div class="mc-list">
+                    <p-button icon="icon icon-pencil" text severity="secondary" (click)="onEdit(machine.id);"/>{{ machine.id }}
+                    <p-button icon="icon icon-trash-2" text severity="secondary" />
+                  </div>
+                </div>                      
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="empty">
+        <div class="text-center p-3">
+          <i class="pi pi-exclamation-circle text-2xl text-gray-500"></i>
+          <p class="mt-2">ไม่พบข้อมูล</p>
+        </div>
+      </ng-template>        
+    </p-dataview>
+  </div>
+</div>
+  
+<!-- Add Dialog -->
+<!-- <div class="machine-add">
+  <p-dialog [(visible)]="displayAddDialog" [style]="{width: '95%', height: '100%'}" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+      <form>
+        <p-iftalabel class="text-xs mb-2">
+          <input pInputText id="name" autocomplete="off" class="w-full" required/>
+          <label for="name">ชื่อเครื่อง</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <input pInputText id="model" autocomplete="off" class="w-full" required/>
+          <label for="model">รุ่น</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <input pInputText id="code" autocomplete="off" class="w-full" required/>
+          <label for="code">รหัส</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <input pInputText id="number" autocomplete="off" class="w-full" required/>
+          <label for="number">หมายเลขเครื่อง</label>
+        </p-iftalabel>
+        <div *ngIf="!loading; else loadingTemplate">
+          <p-iftalabel class="text-xs mb-2">
+            <p-select 
+              [(ngModel)]="selectedMachineStatus" 
+              inputId="status" 
+              [options]="machineStatus" 
+              optionLabel="name" 
+              styleClass="w-full" 
+              placeholder="เลือกสถานะ" />
+            <label for="status">สถานะ</label>
+          </p-iftalabel>
+        
+          <p-iftalabel class="text-xs mb-2">
+            <p-select 
+              [(ngModel)]="selectedType" 
+              inputId="type" 
+              [options]="type" 
+              optionLabel="machineTypeName" 
+              styleClass="w-full" 
+              placeholder="เลือกประเภทเครื่อง" />
+            <label for="type">ประเภทเครื่อง</label>
+          </p-iftalabel>
+        
+          <p-iftalabel class="text-xs mb-2">
+            <p-multiselect 
+              [(ngModel)]="selectedFrequency" 
+              inputId="frequency" 
+              [options]="frequency" 
+              optionLabel="name" 
+              [filter]="false" 
+              [maxSelectedLabels]="3" 
+              styleClass="w-full" 
+              placeholder="เลือกความถี่" />
+            <label for="frequency">ความถี่ในการตรวจ</label>
+          </p-iftalabel>
+        </div>
+        
+        <ng-template #loadingTemplate>
+          <p>Loading data...</p>
+        </ng-template>
+       
+       
+        <p-iftalabel class="text-xs mb-2">
+          <p-select [(ngModel)]="selectedMachineStatus" inputId="status" [options]="machineStatus" optionLabel="name" styleClass="w-full" />
+          <label for="status">สถานะ</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <p-select 
+            [(ngModel)]="selectedType" 
+            inputId="type" 
+            [options]="type" 
+            optionLabel="machineTypeName" 
+            styleClass="w-full" 
+            placeholder="เลือกประเภทเครื่อง" />
+          <label for="type">ประเภทเครื่อง</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <p-multiselect [(ngModel)]="selectedFrequency" inputId="frequency" [options]="frequency" optionLabel="name" [filter]="false" [maxSelectedLabels]="3" styleClass="w-full" />
+          <label for="frequency">ความถี่ในการตรวจ</label>
+        </p-iftalabel>
+        <p-iftalabel>
+          <input pInputText id="note" class="w-full text-xs"/>
+          <label for="note">หมายเหตุ</label>
+        </p-iftalabel>
+        <div class="mt-1 upload">
+          <p-card>
+            <div class="upload">
+                <p-fileupload #fu mode="basic" chooseLabel="อัปโหลดรูปภาพ" chooseIcon="pi pi-upload" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*" maxFileSize="1000000"/>
+            </div>
+          </p-card>
+        </div>
+      </form>
+    </ng-template>
+  
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text text-xs" (click)="hideDialog()"></button>
+        <button pButton pRipple label="บันทึก" icon="pi pi-check" class="p-button-text text-xs" ></button>
+    </ng-template>
+  </p-dialog>
+</div> -->
