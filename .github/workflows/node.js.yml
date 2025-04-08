@@ -34,15 +34,16 @@ jobs:
         run: ng build
 
       # Deploy to Azure server using SSH
-      - name: Deploy to Azure Server via SSH
+      - name: Prepare Server via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.ACME_HOST }}        # Azure server hostname or IP
           username: ${{ secrets.ACME_USERNAME }} # SSH username
           key: ${{ secrets.ACME_SSH }}          # SSH private key
           script: |
-            mkdir -p /var/www/machine-checklist
-            rm -rf /var/www/machine-checklist/* # Clear previous deployment
+            sudo chmod -R 777 /var/www/html
+            sudo rm -rf /var/www/html/* # Clear previous contents in html folder
+            sudo rm -rf /var/www/source/*
             exit 0 # Ensure clean exit before file transfer
 
       # Copy the built files to the server
@@ -52,11 +53,26 @@ jobs:
           host: ${{ secrets.ACME_HOST }}
           username: ${{ secrets.ACME_USERNAME }}
           key: ${{ secrets.ACME_SSH }}
-          source: "dist/machine-checklist/*" # Adjust if your app name differs
-          target: "/var/www/machine-checklist"
-          strip_components: 1 # Remove the 'dist/machine-checklist' prefix
+          source: "dist/machine-checklist/browser/*" # Adjust if your app name differs
+          target: "/var/www/source"            # Deploy directly to html folder
+          strip_components: 1                # Remove the 'dist/machine-checklist' prefix
 
-      # Restart Nginx (optional, adjust based on your server setup)
+      # Deploy to Azure server using SSH
+      - name: Prepare Server via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ACME_HOST }}        # Azure server hostname or IP
+          username: ${{ secrets.ACME_USERNAME }} # SSH username
+          key: ${{ secrets.ACME_SSH }}          # SSH private key
+          script: |
+            sudo chmod -R 777 /var/www/html
+            sudo rm -rf /var/www/html/* # Clear previous contents in html folder
+            sudo cp -r /var/www/source/machine-checklist/browser/* /var/www/html/ # Copy files from source to html
+            sudo chmod -R 777 /var/www/html
+            exit 0 # Ensure clean exit before file transfer
+
+            
+      # Restart Nginx
       - name: Restart Server
         uses: appleboy/ssh-action@master
         with:
@@ -64,4 +80,4 @@ jobs:
           username: ${{ secrets.ACME_USERNAME }}
           key: ${{ secrets.ACME_SSH }}
           script: |
-            sudo systemctl restart nginx # Restart web server if applicable
+            sudo systemctl restart nginx # Restart web server
