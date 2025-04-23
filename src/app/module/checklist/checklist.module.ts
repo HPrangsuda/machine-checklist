@@ -16,6 +16,7 @@ import { MachineResponsibleComponent } from './machine-responsible/machine-respo
 import { MachineDetailComponent } from './machine-detail/machine-detail.component';
 import { ChecklistDetailComponent } from './checklist-detail/checklist-detail.component';
 import { MachineEditComponent } from './machine-edit/machine-edit.component';
+import { MachineAddComponent } from './machine-add/machine-add.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { MachineEditComponent } from './machine-edit/machine-edit.component';
     MachineResponsibleComponent,
     MachineDetailComponent,
     ChecklistDetailComponent,
-    MachineEditComponent
+    MachineEditComponent,
+    MachineAddComponent
   ],
   imports: [
     CommonModule,

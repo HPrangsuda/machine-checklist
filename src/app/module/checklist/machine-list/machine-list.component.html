@@ -1,3 +1,7 @@
+<p-confirmDialog 
+  [style]="{width: '75%'}" 
+  styleClass="custom-confirm-dialog">
+</p-confirmDialog>
 <div class="transactions mt-2">
   <div class="list-header">
     <div class="flex align-items-center justify-content-between mb-1">
@@ -56,8 +60,8 @@
                 <div class="custom-card-subtitle">
                   <span class="card-subtitle">{{ machine.responsiblePersonName }}</span>
                   <div class="mc-list">
-                    <p-button icon="icon icon-pencil" text severity="secondary" (click)="onEdit(machine.id);"/>{{ machine.id }}
-                    <p-button icon="icon icon-trash-2" text severity="secondary" />
+                    <p-button icon="icon icon-pencil" text severity="secondary" (click)="onEdit(machine.id)"/>
+                    <p-button icon="icon icon-trash-2" text severity="secondary" (click)="onDelete(machine.id)"/>
                   </div>
                 </div>                      
               </div>
@@ -74,105 +78,3 @@
     </p-dataview>
   </div>
 </div>
-  
-<!-- Add Dialog -->
-<!-- <div class="machine-add">
-  <p-dialog [(visible)]="displayAddDialog" [style]="{width: '95%', height: '100%'}" [modal]="true" styleClass="p-fluid">
-    <ng-template pTemplate="content">
-      <form>
-        <p-iftalabel class="text-xs mb-2">
-          <input pInputText id="name" autocomplete="off" class="w-full" required/>
-          <label for="name">ชื่อเครื่อง</label>
-        </p-iftalabel>
-        <p-iftalabel class="text-xs mb-2">
-          <input pInputText id="model" autocomplete="off" class="w-full" required/>
-          <label for="model">รุ่น</label>
-        </p-iftalabel>
-        <p-iftalabel class="text-xs mb-2">
-          <input pInputText id="code" autocomplete="off" class="w-full" required/>
-          <label for="code">รหัส</label>
-        </p-iftalabel>
-        <p-iftalabel class="text-xs mb-2">
-          <input pInputText id="number" autocomplete="off" class="w-full" required/>
-          <label for="number">หมายเลขเครื่อง</label>
-        </p-iftalabel>
-        <div *ngIf="!loading; else loadingTemplate">
-          <p-iftalabel class="text-xs mb-2">
-            <p-select 
-              [(ngModel)]="selectedMachineStatus" 
-              inputId="status" 
-              [options]="machineStatus" 
-              optionLabel="name" 
-              styleClass="w-full" 
-              placeholder="เลือกสถานะ" />
-            <label for="status">สถานะ</label>
-          </p-iftalabel>
-        
-          <p-iftalabel class="text-xs mb-2">
-            <p-select 
-              [(ngModel)]="selectedType" 
-              inputId="type" 
-              [options]="type" 
-              optionLabel="machineTypeName" 
-              styleClass="w-full" 
-              placeholder="เลือกประเภทเครื่อง" />
-            <label for="type">ประเภทเครื่อง</label>
-          </p-iftalabel>
-        
-          <p-iftalabel class="text-xs mb-2">
-            <p-multiselect 
-              [(ngModel)]="selectedFrequency" 
-              inputId="frequency" 
-              [options]="frequency" 
-              optionLabel="name" 
-              [filter]="false" 
-              [maxSelectedLabels]="3" 
-              styleClass="w-full" 
-              placeholder="เลือกความถี่" />
-            <label for="frequency">ความถี่ในการตรวจ</label>
-          </p-iftalabel>
-        </div>
-        
-        <ng-template #loadingTemplate>
-          <p>Loading data...</p>
-        </ng-template>
-       
-       
-        <p-iftalabel class="text-xs mb-2">
-          <p-select [(ngModel)]="selectedMachineStatus" inputId="status" [options]="machineStatus" optionLabel="name" styleClass="w-full" />
-          <label for="status">สถานะ</label>
-        </p-iftalabel>
-        <p-iftalabel class="text-xs mb-2">
-          <p-select 
-            [(ngModel)]="selectedType" 
-            inputId="type" 
-            [options]="type" 
-            optionLabel="machineTypeName" 
-            styleClass="w-full" 
-            placeholder="เลือกประเภทเครื่อง" />
-          <label for="type">ประเภทเครื่อง</label>
-        </p-iftalabel>
-        <p-iftalabel class="text-xs mb-2">
-          <p-multiselect [(ngModel)]="selectedFrequency" inputId="frequency" [options]="frequency" optionLabel="name" [filter]="false" [maxSelectedLabels]="3" styleClass="w-full" />
-          <label for="frequency">ความถี่ในการตรวจ</label>
-        </p-iftalabel>
-        <p-iftalabel>
-          <input pInputText id="note" class="w-full text-xs"/>
-          <label for="note">หมายเหตุ</label>
-        </p-iftalabel>
-        <div class="mt-1 upload">
-          <p-card>
-            <div class="upload">
-                <p-fileupload #fu mode="basic" chooseLabel="อัปโหลดรูปภาพ" chooseIcon="pi pi-upload" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*" maxFileSize="1000000"/>
-            </div>
-          </p-card>
-        </div>
-      </form>
-    </ng-template>
-  
-    <ng-template pTemplate="footer">
-        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text text-xs" (click)="hideDialog()"></button>
-        <button pButton pRipple label="บันทึก" icon="pi pi-check" class="p-button-text text-xs" ></button>
-    </ng-template>
-  </p-dialog>
-</div> -->

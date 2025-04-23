@@ -1,0 +1,204 @@
+<div class="go-back text-sm">
+  <p (click)="goBack()"><i class="icon icon-undo-2"></i> ย้อนกลับ</p>
+</div>
+
+<p-card>
+  <form [formGroup]="machineForm">
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="machineName"
+        formControlName="machineName"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': machineForm.get('machineName')?.touched && machineForm.get('machineName')?.invalid}"
+      />
+      <label for="machineName">ชื่อเครื่อง</label>
+      <small *ngIf="machineForm.get('machineName')?.touched && machineForm.get('machineName')?.invalid" class="p-error">กรุณากรอกชื่อเครื่อง</small>
+    </p-iftalabel>
+
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="model"
+        formControlName="model"
+        autocomplete="off"
+        class="w-full text-xs"
+      />
+      <label for="model">รุ่น</label>
+    </p-iftalabel>
+
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="code"
+        formControlName="code"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': machineForm.get('code')?.touched && machineForm.get('code')?.invalid}"
+      />
+      <label for="code">รหัส</label>
+      <small *ngIf="machineForm.get('code')?.touched && machineForm.get('code')?.invalid" class="p-error">กรุณากรอกรหัส</small>
+    </p-iftalabel>
+
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="number"
+        formControlName="number"
+        autocomplete="off"
+        class="w-full text-xs"
+      />
+      <label for="number">หมายเลขเครื่อง</label>
+    </p-iftalabel>
+
+    <p-iftalabel class="text-xs mb-2">
+      <p-dropdown
+        [options]="employeeList"
+        formControlName="responsibleId"
+        name="employeeList"
+        id="responsible"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="กรุณาเลือก"
+        styleClass="w-full md:w-56"
+        [showClear]="true"
+      />
+      <label for="responsible">ผู้รับผิดชอบ</label>
+    </p-iftalabel>
+
+    <p-iftalabel class="text-xs mb-2">
+      <p-dropdown
+        [options]="employeeList"
+        formControlName="supervisorId"
+        name="supervisorList"
+        id="supervisor"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="กรุณาเลือก"
+        styleClass="w-full md:w-56"
+        [showClear]="true"
+      />
+      <label for="supervisor">หัวหน้างาน</label>
+    </p-iftalabel>
+
+    <p-iftalabel class="text-xs mb-2">
+      <p-dropdown
+        [options]="employeeList"
+        formControlName="managerId"
+        name="managerList"
+        id="manager"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="กรุณาเลือก"
+        styleClass="w-full md:w-56"
+        [showClear]="true"
+      />
+      <label for="manager">ผู้จัดการฝ่าย</label>
+    </p-iftalabel>
+
+    <p-iftalabel class="text-xs mb-2">
+      <p-multiselect
+        [options]="frequency"
+        formControlName="frequency"
+        name="frequency"
+        optionLabel="name"
+        optionValue="name"
+        placeholder="กรุณาเลือก"
+        [maxSelectedLabels]="5"
+        styleClass="w-full md:w-80"
+      />
+      <label for="frequency">ความถี่ในการตรวจ</label>
+    </p-iftalabel>
+
+    <p-iftalabel class="text-xs mb-2">
+      <p-dropdown
+        [options]="machineStatus"
+        formControlName="status"
+        name="status"
+        id="status"
+        optionLabel="name"
+        optionValue="name"
+        placeholder="กรุณาเลือก"
+        styleClass="w-full md:w-56"
+        [showClear]="true"
+      />
+      <label for="status">สถานะ</label>
+    </p-iftalabel>
+
+    <p-iftalabel class="text-xs mb-2">
+      <p-dropdown
+        [options]="type"
+        formControlName="type"
+        name="type"
+        id="type"
+        optionLabel="machineTypeName"
+        optionValue="machineTypeName"
+        placeholder="กรุณาเลือก"
+        styleClass="w-full md:w-56"
+        [ngClass]="{'ng-invalid ng-dirty': machineForm.get('type')?.touched && machineForm.get('type')?.invalid}"
+        [showClear]="true"
+      />
+      <label for="type">ประเภทเครื่อง</label>
+      <small *ngIf="machineForm.get('type')?.touched && machineForm.get('type')?.invalid" class="p-error">กรุณาเลือกประเภทเครื่อง</small>
+    </p-iftalabel>
+
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="note"
+        formControlName="note"
+        class="w-full text-xs"
+      />
+      <label for="note">หมายเหตุ</label>
+    </p-iftalabel>
+    <div class="mt-1 upload">
+      <p-card>
+        <div class="upload">
+          <div class="flex flex-column">
+            <div *ngIf="previewImageSrc" class="mb-2">
+              <img [src]="previewImageSrc" style="max-width: 200px; max-height: 200px;" />
+            </div>
+            <div class="flex align-items-center">
+              <p-fileUpload 
+                mode="basic" 
+                chooseLabel="เลือกรูปภาพ"
+                class="p-button-sm"
+                accept="image/*" 
+                [auto]="false"
+                [maxFileSize]="5000000"
+                (onSelect)="onFileSelected($event)"
+                [showUploadButton]="false"
+                [showCancelButton]="false">
+              </p-fileUpload>
+              <button 
+                *ngIf="selectedFile" 
+                pButton 
+                type="button" 
+                icon="pi pi-times" 
+                class="p-button-danger p-button-sm ml-2" 
+                (click)="clearImage()"
+                pTooltip="ลบรูปภาพ">
+              </button>
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </form>
+</p-card>
+
+<div class="flex justify-content-center flex-wrap">
+  <div class="flex align-items-center justify-content-center">
+    <p-button
+      pButton
+      pRipple
+      class="p-0 mt-3"
+      [disabled]="loading"
+      (click)="saveMachine()"
+    >
+      <i class="icon icon-save"></i>
+      <span class="text-xs font-bold">{{ loading ? 'กำลังบันทึก...' : 'บันทึก' }}</span>
+    </p-button>
+  </div>
+</div>

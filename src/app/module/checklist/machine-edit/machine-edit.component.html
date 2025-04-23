@@ -24,27 +24,88 @@
           <label for="number">หมายเลขเครื่อง</label>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
-            <input pInputText id="responsible" [value]="machineResponse?.machine?.responsiblePersonName" autocomplete="off" class="w-full text-xs" disabled/>
+          <input type="hidden" id="responsible_id" [value]="selectedEmployee" class="w-full text-xs" disabled />
+          <p-dropdown 
+            [options]="employeeList" 
+            [(ngModel)]="selectedEmployee" 
+            name="employeeList" 
+            id="responsible"
+            optionLabel="name" 
+            optionValue="id" 
+            placeholder="กรุณาเลือก" 
+            styleClass="w-full md:w-56" />
           <label for="responsible">ผู้รับผิดชอบ</label>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
-            <input pInputText id="superviser" [value]="machineResponse?.machine?.supervisorName" autocomplete="off" class="w-full text-xs" disabled/>
-          <label for="superviser">หัวหน้างาน</label>
+          <input 
+            type="hidden" 
+            id="supervisor_hidden_id" 
+            [value]="selectedSupervisor" 
+            class="w-full text-xs" 
+            disabled />
+          <p-dropdown 
+            [options]="employeeList" 
+            [(ngModel)]="selectedSupervisor" 
+            name="supervisorList" 
+            id="supervisor" 
+            optionLabel="name" 
+            optionValue="id" 
+            placeholder="กรุณาเลือก" 
+            styleClass="w-full md:w-56" />
+          <label for="supervisor">หัวหน้างาน</label>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
-            <input pInputText id="manager" [value]="machineResponse?.machine?.managerName" autocomplete="off" class="w-full text-xs" disabled/>
+          <input 
+            type="hidden" 
+            id="manager_hidden_id" 
+            [value]="selectedManager" 
+            class="w-full text-xs" 
+            disabled />
+          <p-dropdown 
+            [options]="employeeList" 
+            [(ngModel)]="selectedManager" 
+            name="managerList" 
+            id="manager" 
+            optionLabel="name" 
+            optionValue="id" 
+            placeholder="กรุณาเลือก" 
+            styleClass="w-full md:w-56" />
           <label for="manager">ผู้จัดการฝ่าย</label>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
-            <input pInputText id="frequency" [value]="machineResponse?.machine?.frequency" autocomplete="off" class="w-full text-xs" disabled/>
+          <p-multiselect 
+            [options]="frequency" 
+            [(ngModel)]="selectedFrequency" 
+            name="frequency" 
+            optionLabel="name" 
+            optionValue="name" 
+            placeholder="กรุณาเลือก" 
+            [maxSelectedLabels]="5" 
+            styleClass="w-full md:w-80" />
           <label for="frequency">ความถี่ในการตรวจ</label>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
-            <input pInputText id="status" [value]="machineResponse?.machine?.machineStatus" autocomplete="off" class="w-full text-xs" disabled/>
+          <p-dropdown 
+            [options]="machineStatus" 
+            [(ngModel)]="selectedStatus" 
+            name="status" 
+            id="status" 
+            optionLabel="name" 
+            optionValue="name" 
+            placeholder="กรุณาเลือก" 
+            styleClass="w-full md:w-56" />
           <label for="status">สถานะ</label>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
-            <input pInputText id="type" [value]="machineResponse?.machine?.machineTypeName" autocomplete="off" class="w-full text-xs" disabled/>
+          <p-dropdown 
+            [options]="type" 
+            [(ngModel)]="selectedType" 
+            name="type" 
+            id="type" 
+            optionLabel="machineTypeName" 
+            optionValue="machineTypeName" 
+            placeholder="กรุณาเลือก" 
+            styleClass="w-full md:w-56" />
           <label for="type">ประเภทเครื่อง</label>
         </p-iftalabel>
         <div class="flex justify-content-center flex-wrap">
@@ -72,3 +133,16 @@
       </form>
   </div>
 </p-fieldset>
+<div class="flex justify-content-center flex-wrap">
+  <div class="flex align-items-center justify-content-center">
+      <p-button 
+        pButton 
+        pRipple 
+        class="p-0 mt-3" 
+        (click)="saveMachine()" 
+        [disabled]="loading">
+        <i class="icon icon-save"></i>
+        <span class="text-xs font-bold">{{ loading ? 'กำลังบันทึก...' : 'บันทึก' }}</span>
+      </p-button>
+  </div>    
+</div>

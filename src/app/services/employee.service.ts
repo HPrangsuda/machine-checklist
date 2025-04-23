@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
-import { MachineType } from '../models/machine-type.model';
+import { Employee } from '../models/employee.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MachineTypeService {
-  private baseUrl = '/api/type'; 
+export class EmployeeService {
+  private baseUrl = '/api/user'; 
 
   constructor(
     private http: HttpClient,
@@ -20,7 +20,7 @@ export class MachineTypeService {
     return new HttpHeaders().set('Authorization', `Bearer ${token || ''}`);
   }
 
-  getAllMachinesType(): Observable<MachineType[]> {
-    return this.http.get<MachineType[]>(`${this.baseUrl}`, { headers: this.getHeaders() });
+  getAllUser(): Observable<Employee[]> {
+    return this.http.get<Employee[]>(`${this.baseUrl}`, { headers: this.getHeaders() });
   }
 }

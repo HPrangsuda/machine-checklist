@@ -17,11 +17,11 @@ export class MachineService {
   ) {}
 
   private getHeaders(): HttpHeaders {
-    const token = this.authService.getAccessToken(); 
-    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const token = this.authService.getAccessToken();
+    return new HttpHeaders().set('Authorization', `Bearer ${token || ''}`);
   }
 
-  getAllMachines(): Observable<Machine[]> {
+  getMachines(): Observable<Machine[]> {
     return this.http.get<Machine[]>(this.baseUrl, { headers: this.getHeaders() });
   }
 
@@ -49,8 +49,8 @@ export class MachineService {
     return this.http.post<Machine>(this.baseUrl, machine, { headers: this.getHeaders() });
   }
 
-  updateMachine(machine: Machine): Observable<Machine> {
-    return this.http.put<Machine>(`${this.baseUrl}/${machine.id}`, machine, { headers: this.getHeaders() });
+  updateMachine(id: number, machine: any): Observable<MachineResponse> {
+    return this.http.put<MachineResponse>(`${this.baseUrl}/${id}`, machine, { headers: this.getHeaders() });
   }
 
   deleteMachine(id: number): Observable<void> {

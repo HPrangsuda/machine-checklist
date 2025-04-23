@@ -12,6 +12,7 @@ import { MachineResponsibleComponent } from './machine-responsible/machine-respo
 import { MachineDetailComponent } from './machine-detail/machine-detail.component';
 import { AuthGuard } from '../../core/guard/auth.guard';
 import { MachineEditComponent } from './machine-edit/machine-edit.component';
+import { MachineAddComponent } from './machine-add/machine-add.component';
 
 const routes: Routes = [
     {
@@ -68,6 +69,11 @@ const routes: Routes = [
         path: 'machine-edit/:id',
         canActivate: [AuthGuard],
         component: MachineEditComponent
+    },
+    {
+        path: 'machine-add',
+        canActivate: [AuthGuard],
+        component: MachineAddComponent
     }
 ];
 @NgModule({

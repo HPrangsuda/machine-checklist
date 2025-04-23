@@ -21,6 +21,7 @@ export class AuthService {
         private route: Router) { }
 
     isAuthenticated(): boolean{
+        console.log(this.storageService.checkAccessKey());
         if (this.storageService.checkAccessKey()) {
             return true;
         } else {

@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Machine } from '../../../models/machine.model';
 import { MachineService } from '../../../services/machine.service';
-import { MachineType } from '../../../models/machine-type.model';
-import { MachineTypeService } from '../../../services/machine-type.service';
-import { AuthService } from '../../../services/auth.service';
 import { StorageService } from '../../../core/service/storage.service';
 
 interface Frequency {
@@ -29,6 +26,7 @@ interface Employee {
   styleUrls: ['./machine-list.component.scss']
 })
 export class MachineListComponent implements OnInit {
+  role: string | undefined;
   machines: Machine[] = [];
   filteredMachines: Machine[] = [];
   loading: boolean = true;
@@ -44,8 +42,6 @@ export class MachineListComponent implements OnInit {
   selectedFrequency: Frequency | null = null;
   machineStatus: MachineStatus[] = [];
   selectedStatus: MachineStatus | null = null;
-  selectedType: MachineType | null = null;
-  type: MachineType[] = [];
 
   machineStatusOptions: string[] = [
     'ใช้งานได้',
@@ -62,17 +58,19 @@ export class MachineListComponent implements OnInit {
 
   constructor(
     private machineService: MachineService,
-    private machineTypeService: MachineTypeService,
     private messageService: MessageService,
     private router: Router,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private confirmationService: ConfirmationService,
   ) {}
 
   ngOnInit(): void {
-    this.loadMachinesByResponsibleAll();
+    //this.loadMachinesByResponsibleAll();
+    this.loadMachines();
     this.loadData();
+   
   }
-
+ 
   loadData(): void {
     this.loading = true;
 
@@ -89,19 +87,28 @@ export class MachineListComponent implements OnInit {
       { name: 'ไม่ได้ใช้งาน' },
       { name: 'ซ่อมบำรุง' }
     ];
+  }
 
-    this.machineTypeService.getAllMachinesType().subscribe({
-      next: (data: MachineType[]) => {
-        this.type = data;
+  loadMachines(): void {
+    this.loading = true;
+    this.machineService.getMachines().subscribe({
+      next: (data: Machine[]) => {
+        this.machines = data;
+        this.filteredMachines = [...this.machines]; 
+        this.applyFilters();  
         this.loading = false;
       },
-      error: (err) => {
-        console.error('Error fetching machine types:', err);
+      error: (err: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load machines: ' + (err.message || 'Unknown error')
+        });
         this.loading = false;
       }
     });
   }
-
+  
   loadMachinesByResponsibleAll(): void {
     this.loading = true;
     this.machineService.getMachinesByResponsibleAll(this.storageService.getUsername()).subscribe({
@@ -178,5 +185,51 @@ export class MachineListComponent implements OnInit {
   
   onEdit(machineId: number): void {
     this.router.navigate(['/machine-edit', machineId]);
+  }
+
+  onDelete(machineId: number): void {
+    this.confirmationService.confirm({
+      message: 'คุณต้องการลบรายการนี้หรือไม่?',
+      header: 'ยืนยันการลบ',
+      rejectLabel: 'ยกเลิก',
+      rejectButtonProps: {
+        style: { 'font-size': '12px' },
+        label: 'ยกเลิก',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        style: { 'font-size': '12px' },
+        label: 'ลบ',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.machineService.deleteMachine(machineId).subscribe({
+          next: () => {
+            this.machines = this.machines.filter(machine => machine.id !== machineId);
+            this.filteredMachines = this.filteredMachines.filter(machine => machine.id !== machineId);
+            this.messageService.add({
+              severity: 'info',
+              summary: 'สำเร็จ',
+              detail: 'ลบเครื่องจักรเรียบร้อยแล้ว'
+            });
+          },
+          error: (err: any) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'ไม่สามารถลบเครื่องจักรได้: ' + (err.message || 'Unknown error')
+            });
+          }
+        });
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'ยกเลิก',
+          detail: 'คุณได้ยกเลิกการลบ'
+        });
+      }
+    });
   }
 }

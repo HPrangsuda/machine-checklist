@@ -12,6 +12,7 @@ export class MachineChecklistService {
 
   getMachineByMachineCode(code: string): Observable<any> {
     const params = new HttpParams().set('machineCode', code);
+    console.log(params);
     return this.http.get<any>(`${this.baseUrl}/machine`, { params });
   }
 }
