@@ -1,7 +1,7 @@
 // src/app/services/machine.service.ts
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { catchError, Observable, throwError } from "rxjs";
 import { Machine, MachineResponse } from "../models/machine.model"; // อัปเดต import
 import { AuthService } from './auth.service';
 
@@ -50,7 +50,24 @@ export class MachineService {
   }
 
   updateMachine(id: number, machine: any): Observable<MachineResponse> {
-    return this.http.put<MachineResponse>(`${this.baseUrl}/${id}`, machine, { headers: this.getHeaders() });
+    // Log the token to check if it exists
+    console.log('Using token:', this.authService.getAccessToken());
+    
+    return this.http.put<MachineResponse>(
+      `${this.baseUrl}/${id}`, 
+      machine, 
+      { 
+        headers: this.getHeaders(),
+        // Add withCredentials if you need cookies to be sent
+        withCredentials: true 
+      }
+    ).pipe(
+      // Add error handling
+      catchError(error => {
+        console.error('Error updating machine:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   deleteMachine(id: number): Observable<void> {
