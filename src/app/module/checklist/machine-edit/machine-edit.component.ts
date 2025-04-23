@@ -172,40 +172,50 @@ export class MachineEditComponent implements OnInit {
       this.error = 'ไม่มีข้อมูลเครื่องจักรสำหรับบันทึก';
       return;
     }
-
+  
+    // สร้าง object สำหรับอัพเดท โดยตรวจสอบ null/undefined
     const updatedMachine = {
       ...this.machineResponse.machine,
-      responsiblePersonId: this.selectedEmployee,
-      responsiblePersonName: this.employeeList.find(emp => emp.id === this.selectedEmployee) 
-        ? `${this.employeeList.find(emp => emp.id === this.selectedEmployee)!.firstName} ${this.employeeList.find(emp => emp.id === this.selectedEmployee)!.lastName}` 
-        : null,
-      supervisorId: this.selectedSupervisor,
-      supervisorName: this.employeeList.find(emp => emp.id === this.selectedSupervisor) 
-        ? `${this.employeeList.find(emp => emp.id === this.selectedSupervisor)!.firstName} ${this.employeeList.find(emp => emp.id === this.selectedSupervisor)!.lastName}` 
-        : null,
-      managerId: this.selectedManager,
-      managerName: this.employeeList.find(emp => emp.id === this.selectedManager) 
-        ? `${this.employeeList.find(emp => emp.id === this.selectedManager)!.firstName} ${this.employeeList.find(emp => emp.id === this.selectedManager)!.lastName}` 
-        : null,
-      frequency: this.selectedFrequency,
-      machineStatus: this.selectedStatus,
-      machineTypeId: this.type.find(t => t.machineTypeName === this.selectedType)?.id || null,
-      machineTypeName: this.selectedType
+      responsiblePersonId: this.selectedEmployee || null,
+      responsiblePersonName: this.getEmployeeFullName(this.selectedEmployee),
+      supervisorId: this.selectedSupervisor || null,
+      supervisorName: this.getEmployeeFullName(this.selectedSupervisor),
+      managerId: this.selectedManager || null,
+      managerName: this.getEmployeeFullName(this.selectedManager),
+      frequency: this.selectedFrequency || null,
+      machineStatus: this.selectedStatus || null,
+      machineTypeId: this.getMachineTypeId(),
+      machineTypeName: this.selectedType || null
     };
-
+  
+  
     this.loading = true;
-    this.machineService.updateMachine(this.machineResponse.machine.id, updatedMachine).subscribe({
-      next: (response: MachineResponse) => {
-        this.machineResponse = response;
-        this.error = null;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'ไม่สามารถบันทึกข้อมูลเครื่องจักรได้';
-        console.error('Error:', err);
-        this.loading = false;
-      }
-    });
+    this.machineService.updateMachine(this.machineResponse.machine.id, updatedMachine)
+      .subscribe({
+        next: (response: MachineResponse) => {
+          this.machineResponse = response;
+          this.error = null;
+          this.loading = false;
+          console.log('Update successful:', response);
+        },
+        error: (err) => {
+          this.error = 'ไม่สามารถบันทึกข้อมูลเครื่องจักรได้';
+          console.error('Update error:', err);
+          this.loading = false;
+        }
+      });
+  }
+  
+  // Helper methods
+  private getEmployeeFullName(employeeId: number | null): string | null {
+    if (!employeeId) return null;
+    const employee = this.employeeList.find(emp => emp.id === employeeId);
+    return employee ? `${employee.firstName} ${employee.lastName}` : null;
+  }
+  
+  private getMachineTypeId(): number | null {
+    const type = this.type.find(t => t.machineTypeName === this.selectedType);
+    return type ? type.id : null;
   }
 
   goBack(): void {

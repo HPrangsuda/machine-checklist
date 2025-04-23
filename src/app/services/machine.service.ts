@@ -1,5 +1,5 @@
 // src/app/services/machine.service.ts
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { catchError, Observable, throwError } from "rxjs";
 import { Machine, MachineResponse } from "../models/machine.model"; // อัปเดต import
@@ -50,26 +50,26 @@ export class MachineService {
   }
 
   updateMachine(id: number, machine: any): Observable<MachineResponse> {
-    // Log the token to check if it exists
-    console.log('Using token:', this.authService.getAccessToken());
-    
     return this.http.put<MachineResponse>(
-      `${this.baseUrl}/${id}`, 
-      machine, 
-      { 
-        headers: this.getHeaders(),
-        // Add withCredentials if you need cookies to be sent
-        withCredentials: true 
-      }
+      `${this.baseUrl}/${id}`,
+      machine,
+      { headers: this.getHeaders() }
     ).pipe(
-      // Add error handling
-      catchError(error => {
-        console.error('Error updating machine:', error);
-        return throwError(() => error);
-      })
+      catchError(this.handleError)
     );
   }
 
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      errorMessage = `ข้อผิดพลาด: ${error.error.message}`;
+    } else {
+      // Server-side error
+      errorMessage = `รหัสข้อผิดพลาด: ${error.status}\nข้อความ: ${error.message}`;
+    }
+    return throwError(() => new Error(errorMessage));
+  }
   deleteMachine(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
   }
