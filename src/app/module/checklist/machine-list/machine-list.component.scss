@@ -4,4 +4,12 @@
 }
 ::ng-deep .custom-confirm-dialog .p-confirmdialog-message{
     font-size: 12px;
-}
+}.custom-paginator {
+    .p-paginator {
+      justify-content: center;
+      padding: 1rem 0;
+    }
+    .p-paginator-element {
+      font-size: 12px;
+    }
+  }

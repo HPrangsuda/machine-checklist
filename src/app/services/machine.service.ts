@@ -16,9 +16,13 @@ export class MachineService {
     private authService: AuthService
   ) {}
 
-  private getHeaders(): HttpHeaders {
+  private getHeaders(contentType: string = 'application/json'): HttpHeaders {
     const token = this.authService.getAccessToken();
-    return new HttpHeaders().set('Authorization', `Bearer ${token || ''}`);
+    console.log('Token:', token); // Log token to verify
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token || ''}`,
+      'Content-Type': contentType
+    });
   }
 
   getMachines(): Observable<Machine[]> {
@@ -46,10 +50,12 @@ export class MachineService {
   }
 
   addMachine(machine: any): Observable<Machine> {
-    return this.http.post<Machine>(this.baseUrl, machine, { headers: this.getHeaders() });
+    return this.http.post<Machine>(`${this.baseUrl}/create`, machine, { headers: this.getHeaders() });
   }
 
   updateMachine(id: number, machine: any): Observable<MachineResponse> {
+    console.log('Updating machine with payload:', machine); // Log payload
+    console.log('Headers:', this.getHeaders()); // Log headers
     return this.http.put<MachineResponse>(
       `${this.baseUrl}/${id}`,
       machine,

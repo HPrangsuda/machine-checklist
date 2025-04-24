@@ -7,6 +7,7 @@
     <div class="flex align-items-center justify-content-between mb-1">
       <h4 class="text-sm text-surface-900 m-0">รายการเครื่องจักรทั้งหมด</h4>
       <div>
+        <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="onUserAdd()"><i class="pi pi-user text-sm"></i></button>
         <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="onAdd()"><i class="pi pi-plus text-sm"></i></button>
         <button pButton type="button" class="p-button-outlined clear-button p-1" (click)="clearFilters()"><i class="pi pi-filter-slash text-sm"></i></button>    
       </div>
@@ -41,6 +42,8 @@
   <div class="list-container" *ngIf="!loading">
     <p-dataview 
       [value]="filteredMachines" 
+      [rows]="5" 
+      [paginator]="true"
       [emptyMessage]="'ไม่พบข้อมูล'" 
       styleClass="custom-dataview-h-full text-sm"
     >

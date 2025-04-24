@@ -1,0 +1,71 @@
+<div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold mb-6 text-center">Add New User</h2>
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <div>
+      <label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
+      <input id="firstName" formControlName="firstName" type="text" 
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+             [ngClass]="{'border-red-500': userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched}">
+      <div *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched" 
+           class="text-red-500 text-sm mt-1">First Name is required</div>
+    </div>
+
+    <div>
+      <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name</label>
+      <input id="lastName" formControlName="lastName" type="text" 
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <div>
+      <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+      <input id="username" formControlName="username" type="text" 
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+             [ngClass]="{'border-red-500': userForm.get('username')?.invalid && userForm.get('username')?.touched}">
+      <div *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched" 
+           class="text-red-500 text-sm mt-1">Username is required</div>
+    </div>
+
+    <div>
+      <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+      <input id="password" formControlName="password" type="password" 
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+             [ngClass]="{'border-red-500': userForm.get('password')?.invalid && userForm.get('password')?.touched}">
+      <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched" 
+           class="text-red-500 text-sm mt-1">Password is required</div>
+    </div>
+
+    <div>
+      <label for="employeeId" class="block text-sm font-medium text-gray-700">Employee ID</label>
+      <input id="employeeId" formControlName="employeeId" type="text" 
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <div>
+      <label for="position" class="block text-sm font-medium text-gray-700">Position</label>
+      <input id="position" formControlName="position" type="text" 
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <div>
+      <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
+      <input id="department" formControlName="department" type="text" 
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <div>
+      <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+      <select id="role" formControlName="role" 
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+        <option *ngFor="let role of roleTypes" [value]="role">{{role}}</option>
+      </select>
+    </div>
+
+    <div *ngIf="errorMessage" class="text-red-500 text-sm">{{errorMessage}}</div>
+    <div *ngIf="successMessage" class="text-green-500 text-sm">{{successMessage}}</div>
+
+    <button type="submit" [disabled]="userForm.invalid" 
+            class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 disabled:bg-gray-400">
+      Create User
+    </button>
+  </form>
+</div>

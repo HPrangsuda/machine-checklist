@@ -17,6 +17,7 @@ import { MachineDetailComponent } from './machine-detail/machine-detail.componen
 import { ChecklistDetailComponent } from './checklist-detail/checklist-detail.component';
 import { MachineEditComponent } from './machine-edit/machine-edit.component';
 import { MachineAddComponent } from './machine-add/machine-add.component';
+import { UserAddComponent } from './user-add/user-add.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { MachineAddComponent } from './machine-add/machine-add.component';
     MachineDetailComponent,
     ChecklistDetailComponent,
     MachineEditComponent,
-    MachineAddComponent
+    MachineAddComponent,
+    UserAddComponent
   ],
   imports: [
     CommonModule,

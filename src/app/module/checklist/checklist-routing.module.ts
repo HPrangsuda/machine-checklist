@@ -13,6 +13,7 @@ import { MachineDetailComponent } from './machine-detail/machine-detail.componen
 import { AuthGuard } from '../../core/guard/auth.guard';
 import { MachineEditComponent } from './machine-edit/machine-edit.component';
 import { MachineAddComponent } from './machine-add/machine-add.component';
+import { UserAddComponent } from './user-add/user-add.component';
 
 const routes: Routes = [
     {
@@ -74,6 +75,11 @@ const routes: Routes = [
         path: 'machine-add',
         canActivate: [AuthGuard],
         component: MachineAddComponent
+    },
+    {
+        path: 'user-add',
+        canActivate: [AuthGuard],
+        component: UserAddComponent
     }
 ];
 @NgModule({

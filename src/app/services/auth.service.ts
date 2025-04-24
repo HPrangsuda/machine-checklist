@@ -50,9 +50,7 @@ export class AuthService {
   }
 
   getUserFullname(): string | null {
-    const firstname = localStorage.getItem('firstname');
-    const lastname = localStorage.getItem('lastname');
-    return firstname && lastname ? `${firstname} ${lastname}` : null;
+    return localStorage.getItem('userFullname');
   }
 
   isAuthenticated(): boolean {

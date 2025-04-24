@@ -179,6 +179,10 @@ export class MachineListComponent implements OnInit {
     this.router.navigate(['/machine-detail', machineId]);
   }
 
+  onUserAdd(): void {
+    this.router.navigate(['/user-add']);
+  }
+  
   onAdd(): void {
     this.router.navigate(['/machine-add']);
   }

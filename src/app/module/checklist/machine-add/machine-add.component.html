@@ -142,16 +142,6 @@
       <label for="type">ประเภทเครื่อง</label>
       <small *ngIf="machineForm.get('type')?.touched && machineForm.get('type')?.invalid" class="p-error">กรุณาเลือกประเภทเครื่อง</small>
     </p-iftalabel>
-
-    <p-iftalabel class="text-xs mb-2">
-      <input
-        pInputText
-        id="note"
-        formControlName="note"
-        class="w-full text-xs"
-      />
-      <label for="note">หมายเหตุ</label>
-    </p-iftalabel>
     <div class="mt-1 upload">
       <p-card>
         <div class="upload">

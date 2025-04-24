@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { MachineTypeService } from '../../../services/machine-type.service';
 import { MachineType } from '../../../models/machine-type.model';
+import { NotifyService } from '../../../core/service/notify.service';
 
 interface Frequency {
   name: string;
@@ -44,7 +45,8 @@ export class MachineEditComponent implements OnInit {
     private machineService: MachineService,
     private emplService: EmployeeService,
     private machineTypeService: MachineTypeService,
-    private location: Location
+    private location: Location,
+    private notifyService: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -85,11 +87,11 @@ export class MachineEditComponent implements OnInit {
 
     if (this.machineResponse?.machine?.frequency) {
       const frequencyValue = this.machineResponse.machine.frequency;
-      this.selectedFrequency = Array.isArray(frequencyValue)
-        ? frequencyValue.filter(f => this.frequency.some(fq => fq.name === f))
-        : this.frequency.some(fq => fq.name === frequencyValue)
-        ? [frequencyValue]
+      this.selectedFrequency = typeof frequencyValue === 'string' && frequencyValue
+        ? frequencyValue.split(',').map(f => f.trim()).filter(f => this.frequency.some(fq => fq.name === f))
         : [];
+    } else {
+      this.selectedFrequency = [];
     }
 
     if (this.machineResponse?.machine?.machineStatus) {
@@ -173,7 +175,6 @@ export class MachineEditComponent implements OnInit {
       return;
     }
   
-    // สร้าง object สำหรับอัพเดท โดยตรวจสอบ null/undefined
     const updatedMachine = {
       ...this.machineResponse.machine,
       responsiblePersonId: this.selectedEmployee || null,
@@ -182,42 +183,34 @@ export class MachineEditComponent implements OnInit {
       supervisorName: this.getEmployeeFullName(this.selectedSupervisor),
       managerId: this.selectedManager || null,
       managerName: this.getEmployeeFullName(this.selectedManager),
-      frequency: this.selectedFrequency || null,
+      frequency: this.selectedFrequency && this.selectedFrequency.length > 0 ? this.selectedFrequency.join(',') : null, 
       machineStatus: this.selectedStatus || null,
-      machineTypeId: this.getMachineTypeId(),
       machineTypeName: this.selectedType || null
     };
-  
   
     this.loading = true;
     this.machineService.updateMachine(this.machineResponse.machine.id, updatedMachine)
       .subscribe({
         next: (response: MachineResponse) => {
           this.machineResponse = response;
-          this.error = null;
           this.loading = false;
+          this.notifyService.msgSuccess("สำเร็จ","อัปเดตข้อมูลเครื่องจักรเรียบร้อยแล้ว");
           console.log('Update successful:', response);
         },
         error: (err) => {
-          this.error = 'ไม่สามารถบันทึกข้อมูลเครื่องจักรได้';
+          this.notifyService.msgWarn("ผิดพลาด","ไม่สามารถอัปเดตข้อมูลเครื่องจักรเรียบร้อยแล้ว");
           console.error('Update error:', err);
           this.loading = false;
         }
       });
   }
-  
-  // Helper methods
+
   private getEmployeeFullName(employeeId: number | null): string | null {
     if (!employeeId) return null;
     const employee = this.employeeList.find(emp => emp.id === employeeId);
     return employee ? `${employee.firstName} ${employee.lastName}` : null;
   }
   
-  private getMachineTypeId(): number | null {
-    const type = this.type.find(t => t.machineTypeName === this.selectedType);
-    return type ? type.id : null;
-  }
-
   goBack(): void {
     this.location.back();
   }

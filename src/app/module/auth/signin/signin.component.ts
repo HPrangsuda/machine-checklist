@@ -28,6 +28,7 @@ export class SigninComponent {
         if((response != null) && (loginData.code == 200)){
           localStorage.setItem("username",loginData.username);
           localStorage.setItem("authorise",loginData.accessToken);
+          localStorage.setItem("fname",loginData.userFullname);
           this.router.navigate(["/dashboard"]);
           this.notifyService.msgSuccess("Authentication","success login");
         }else{

@@ -98,7 +98,7 @@ export class MachineAddComponent implements OnInit {
           name: `${employee.firstName} ${employee.lastName}`
         }));
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('ไม่สามารถโหลดรายชื่อพนักงานได้:', err);
       }
     });
@@ -147,18 +147,18 @@ export class MachineAddComponent implements OnInit {
     this.loading = true;
     const machineData = {
       machineName: this.machineForm.value.machineName,
-      model: this.machineForm.value.model || null,
+      machineModel: this.machineForm.value.model || null,
       machineCode: this.machineForm.value.code,
       machineNumber: this.machineForm.value.number || null,
       responsiblePersonId: this.machineForm.value.responsibleId || null,
       supervisorId: this.machineForm.value.supervisorId || null,
       managerId: this.machineForm.value.managerId || null,
-      frequency: this.machineForm.value.frequency || [],
+      //frequency: this.machineForm.value.frequency || [],
       machineStatus: this.machineForm.value.status || null,
-      machineTypeName: this.machineForm.value.type,
-      note: this.machineForm.value.note || null
+      machineTypeName: this.machineForm.value.type
     };
 
+    
     this.machineService.addMachine(machineData).subscribe({
       next: () => {
         this.messageService.add({
