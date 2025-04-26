@@ -53,6 +53,13 @@
     </p-iftalabel>
 
     <p-iftalabel class="text-xs mb-2">
+      <input
+        type="hidden"
+        id="responsible_id"
+        formControlName="responsibleId"
+        class="w-full text-xs"
+        readonly
+      />
       <p-dropdown
         [options]="employeeList"
         formControlName="responsibleId"
@@ -63,11 +70,19 @@
         placeholder="กรุณาเลือก"
         styleClass="w-full md:w-56"
         [showClear]="true"
+        (onChange)="onResponsibleChange($event)"
       />
       <label for="responsible">ผู้รับผิดชอบ</label>
     </p-iftalabel>
 
     <p-iftalabel class="text-xs mb-2">
+      <input
+        type="hidden"
+        id="supervisor_id"
+        formControlName="supervisorId"
+        class="w-full text-xs"
+        readonly
+      />
       <p-dropdown
         [options]="employeeList"
         formControlName="supervisorId"
@@ -78,11 +93,19 @@
         placeholder="กรุณาเลือก"
         styleClass="w-full md:w-56"
         [showClear]="true"
+        (onChange)="onSupervisorChange($event)"
       />
       <label for="supervisor">หัวหน้างาน</label>
     </p-iftalabel>
 
     <p-iftalabel class="text-xs mb-2">
+      <input
+        type="hidden"
+        id="manager_id"
+        formControlName="managerId"
+        class="w-full text-xs"
+        readonly
+      />
       <p-dropdown
         [options]="employeeList"
         formControlName="managerId"
@@ -93,6 +116,7 @@
         placeholder="กรุณาเลือก"
         styleClass="w-full md:w-56"
         [showClear]="true"
+        (onChange)="onManagerChange($event)"
       />
       <label for="manager">ผู้จัดการฝ่าย</label>
     </p-iftalabel>

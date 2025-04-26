@@ -27,9 +27,6 @@ interface MachineStatus {
 })
 export class MachineAddComponent implements OnInit {
   employeeList: Employee[] = [];
-  selectedEmployee: number | null = null;
-  selectedSupervisor: number | null = null;
-  selectedManager: number | null = null;
   frequency: Frequency[] = [];
   selectedFrequency: string[] = [];
   machineStatus: MachineStatus[] = [];
@@ -73,7 +70,6 @@ export class MachineAddComponent implements OnInit {
   }
 
   loadData(): void {
-
     this.frequency = [
       { name: 'ทุกวัน' },
       { name: '1 ครั้ง/สัปดาห์' },
@@ -87,7 +83,6 @@ export class MachineAddComponent implements OnInit {
       { name: 'ไม่ได้ใช้งาน' },
       { name: 'ซ่อมบำรุง' }
     ];
-
   }
 
   loadEmployeeList(): void {
@@ -128,9 +123,25 @@ export class MachineAddComponent implements OnInit {
       reader.readAsDataURL(file);
     }
   }
+
   clearImage(): void {
     this.selectedFile = null;
     this.previewImageSrc = null;
+  }
+
+  onResponsibleChange(event: any): void {
+    const selectedId = event.value;
+    this.machineForm.get('responsibleId')?.setValue(selectedId);
+  }
+
+  onSupervisorChange(event: any): void {
+    const selectedId = event.value;
+    this.machineForm.get('supervisorId')?.setValue(selectedId);
+  }
+
+  onManagerChange(event: any): void {
+    const selectedId = event.value;
+    this.machineForm.get('managerId')?.setValue(selectedId);
   }
 
   saveMachine(): void {
@@ -151,14 +162,15 @@ export class MachineAddComponent implements OnInit {
       machineCode: this.machineForm.value.code,
       machineNumber: this.machineForm.value.number || null,
       responsiblePersonId: this.machineForm.value.responsibleId || null,
+      responsible: this.employeeList.find(emp => emp.id === this.machineForm.value.responsibleId)?.firstName + ' ' + this.employeeList.find(emp => emp.id === this.machineForm.value.responsibleId)?.lastName || null,
       supervisorId: this.machineForm.value.supervisorId || null,
+      supervisor: this.employeeList.find(emp => emp.id === this.machineForm.value.supervisorId)?.firstName + ' ' + this.employeeList.find(emp => emp.id === this.machineForm.value.responsibleId)?.lastName || null,
       managerId: this.machineForm.value.managerId || null,
-      //frequency: this.machineForm.value.frequency || [],
+      manager: this.employeeList.find(emp => emp.id === this.machineForm.value.managerId)?.firstName + ' ' + this.employeeList.find(emp => emp.id === this.machineForm.value.responsibleId)?.lastName || null,
       machineStatus: this.machineForm.value.status || null,
       machineTypeName: this.machineForm.value.type
     };
 
-    
     this.machineService.addMachine(machineData).subscribe({
       next: () => {
         this.messageService.add({
@@ -167,7 +179,7 @@ export class MachineAddComponent implements OnInit {
           detail: 'บันทึกเครื่องจักรเรียบร้อยแล้ว'
         });
         this.loading = false;
-        setTimeout(() => this.location.back(), 1000); // กลับไปหน้าก่อนหน้าหลัง 1 วินาที
+        setTimeout(() => this.location.back(), 1000);
       },
       error: (err) => {
         console.error('Error saving machine:', err);

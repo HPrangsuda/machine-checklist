@@ -54,15 +54,7 @@ export class MachineService {
   }
 
   updateMachine(id: number, machine: any): Observable<MachineResponse> {
-    console.log('Updating machine with payload:', machine); // Log payload
-    console.log('Headers:', this.getHeaders()); // Log headers
-    return this.http.put<MachineResponse>(
-      `${this.baseUrl}/${id}`,
-      machine,
-      { headers: this.getHeaders() }
-    ).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.put<MachineResponse>(`${this.baseUrl}/update/${id}`, machine, { headers: this.getHeaders() });
   }
 
   private handleError(error: HttpErrorResponse) {
