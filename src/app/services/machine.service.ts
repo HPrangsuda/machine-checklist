@@ -49,8 +49,18 @@ export class MachineService {
     return this.http.get<Machine[]>(`${this.baseUrl}/responsible-all/${personId}`, { headers: this.getHeaders() });
   }
 
-  addMachine(machine: any): Observable<Machine> {
-    return this.http.post<Machine>(`${this.baseUrl}/create`, machine, { headers: this.getHeaders() });
+  addMachine(machineData: any, file?: File): Observable<Machine> {
+    const formData = new FormData();
+    
+    formData.append('machine', new Blob([JSON.stringify(machineData)], {
+      type: 'application/json'
+    }));
+    
+    if (file) {
+      formData.append('file', file, file.name);
+    }
+    
+    return this.http.post<Machine>(`${this.baseUrl}/create`, formData);
   }
 
   updateMachine(id: number, machine: any): Observable<MachineResponse> {

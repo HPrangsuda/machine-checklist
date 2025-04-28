@@ -28,7 +28,6 @@ interface MachineStatus {
 export class MachineAddComponent implements OnInit {
   employeeList: Employee[] = [];
   frequency: Frequency[] = [];
-  selectedFrequency: string[] = [];
   machineStatus: MachineStatus[] = [];
   selectedStatus: string | null = null;
   type: MachineType[] = [];
@@ -104,7 +103,7 @@ export class MachineAddComponent implements OnInit {
       next: (data: MachineType[]) => {
         this.type = data;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error fetching machine types:', err);
       }
     });
@@ -156,22 +155,26 @@ export class MachineAddComponent implements OnInit {
     }
 
     this.loading = true;
+    const selectedFrequency = this.machineForm.get('frequency')?.value;
     const machineData = {
       machineName: this.machineForm.value.machineName,
       machineModel: this.machineForm.value.model || null,
       machineCode: this.machineForm.value.code,
       machineNumber: this.machineForm.value.number || null,
       responsiblePersonId: this.machineForm.value.responsibleId || null,
-      responsible: this.employeeList.find(emp => emp.id === this.machineForm.value.responsibleId)?.firstName + ' ' + this.employeeList.find(emp => emp.id === this.machineForm.value.responsibleId)?.lastName || null,
+      responsiblePersonName: this.getEmployeeFullName(this.machineForm.value.responsibleId),
       supervisorId: this.machineForm.value.supervisorId || null,
-      supervisor: this.employeeList.find(emp => emp.id === this.machineForm.value.supervisorId)?.firstName + ' ' + this.employeeList.find(emp => emp.id === this.machineForm.value.responsibleId)?.lastName || null,
+      supervisorName: this.getEmployeeFullName(this.machineForm.value.supervisorId),
       managerId: this.machineForm.value.managerId || null,
-      manager: this.employeeList.find(emp => emp.id === this.machineForm.value.managerId)?.firstName + ' ' + this.employeeList.find(emp => emp.id === this.machineForm.value.responsibleId)?.lastName || null,
+      managerName: this.getEmployeeFullName(this.machineForm.value.managerId),
+      frequency: selectedFrequency && selectedFrequency.length > 0 ? selectedFrequency.join(',') : null,
       machineStatus: this.machineForm.value.status || null,
-      machineTypeName: this.machineForm.value.type
+      machineTypeName: this.machineForm.value.type,
+      note: this.machineForm.value.note || null
     };
 
-    this.machineService.addMachine(machineData).subscribe({
+    // เรียกใช้ service ที่ปรับปรุงแล้วเพื่อส่งทั้งข้อมูลและไฟล์รูปภาพ
+    this.machineService.addMachine(machineData, this.selectedFile || undefined).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -181,7 +184,7 @@ export class MachineAddComponent implements OnInit {
         this.loading = false;
         setTimeout(() => this.location.back(), 1000);
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error saving machine:', err);
         this.messageService.add({
           severity: 'error',
@@ -191,6 +194,12 @@ export class MachineAddComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+  
+  getEmployeeFullName(employeeId: number | null): string | null {
+    if (!employeeId) return null;
+    const employee = this.employeeList.find(emp => emp.id === employeeId);
+    return employee ? `${employee.firstName} ${employee.lastName}` : null;
   }
 
   goBack(): void {
