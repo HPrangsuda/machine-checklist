@@ -4,6 +4,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Machine } from '../../../models/machine.model';
 import { MachineService } from '../../../services/machine.service';
 import { StorageService } from '../../../core/service/storage.service';
+import { PaginatorState } from 'primeng/paginator';
 
 interface Frequency {
   name: string;
@@ -29,11 +30,15 @@ export class MachineListComponent implements OnInit {
   role: string | undefined;
   machines: Machine[] = [];
   filteredMachines: Machine[] = [];
+  paginatedMachines: Machine[] = [];
   loading: boolean = true;
   searchQuery: string = '';
   selectedMachineStatus: string = '';
   selectedCheckStatus: string = '';
-
+  
+  first: number = 0;
+  rows: number = 5;
+  
   displayAddDialog: boolean = false;
   displayEditDialog: boolean = false;
   employee: Employee[] = [];
@@ -65,10 +70,8 @@ export class MachineListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    //this.loadMachinesByResponsibleAll();
     this.loadMachines();
     this.loadData();
-   
   }
  
   loadData(): void {
@@ -95,7 +98,7 @@ export class MachineListComponent implements OnInit {
       next: (data: Machine[]) => {
         this.machines = data;
         this.filteredMachines = [...this.machines]; 
-        this.applyFilters();  
+        this.paginate();
         this.loading = false;
       },
       error: (err: any) => {
@@ -115,7 +118,7 @@ export class MachineListComponent implements OnInit {
       next: (data: Machine[]) => {
         this.machines = data;
         this.filteredMachines = [...this.machines]; 
-        this.applyFilters();  
+        this.paginate();
         this.loading = false;
       },
       error: (err: any) => {
@@ -153,6 +156,8 @@ export class MachineListComponent implements OnInit {
     }
 
     this.filteredMachines = tempMachines;
+    this.first = 0;
+    this.paginate();
   }
 
   clearFilters(): void {
@@ -160,6 +165,19 @@ export class MachineListComponent implements OnInit {
     this.selectedMachineStatus = '';
     this.selectedCheckStatus = '';
     this.filteredMachines = [...this.machines];
+    this.first = 0;
+    this.paginate();
+  }
+
+  paginate(): void {
+    const end = this.first + this.rows;
+    this.paginatedMachines = this.filteredMachines.slice(this.first, end);
+  }
+
+  onPageChange(event: PaginatorState): void {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 5; 
+    this.paginate();
   }
 
   getRoleClass(status: string): string {
@@ -212,6 +230,7 @@ export class MachineListComponent implements OnInit {
           next: () => {
             this.machines = this.machines.filter(machine => machine.id !== machineId);
             this.filteredMachines = this.filteredMachines.filter(machine => machine.id !== machineId);
+            this.paginate(); // Update paginated data after deletion
             this.messageService.add({
               severity: 'info',
               summary: 'สำเร็จ',

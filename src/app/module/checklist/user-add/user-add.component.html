@@ -1,71 +1,166 @@
-<div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-  <h2 class="text-2xl font-bold mb-6 text-center">Add New User</h2>
-  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
-    <div>
-      <label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
-      <input id="firstName" formControlName="firstName" type="text" 
-             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-             [ngClass]="{'border-red-500': userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched}">
-      <div *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched" 
-           class="text-red-500 text-sm mt-1">First Name is required</div>
-    </div>
+<div class="go-back text-sm">
+  <p (click)="goBack()"><i class="icon icon-undo-2"></i> ย้อนกลับ</p>
+</div>
 
-    <div>
-      <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name</label>
-      <input id="lastName" formControlName="lastName" type="text" 
-             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-    </div>
+<p-card>
+  <form [formGroup]="userForm">
+    <!-- Employee ID -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="employeeId"
+        formControlName="employeeId"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('employeeId')?.touched && userForm.get('employeeId')?.invalid}"
+      />
+      <label for="employeeId">Employee ID</label>
+      <small *ngIf="userForm.get('employeeId')?.touched && userForm.get('employeeId')?.invalid" class="p-error">Please enter employee ID.</small>
+    </p-iftalabel>
 
-    <div>
-      <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-      <input id="username" formControlName="username" type="text" 
-             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-             [ngClass]="{'border-red-500': userForm.get('username')?.invalid && userForm.get('username')?.touched}">
-      <div *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched" 
-           class="text-red-500 text-sm mt-1">Username is required</div>
-    </div>
+    <!-- First Name -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="firstName"
+        formControlName="firstName"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid}"
+      />
+      <label for="firstName">First Name</label>
+      <small *ngIf="userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid" class="p-error">Please enter first name.</small>
+    </p-iftalabel>
 
-    <div>
-      <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-      <input id="password" formControlName="password" type="password" 
-             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-             [ngClass]="{'border-red-500': userForm.get('password')?.invalid && userForm.get('password')?.touched}">
-      <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched" 
-           class="text-red-500 text-sm mt-1">Password is required</div>
-    </div>
+    <!-- Last Name -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="lastName"
+        formControlName="lastName"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid}"
+      />
+      <label for="lastName">Last Name</label>
+      <small *ngIf="userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid" class="p-error">Please enter last name.</small>
+    </p-iftalabel>
 
-    <div>
-      <label for="employeeId" class="block text-sm font-medium text-gray-700">Employee ID</label>
-      <input id="employeeId" formControlName="employeeId" type="text" 
-             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-    </div>
+    <!-- Nick Name -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="nickName"
+        formControlName="nickName"
+        autocomplete="off"
+        class="w-full text-xs"
+      />
+      <label for="nickName">Nick Name</label>
+    </p-iftalabel>
 
-    <div>
-      <label for="position" class="block text-sm font-medium text-gray-700">Position</label>
-      <input id="position" formControlName="position" type="text" 
-             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-    </div>
+    <!-- Department -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="department"
+        formControlName="department"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('department')?.touched && userForm.get('department')?.invalid}"
+      />
+      <label for="department">Department</label>
+      <small *ngIf="userForm.get('department')?.touched && userForm.get('department')?.invalid" class="p-error">Please enter department.</small>
+    </p-iftalabel>
 
-    <div>
-      <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
-      <input id="department" formControlName="department" type="text" 
-             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-    </div>
+    <!-- Position -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="position"
+        formControlName="position"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('position')?.touched && userForm.get('position')?.invalid}"
+      />
+      <label for="position">Position</label>
+      <small *ngIf="userForm.get('position')?.touched && userForm.get('position')?.invalid" class="p-error">Please enter position.</small>
+    </p-iftalabel>
 
-    <div>
-      <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
-      <select id="role" formControlName="role" 
-              class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-        <option *ngFor="let role of roleTypes" [value]="role">{{role}}</option>
-      </select>
-    </div>
+    <!-- Status -->
+    <p-iftalabel class="text-xs mb-2">
+      <p-dropdown
+        id="status"
+        formControlName="status"
+        [options]="statusOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select Status"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('status')?.touched && userForm.get('status')?.invalid}"
+      ></p-dropdown>
+      <label for="status">Status</label>
+      <small *ngIf="userForm.get('status')?.touched && userForm.get('status')?.invalid" class="p-error">Please select status.</small>
+    </p-iftalabel>
 
-    <div *ngIf="errorMessage" class="text-red-500 text-sm">{{errorMessage}}</div>
-    <div *ngIf="successMessage" class="text-green-500 text-sm">{{successMessage}}</div>
+    <!-- Username -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="username"
+        formControlName="username"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('username')?.touched && userForm.get('username')?.invalid}"
+      />
+      <label for="username">Username</label>
+      <small *ngIf="userForm.get('username')?.touched && userForm.get('username')?.invalid" class="p-error">Please enter username.</small>
+    </p-iftalabel>
 
-    <button type="submit" [disabled]="userForm.invalid" 
-            class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 disabled:bg-gray-400">
-      Create User
-    </button>
+    <!-- Password -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="password"
+        type="password"
+        formControlName="password"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('password')?.touched && userForm.get('password')?.invalid}"
+      />
+      <label for="password">Password</label>
+      <small *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid" class="p-error">Please enter password.</small>
+    </p-iftalabel>
+
+    <!-- Role -->
+    <p-iftalabel class="text-xs mb-2">
+      <p-dropdown
+        id="role"
+        formControlName="role"
+        [options]="roleOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select a role"
+        [autoDisplayFirst]="false"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('role')?.touched && userForm.get('role')?.invalid}"
+      ></p-dropdown>
+      <label for="role">Role</label>
+      <small *ngIf="userForm.get('role')?.touched && userForm.get('role')?.invalid" class="p-error">Please enter role.</small>
+    </p-iftalabel>
   </form>
+</p-card>
+
+<div class="flex justify-content-center flex-wrap">
+  <div class="flex align-items-center justify-content-center">
+    <p-button
+      pButton
+      pRipple
+      class="p-0 mt-3"
+      [disabled]="loading"
+      (click)="saveUser()"
+    >
+      <i class="icon icon-save"></i>
+      <span class="text-xs font-bold">{{ loading ? 'กำลังบันทึก...' : 'บันทึก' }}</span>
+    </p-button>
+  </div>
 </div>

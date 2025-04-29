@@ -18,7 +18,7 @@ export class MachineService {
 
   private getHeaders(contentType: string = 'application/json'): HttpHeaders {
     const token = this.authService.getAccessToken();
-    console.log('Token:', token); // Log token to verify
+  
     return new HttpHeaders({
       'Authorization': `Bearer ${token || ''}`,
       'Content-Type': contentType

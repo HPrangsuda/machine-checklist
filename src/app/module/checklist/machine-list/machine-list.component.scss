@@ -1,15 +1,38 @@
-::ng-deep .custom-confirm-dialog .p-dialog-header .p-dialog-title {
-    font-size: 14px;
-    padding-left: 10px;
+.skeleton {
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 16px;
 }
-::ng-deep .custom-confirm-dialog .p-confirmdialog-message{
-    font-size: 12px;
-}.custom-paginator {
-    .p-paginator {
-      justify-content: center;
-      padding: 1rem 0;
-    }
-    .p-paginator-element {
-      font-size: 12px;
-    }
-  }
+
+.skeleton-header {
+  height: 24px;
+  width: 100%;
+  background-color: #e0e0e0;
+  margin-bottom: 12px;
+}
+
+.skeleton-subtitle {
+  height: 16px;
+  width: 80%;
+  background-color: #e0e0e0;
+  margin-bottom: 8px;
+}
+
+.skeleton-tag {
+  height: 20px;
+  width: 40%;
+  background-color: #e0e0e0;
+  margin-right: 8px;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.skeleton-button {
+  height: 30px;
+  width: 90px;
+  background-color: #e0e0e0;
+  margin-right: 10px;
+  display: inline-block;
+  border-radius: 4px;
+}

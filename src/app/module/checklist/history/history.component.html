@@ -1,4 +1,4 @@
-<div class="transactions mt-2">
+<!-- <div class="transactions mt-2">
   <div class="list-header">
     <div class="flex align-items-center justify-content-between mb-1">
       <h4 class="text-sm text-surface-900 m-0">ประวัติการตรวจสอบ</h4>
@@ -14,6 +14,65 @@
   <div class="list-container" *ngIf="!loading">
     <p-dataview 
       [value]="filteredRecords" 
+      [paginator]="true"
+      [emptyMessage]="'ไม่พบข้อมูล'" 
+      styleClass="custom-dataview-h-full text-sm"
+    >
+      <ng-template #list>
+        <div class="card-list-wrap">
+          <div class="col-12 custom-col-12" *ngFor="let record of filteredRecords">
+            <div class="custom-card" (click)="onRecord(record.checklistId)">
+              <div class="card-left">
+                <img src="assets/images/engineerings.png">
+              </div>
+              <div class="card-right">
+                <span class="card-header text-xs">{{ record.machineName }}</span>
+                <div class="custom-card-subtitle">
+                  <span class="card-subtitle">{{ record.machineCode }}</span>
+                  <div class="div-p-tag gap-1">
+                    <p-tag [ngClass]="getRoleClass(record.machineStatus)" [value]="record.machineStatus"></p-tag>
+                    <p-tag [ngClass]="getRoleClass(record.checklistStatus)" [value]="record.checklistStatus"></p-tag>
+                  </div>
+                </div>      
+                <div class="custom-card-subtitle">
+                  <span class="card-subtitle"><i class="icon icon-user"></i> {{ record.userName }}</span>
+                  <span class="card-subtitle"><i class="icon icon-calendar-clock"></i> {{ record.dateCreated | date: 'dd/MM/yyyy hh:mm' }}</span>
+                </div>  
+                <div class="custom-card-subtitle">
+                  <span class="card-subtitle"></span>
+                  <div class="div-p-tag gap-1"><span></span></div>
+                </div>                    
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="empty">
+        <div class="text-center p-3">
+          <i class="pi pi-exclamation-circle text-2xl text-gray-500"></i>
+          <p class="mt-2">ไม่พบข้อมูล</p>
+        </div>
+      </ng-template>        
+    </p-dataview>
+  </div>
+</div> -->
+<div class="transactions mt-2">
+  <div class="list-header">
+    <div class="flex align-items-center justify-content-between mb-1">
+      <h4 class="text-sm text-surface-900 m-0">ประวัติการตรวจสอบ</h4>
+      <button pButton type="button" class="p-button-outlined clear-button" (click)="clearFilters()"><i class="pi pi-filter-slash text-xs"></i></button>
+    </div>
+  </div>
+  <div *ngIf="loading">กำลังโหลดข้อมูล...</div>
+  <div class="filter-row text-xs mb-2">
+    <div class="p-field search-field">
+      <input type="text" pInputText [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()" placeholder="ค้นหา" class="text-xs w-full mb-1">
+    </div>
+  </div>
+  <div class="list-container" *ngIf="!loading">
+    <p-dataview 
+      [value]="filteredRecords" 
+      [rows]="5" 
       [paginator]="true"
       [emptyMessage]="'ไม่พบข้อมูล'" 
       styleClass="custom-dataview-h-full text-sm"
