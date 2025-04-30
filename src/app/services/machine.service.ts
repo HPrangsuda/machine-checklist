@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 })
 export class MachineService {
   private baseUrl = '/api/machines'; 
+  private fileUrl = '/api/file'; 
 
   constructor(
     private http: HttpClient,
@@ -27,6 +28,10 @@ export class MachineService {
 
   getMachines(): Observable<Machine[]> {
     return this.http.get<Machine[]>(this.baseUrl, { headers: this.getHeaders() });
+  }
+
+  getMachineImage(filename: any):any{
+    return `${this.fileUrl}/${filename}`;
   }
 
   getMachineWithQRCode(id: number): Observable<MachineResponse> {

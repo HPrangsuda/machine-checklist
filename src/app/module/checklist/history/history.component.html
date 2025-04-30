@@ -79,7 +79,7 @@
     >
       <ng-template #list>
         <div class="card-list-wrap">
-          <div class="col-12 custom-col-12" *ngFor="let record of filteredRecords">
+          <div class="col-12 custom-col-12" *ngFor="let record of paginatedRecords">
             <div class="custom-card" (click)="onRecord(record.checklistId)">
               <div class="card-left">
                 <img src="assets/images/engineerings.png">

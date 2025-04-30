@@ -206,35 +206,46 @@ export class ChecklistComponent implements OnInit {
 
     saveChecklist(): void {
         if (!this.selectedStatus) {
-            this.messageService.add({ severity: 'warn', summary: 'Warning', detail: 'กรุณาเลือกสถานะเครื่องจักร', life: 3000 });
-            return;
+          this.messageService.add({ severity: 'warn', summary: 'Warning', detail: 'กรุณาเลือกสถานะเครื่องจักร', life: 3000 });
+          return;
         }
-
+    
         const request: ChecklistRequestDTO = {
-            machineCode: this.machineCode || '',
-            machineName: this.machine?.machineName || '',
-            machineStatus: this.selectedStatus.value,
-            checklistItems: this.checklist.map(item => ({
-                questionDetail: item.question?.questionDetail || 'N/A',
-                answerChoice: item.answerChoice || ''
-            })),
-            note: this.note,
-            machineImage: this.files.length > 0 ? this.files[0].name : '',
-            userId: this.storageService.getUsername(), 
-            userName: this.storageService.getUserFullname(),
-            supervisor: this.machine?.supervisorId || '',
-            manager: this.machine?.managerId || ''
+          machineCode: this.machineCode || '',
+          machineName: this.machine?.machineName || '',
+          machineStatus: this.selectedStatus.value,
+          checklistItems: this.checklist.map(item => ({
+            questionDetail: item.question?.questionDetail || 'N/A',
+            answerChoice: item.answerChoice || ''
+          })),
+          note: this.note,
+          machineImage: this.files.length > 0 ? this.files[0].name : '',
+          userId: this.storageService.getUsername(),
+          userName: this.storageService.getUserFullname(),
+          supervisor: this.machine?.supervisorId || '',
+          manager: this.machine?.managerId || ''
         };
-
-        this.checklistRecordsService.saveChecklistRecord(request).subscribe({
-            next: (response) => {
-                this.messageService.add({ severity: 'success', summary: 'Success', detail: 'บันทึกสำเร็จ', life: 3000 });
-                this.router.navigate(['/dashboard']);
-            },
-            error: (error) => {
-                console.error('Error saving checklist:', error);
-                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'เกิดข้อผิดพลาดในการบันทึก', life: 3000 });
-            }
+    
+        const formData = new FormData();
+        formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
+        if (this.files.length > 0) {
+          formData.append('file', this.files[0]);
+        }
+    
+        this.checklistRecordsService.saveChecklistRecord(formData).subscribe({
+          next: (response) => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'บันทึกสำเร็จ', life: 3000 });
+            this.router.navigate(['/dashboard']);
+          },
+          error: (error) => {
+            console.error('Error saving checklist:', error);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'เกิดข้อผิดพลาดในการบันทึก', life: 3000 });
+          }
         });
+    }
+      
+    onFileSelected(event: any): void {
+        const files: File[] = event.files || (event.target?.files ? Array.from(event.target.files) : []);
+        this.files = files.length > 0 ? [files[0]] : []; // Take only the first file
     }
 }

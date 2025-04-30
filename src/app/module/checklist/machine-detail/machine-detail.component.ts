@@ -14,6 +14,7 @@ export class MachineDetailComponent {
   machineResponse: MachineResponse | null = null;
   qrCodeImage: string | null = null;
   error: string | null = null;
+  machineImage:string = "assets/images/default-machine.jpg";
   
   constructor(
     private route: ActivatedRoute,
@@ -28,6 +29,9 @@ export class MachineDetailComponent {
         next: (response: MachineResponse) => {
           this.machineResponse = response;
           this.qrCodeImage = 'data:image/png;base64,' + response.qrCodeImage;
+          if(response.machine.image){
+            this.machineImage =  this.machineService.getMachineImage(response.machine.image);
+          }
         },
         error: (err) => {
           this.error = 'Failed to load machine details';

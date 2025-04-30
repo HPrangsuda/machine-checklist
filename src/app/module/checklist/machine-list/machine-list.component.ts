@@ -98,6 +98,7 @@ export class MachineListComponent implements OnInit {
       next: (data: Machine[]) => {
         this.machines = data;
         this.filteredMachines = [...this.machines]; 
+        this.first = 0;
         this.paginate();
         this.loading = false;
       },
@@ -118,6 +119,7 @@ export class MachineListComponent implements OnInit {
       next: (data: Machine[]) => {
         this.machines = data;
         this.filteredMachines = [...this.machines]; 
+        this.first = 0;
         this.paginate();
         this.loading = false;
       },
@@ -170,13 +172,14 @@ export class MachineListComponent implements OnInit {
   }
 
   paginate(): void {
+    const start = this.first;
     const end = this.first + this.rows;
-    this.paginatedMachines = this.filteredMachines.slice(this.first, end);
+    this.paginatedMachines = this.filteredMachines.slice(start, end);
   }
 
   onPageChange(event: PaginatorState): void {
     this.first = event.first ?? 0;
-    this.rows = event.rows ?? 5; 
+    this.rows = event.rows ?? 5;
     this.paginate();
   }
 
@@ -230,7 +233,7 @@ export class MachineListComponent implements OnInit {
           next: () => {
             this.machines = this.machines.filter(machine => machine.id !== machineId);
             this.filteredMachines = this.filteredMachines.filter(machine => machine.id !== machineId);
-            this.paginate(); // Update paginated data after deletion
+            this.paginate();
             this.messageService.add({
               severity: 'info',
               summary: 'สำเร็จ',

@@ -49,7 +49,7 @@
     >
       <ng-template #list>
         <div class="card-list-wrap">
-          <div class="col-12 custom-col-12" *ngFor="let machine of filteredMachines">
+          <div class="col-12 custom-col-12" *ngFor="let machine of paginatedMachines">
             <div class="custom-card">
               <div class="card-right">
                 <span class="card-header text-xs" (click)="machine.id ? onMachineDetail(machine.id) : null">{{ machine.machineName }}</span>

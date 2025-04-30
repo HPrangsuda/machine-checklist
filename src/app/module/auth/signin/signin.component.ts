@@ -23,7 +23,7 @@ export class SigninComponent {
     this.authService.login(this.username, this.password).subscribe({
       next: (response: any) => {
         const loginData = response.body as LoginResponse;
-        console.log('Login data:', loginData)
+        //console.log('Login data:', loginData)
 
         if((response != null) && (loginData.code == 200)){
           localStorage.setItem("username",loginData.username);

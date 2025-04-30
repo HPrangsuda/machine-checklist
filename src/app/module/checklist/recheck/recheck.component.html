@@ -1,7 +1,7 @@
 <div class="transactions mt-2">
   <div class="list-header">
     <div class="flex align-items-center justify-content-between mb-1">
-      <h4 class="text-sm text-surface-900 m-0">ประวัติการตรวจสอบ</h4>
+      <h4 class="text-sm text-surface-900 m-0">รายการรออนุมัติ</h4>
       <button pButton type="button" class="p-button-outlined clear-button" (click)="clearFilters()"><i class="pi pi-filter-slash text-xs"></i></button>
     </div>
   </div>
@@ -14,13 +14,14 @@
   <div class="list-container" *ngIf="!loading">
     <p-dataview 
       [value]="filteredRecords" 
+      [rows]="5" 
       [paginator]="true"
       [emptyMessage]="'ไม่พบข้อมูล'" 
       styleClass="custom-dataview-h-full text-sm"
     >
       <ng-template #list>
         <div class="card-list-wrap">
-          <div class="col-12 custom-col-12" *ngFor="let record of filteredRecords">
+          <div class="col-12 custom-col-12" *ngFor="let record of paginatedRecords">
             <div class="custom-card" (click)="onRecord(record.checklistId)">
               <div class="card-left">
                 <img src="assets/images/engineerings.png">

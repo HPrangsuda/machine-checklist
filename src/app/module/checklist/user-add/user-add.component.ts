@@ -6,8 +6,8 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, AsyncValidatorFn }
 import { UserService } from '../../../services/user.service';
 import { RoleType } from '../../../models/role-type.enum';
 import { Observable, of } from 'rxjs';
-import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
-
+import { catchError, debounceTime, switchMap } from 'rxjs/operators';
+import { NotifyService } from '../../../core/service/notify.service';
 @Component({
   selector: 'app-user-add',
   standalone: false,
@@ -30,7 +30,8 @@ export class UserAddComponent implements OnInit {
     private userService: UserService,
     private location: Location,
     private messageService: MessageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private NotifyService: NotifyService
   ) {
     this.userForm = this.fb.group({
       employeeId: ['', Validators.required],
@@ -53,7 +54,6 @@ export class UserAddComponent implements OnInit {
     }));
   }
 
-  // Validator to check if username already exists
   usernameExistsValidator(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
       if (!control.value || control.value.length === 0) {
@@ -72,7 +72,6 @@ export class UserAddComponent implements OnInit {
 
   saveUser(): void {
     if (this.userForm.invalid) {
-      // ตรวจสอบข้อผิดพลาดจากการตรวจสอบความถูกต้อง
       if (this.userForm.get('username')?.hasError('usernameExists')) {
         this.messageService.add({
           severity: 'warn',
@@ -104,7 +103,6 @@ export class UserAddComponent implements OnInit {
 
     this.loading = true;
     
-    // ตรวจสอบให้แน่ใจว่า password ไม่เป็น null หรือค่าว่าง
     if (!this.userForm.value.password) {
       this.messageService.add({
         severity: 'error',
@@ -119,7 +117,7 @@ export class UserAddComponent implements OnInit {
       employeeId: this.userForm.value.employeeId,
       firstName: this.userForm.value.firstName,
       lastName: this.userForm.value.lastName, 
-      nickName: this.userForm.value.nickName || '', // เพิ่มค่าเริ่มต้นเป็นสตริงว่างถ้าไม่มีค่า
+      nickName: this.userForm.value.nickName || '', 
       department: this.userForm.value.department,
       position: this.userForm.value.position,
       status: this.userForm.value.status,
@@ -128,8 +126,6 @@ export class UserAddComponent implements OnInit {
       role: this.userForm.value.role
     };
     
-    console.log('User Data:', userData);
-    
     this.userService.addUser(userData).subscribe({
       next: () => {
         this.messageService.add({
@@ -137,12 +133,12 @@ export class UserAddComponent implements OnInit {
           summary: 'สำเร็จ',
           detail: 'บันทึกผู้ใช้งานเรียบร้อยแล้ว'
         });
+        this.NotifyService.msgSuccess("Success","success save user");
         this.loading = false;
         setTimeout(() => this.location.back(), 1000);
       },
       error: (err: any) => {
         console.error('Error saving user:', err);
-        // ตรวจสอบข้อความแสดงข้อผิดพลาดเฉพาะจากเซิร์ฟเวอร์
         if (err.error && typeof err.error === 'string') {
           if (err.error.includes('username already exists')) {
             this.messageService.add({

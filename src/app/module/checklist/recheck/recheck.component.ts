@@ -4,6 +4,7 @@ import { ChecklistRecordsService } from '../../../services/checklist-records.ser
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { StorageService } from '../../../core/service/storage.service';
+import { PaginatorState } from 'primeng/paginator';
 
 @Component({
   selector: 'app-recheck',
@@ -13,9 +14,13 @@ import { StorageService } from '../../../core/service/storage.service';
 })
 export class RecheckComponent {records: Record[] = [];
   filteredRecords: Record[] = []; 
+  paginatedRecords: Record[] = [];
   loading: boolean = true;
   searchQuery: string = '';
   authService: any;
+
+  first: number = 0;
+  rows: number = 5;
 
   constructor(
     private recordService: ChecklistRecordsService,
@@ -33,7 +38,8 @@ export class RecheckComponent {records: Record[] = [];
     this.recordService.getRecheck(this.storageService.getUsername()).subscribe({
       next: (data: Record[]) => {
         this.records = data;
-        this.filteredRecords = [...this.records];
+        this.filteredRecords = [...this.records]; 
+        this.paginate();
         this.loading = false;
       },
       error: (err: any) => {
@@ -60,11 +66,26 @@ export class RecheckComponent {records: Record[] = [];
     }
 
     this.filteredRecords = tempRecords;
+    this.first = 0;
+    this.paginate();
   }
 
   clearFilters(): void {
     this.searchQuery = '';
     this.filteredRecords = [...this.records];
+    this.first = 0;
+    this.paginate();
+  }
+
+  paginate(): void {
+    const end = this.first + this.rows;
+    this.paginatedRecords= this.filteredRecords.slice(this.first, end);
+  }
+
+  onPageChange(event: PaginatorState): void {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 5; 
+    this.paginate();
   }
 
   getRoleClass(status: string): string {
