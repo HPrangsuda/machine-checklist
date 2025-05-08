@@ -1,4 +1,3 @@
-
 <div class="flex align-items-center justify-content-end go-back text-sm">
     <p class="mb-0" (click)="onCancel()"><i class="pi pi-times"></i> ยกเลิก</p>
 </div>
@@ -19,41 +18,50 @@
             </div>
             <div *ngIf="checklist.length > 0" class="checklist-items">
                 <div class="question text-xs mb-2">
-                    <p class="text-xs font-bold white-space-normal mb-1">สถานะเครื่องจักร</p>
+                    <p class="text-xs font-bold white-space-normal mb-1">
+                        สถานะเครื่องจักร <span class="text-red-500">*</span>
+                    </p>
                 </div>
                 <p-select 
                     [options]="machineStatus" 
                     [(ngModel)]="selectedStatus" 
+                    (ngModelChange)="formSubmitted = false"
                     optionLabel="name" 
                     placeholder="กรุณาเลือก" 
-                    class="text-xs w-full md:w-56" />
-                    <div *ngFor="let item of checklist" class="checklist-item mb-3">
-                        <div class="question text-xs mb-2">
-                            <p class="text-xs font-bold white-space-normal mb-1">{{ item.question?.questionDetail || 'N/A' }}</p>
-                            <small class="white-space-normal">{{ item.question?.questionDescription || 'N/A' }}</small>
-                        </div>
-                        <div class="answer">
-                            <ng-container *ngIf="shouldUseDropdown(item); else inputField">
-                                <p-select 
-                                    [options]="choices" 
-                                    [ngModel]="item.answerChoice" 
-                                    (ngModelChange)="updateAnswerChoice(item, $event)" 
-                                    optionLabel="name" 
-                                    optionValue="value" 
-                                    placeholder="กรุณาเลือก" 
-                                    class="text-xs w-full md:w-56" />
-                            </ng-container>
-                            <ng-template #inputField>
-                                <input 
-                                    type="text" 
-                                    pInputText 
-                                    [(ngModel)]="item.answerChoice" 
-                                    class="w-full text-xs" 
-                                    placeholder="กรุณาระบุ" 
-                                    required/>
-                            </ng-template>
-                        </div>
+                    class="text-xs w-full md:w-56" 
+                    [ngClass]="{'ng-invalid ng-dirty': !selectedStatus && formSubmitted}" />
+                <div *ngFor="let item of checklist; let i = index" class="checklist-item mb-3">
+                    <div class="question text-xs mb-2">
+                        <p class="text-xs font-bold white-space-normal mb-1">
+                            {{ item.question?.questionDetail || 'N/A' }} <span class="text-red-500">*</span>
+                        </p>
+                        <small class="white-space-normal">{{ item.question?.questionDescription || 'N/A' }}</small>
                     </div>
+                    <div class="answer">
+                        <ng-container *ngIf="shouldUseDropdown(item); else inputField">
+                            <p-select 
+                                [options]="choices" 
+                                [ngModel]="item.answerChoice" 
+                                (ngModelChange)="updateAnswerChoice(item, $event)" 
+                                optionLabel="name" 
+                                optionValue="value" 
+                                placeholder="กรุณาเลือก" 
+                                class="text-xs w-full md:w-56"
+                                [ngClass]="{'ng-invalid ng-dirty': !item.answerChoice && formSubmitted}" />
+                        </ng-container>
+                        <ng-template #inputField>
+                            <input 
+                                type="text" 
+                                pInputText 
+                                [(ngModel)]="item.answerChoice" 
+                                (ngModelChange)="formSubmitted = false"
+                                class="w-full text-xs" 
+                                placeholder="กรุณาระบุ"
+                                [ngClass]="{'ng-invalid ng-dirty': !item.answerChoice && formSubmitted}"
+                                required />
+                        </ng-template>
+                    </div>
+                </div>
             </div>
             <div class="mt-1">
                 <span class="text-xs">หมายเหตุ</span>
@@ -84,7 +92,7 @@
         </p-fieldset>
         <div class="flex justify-content-center flex-wrap">
             <div class="flex align-items-center justify-content-center">
-                <p-button pButton pRipple class="p-0 mt-3" (click)="saveChecklist()" >
+                <p-button pButton pRipple class="p-0 mt-3" (click)="saveChecklist()" [disabled]="!isFormValid()">
                     <i class="pi pi-save"></i>
                     <span class="text-xs font-bold">บันทึก</span>
                 </p-button>

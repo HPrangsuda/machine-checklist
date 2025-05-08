@@ -22,6 +22,7 @@ export class ChecklistDetailComponent implements OnDestroy {
   checklistItems: ChecklistItem[] = []; // เพิ่มสำหรับตาราง
   loading: boolean = true;
   error: string | null = null;
+  machineImage:string = "assets/images/default-machine.jpg";
   private subscription?: Subscription;
 
   constructor(
@@ -38,7 +39,12 @@ export class ChecklistDetailComponent implements OnDestroy {
       this.subscription = this.recordService.getRecordById(id).subscribe({
         next: (data: Record) => {
           this.record = data;
+          
+          if(this.record.machineImage){
+            this.machineImage =  this.recordService.getMachineImage(this.record.machineImage);
+          }
           this.parseChecklist(data.machineChecklist); 
+          
           this.loading = false;
         },
         error: (err) => {

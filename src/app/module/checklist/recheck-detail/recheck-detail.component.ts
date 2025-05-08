@@ -25,6 +25,7 @@ export class RecheckDetailComponent {
   loading: boolean = true;
   error: string | null = null;
   private subscription?: Subscription;
+  machineImage:string = "assets/images/default-machine.jpg";
 
   constructor(
     private recordService: ChecklistRecordsService,
@@ -43,6 +44,9 @@ export class RecheckDetailComponent {
       this.subscription = this.recordService.getRecordById(id).subscribe({
         next: (data: Record) => {
           this.record = data;
+          if(this.record.machineImage){
+            this.machineImage =  this.recordService.getMachineImage(this.record.machineImage);
+          }
           this.parseChecklist(data.machineChecklist); 
           this.loading = false;
         },

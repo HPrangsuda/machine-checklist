@@ -5,6 +5,7 @@ import { Machine } from '../../../models/machine.model';
 import { MachineService } from '../../../services/machine.service';
 import { StorageService } from '../../../core/service/storage.service';
 import { PaginatorState } from 'primeng/paginator';
+import { saveAs } from 'file-saver';
 
 interface Frequency {
   name: string;
@@ -134,6 +135,17 @@ export class MachineListComponent implements OnInit {
     });
   }
 
+  exportToExcel(): void {
+    this.machineService.exportMachinesToExcel().subscribe({
+      next: (blob) => {
+        saveAs(blob, 'machines-QRCode.xlsx');
+      },
+      error: (error) => {
+        console.error('Error exporting to Excel:', error);
+      }
+    });
+  }
+
   applyFilters(): void {
     let tempMachines = [...this.machines];
 
@@ -258,4 +270,6 @@ export class MachineListComponent implements OnInit {
       }
     });
   }
+
+
 }

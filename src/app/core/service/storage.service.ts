@@ -27,8 +27,8 @@ export class StorageService {
     getUsername(): any {
         return this.cookieService.get("username");
     }
-    getUserFullname(): any {
-        return this.cookieService.get("fisrtname");
+    getFullName(): string {
+        return this.cookieService.get('fullname');
     }
     checkAccessKey(): boolean {
         return this.cookieService.check('authorise');

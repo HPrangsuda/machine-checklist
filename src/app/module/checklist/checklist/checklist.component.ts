@@ -51,7 +51,6 @@ interface ChecklistRequestDTO {
     styleUrls: ['./checklist.component.scss'],
     providers: [MessageService]
 })
-
 export class ChecklistComponent implements OnInit {
     machineCode: string | null = null;
     machine: any = null;
@@ -60,11 +59,11 @@ export class ChecklistComponent implements OnInit {
     machineStatus: MachineStatus[] | undefined;
     selectedStatus: MachineStatus | undefined;
     note: string = '';
-
     files: File[] = [];
     uploadedFiles: string[] = []; 
     totalSize: number = 0;
     totalSizePercent: number = 0;
+    formSubmitted: boolean = false;
 
     private uploadUrl = 'http://localhost:8080/api/upload';
 
@@ -80,8 +79,6 @@ export class ChecklistComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        console.log(this.storageService.getUsername());
-        console.log(this.storageService.getUserFullname());
         this.machineCode = this.route.snapshot.paramMap.get('machineCode');
         if (this.machineCode) {
             this.loadMachineData(this.machineCode);
@@ -105,6 +102,7 @@ export class ChecklistComponent implements OnInit {
 
     updateAnswerChoice(item: MachineChecklist, newValue: string) {
         item.answerChoice = newValue;
+        this.formSubmitted = false; 
         console.log('Updated answerChoice:', item.answerChoice);
     }
 
@@ -112,7 +110,6 @@ export class ChecklistComponent implements OnInit {
         this.machineService.getMachineByMachineCode(machineCode).subscribe({
             next: (data) => {
                 this.machine = data;
-                console.log('Machine Data:', this.machine);
             },
             error: (error) => {
                 console.error('Error loading machine data:', error);
@@ -123,16 +120,15 @@ export class ChecklistComponent implements OnInit {
     loadChecklist(machineCode: string) {
         this.checklistService.getMachineByMachineCode(machineCode).subscribe({
             next: (data) => {
-                this.checklist = (data || []).sort((a:any, b:any) => a.id - b.id).map((item:any) => {
-                    // ถ้า answerChoice ไม่มีหรือไม่ตรงกับ choices ให้เริ่มต้นเป็น ''
+                this.checklist = (data || []).sort((a: any, b: any) => a.id - b.id).map((item: any) => {
                     const validChoice = this.choices.some(choice => choice.value === item.answerChoice);
                     return {
                         ...item,
                         question: item.question || { id: 0, questionId: '', questionDetail: 'N/A', questionDescription: 'N/A' },
-                        answerChoice: validChoice ? item.answerChoice : '' // ถ้าไม่ตรง choices ให้ว่าง
+                        answerChoice: validChoice ? item.answerChoice : ''
                     };
                 });
-                console.log('Checklist Data:', this.checklist);
+                //console.log('Checklist Data:', this.checklist);
             },
             error: (error) => {
                 console.error('Error loading checklist:', error);
@@ -140,7 +136,7 @@ export class ChecklistComponent implements OnInit {
             }
         });
     }
-    
+
     shouldUseDropdown(item: MachineChecklist): boolean {
         return !item.answerChoice || this.choices.some(choice => choice.value === item.answerChoice);
     }
@@ -204,46 +200,82 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/dashboard']);
     }
 
-    saveChecklist(): void {
+    isFormValid(): boolean {
         if (!this.selectedStatus) {
-          this.messageService.add({ severity: 'warn', summary: 'Warning', detail: 'กรุณาเลือกสถานะเครื่องจักร', life: 3000 });
-          return;
+            return false;
         }
-    
+        const incompleteItems = this.checklist.some(item => !item.answerChoice || item.answerChoice.trim() === '');
+        return !incompleteItems;
+    }
+
+    saveChecklist(): void {
+        this.formSubmitted = true; 
+
+        if (!this.selectedStatus) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Warning',
+                detail: 'กรุณาเลือกสถานะเครื่องจักร',
+                life: 3000
+            });
+            return;
+        }
+
+        const incompleteItems = this.checklist.filter(item => !item.answerChoice || item.answerChoice.trim() === '');
+        if (incompleteItems.length > 0) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Warning',
+                detail: 'กรุณาตอบคำถามทุกข้อในรายการตรวจสอบ',
+                life: 3000
+            });
+            return;
+        }
+
         const request: ChecklistRequestDTO = {
-          machineCode: this.machineCode || '',
-          machineName: this.machine?.machineName || '',
-          machineStatus: this.selectedStatus.value,
-          checklistItems: this.checklist.map(item => ({
-            questionDetail: item.question?.questionDetail || 'N/A',
-            answerChoice: item.answerChoice || ''
-          })),
-          note: this.note,
-          machineImage: this.files.length > 0 ? this.files[0].name : '',
-          userId: this.storageService.getUsername(),
-          userName: this.storageService.getUserFullname(),
-          supervisor: this.machine?.supervisorId || '',
-          manager: this.machine?.managerId || ''
+            machineCode: this.machineCode || '',
+            machineName: this.machine?.machineName || '',
+            machineStatus: this.selectedStatus.value,
+            checklistItems: this.checklist.map(item => ({
+                questionDetail: item.question?.questionDetail || 'N/A',
+                answerChoice: item.answerChoice || ''
+            })),
+            note: this.note,
+            machineImage: this.files.length > 0 ? this.files[0].name : '',
+            userId: this.storageService.getUsername(),
+            userName: this.storageService.getFullName(),
+            supervisor: this.machine?.supervisorId || '',
+            manager: this.machine?.managerId || ''
         };
-    
+
         const formData = new FormData();
         formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
         if (this.files.length > 0) {
-          formData.append('file', this.files[0]);
+            formData.append('file', this.files[0]);
         }
-    
+
         this.checklistRecordsService.saveChecklistRecord(formData).subscribe({
-          next: (response) => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'บันทึกสำเร็จ', life: 3000 });
-            this.router.navigate(['/dashboard']);
-          },
-          error: (error) => {
-            console.error('Error saving checklist:', error);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'เกิดข้อผิดพลาดในการบันทึก', life: 3000 });
-          }
+            next: (response) => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: 'บันทึกสำเร็จ',
+                    life: 3000
+                });
+                this.router.navigate(['/dashboard']);
+            },
+            error: (error) => {
+                console.error('Error saving checklist:', error);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'เกิดข้อผิดพลาดในการบันทึก',
+                    life: 3000
+                });
+            }
         });
     }
-      
+
     onFileSelected(event: any): void {
         const files: File[] = event.files || (event.target?.files ? Array.from(event.target.files) : []);
         this.files = files.length > 0 ? [files[0]] : []; // Take only the first file

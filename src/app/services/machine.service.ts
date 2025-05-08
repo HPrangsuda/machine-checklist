@@ -62,7 +62,7 @@ export class MachineService {
     }));
     
     if (file) {
-      formData.append('file', file, file.name);
+      formData.append('file', file);
     }
     
     return this.http.post<Machine>(`${this.baseUrl}/create`, formData);
@@ -72,17 +72,6 @@ export class MachineService {
     return this.http.put<MachineResponse>(`${this.baseUrl}/update/${id}`, machine, { headers: this.getHeaders() });
   }
 
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
-    if (error.error instanceof ErrorEvent) {
-      // Client-side error
-      errorMessage = `ข้อผิดพลาด: ${error.error.message}`;
-    } else {
-      // Server-side error
-      errorMessage = `รหัสข้อผิดพลาด: ${error.status}\nข้อความ: ${error.message}`;
-    }
-    return throwError(() => new Error(errorMessage));
-  }
   deleteMachine(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
   }
@@ -92,5 +81,11 @@ export class MachineService {
     formData.append('file', selectedFile);
     const uploadHeaders = this.getHeaders().set('Content-Type', 'multipart/form-data');
     return this.http.post(`${this.baseUrl}/upload`, formData, { headers: uploadHeaders });
+  }
+
+  exportMachinesToExcel(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/export-excel`, {
+      responseType: 'blob'
+    });
   }
 }

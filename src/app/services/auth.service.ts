@@ -8,7 +8,7 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   username: string;
-  userFullname: string;
+  fullName: string;
   message?: string;
 }
 
@@ -34,7 +34,7 @@ export class AuthService {
     localStorage.setItem('accessToken', response.accessToken);
     localStorage.setItem('refreshToken', response.refreshToken); 
     localStorage.setItem('username', response.username);
-    localStorage.setItem('userFullname', response.userFullname);
+    localStorage.setItem('fullName', response.fullName);
   }
 
   getAccessToken(): string | null {
@@ -49,8 +49,8 @@ export class AuthService {
     return localStorage.getItem('username');
   }
 
-  getUserFullname(): string | null {
-    return localStorage.getItem('userFullname');
+  getFullName(): string | null {
+    return localStorage.getItem('fullName');
   }
 
   isAuthenticated(): boolean {
@@ -61,6 +61,7 @@ export class AuthService {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('username');
+    localStorage.removeItem('fullName');
   }
 
   refreshToken(): Observable<LoginResponse> {

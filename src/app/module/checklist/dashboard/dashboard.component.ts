@@ -26,8 +26,7 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.storageService.getUsername());
-    this.loadMachinesByResponsiblePerson();
+   this.loadMachinesByResponsiblePerson();
   }
 
   loadMachinesByResponsiblePerson(): void {

@@ -21,6 +21,5 @@ export class HeaderComponent {
 
   logout() {
     this.router.navigate(['/login']);
-    this.menu.hide(); 
   }
 }

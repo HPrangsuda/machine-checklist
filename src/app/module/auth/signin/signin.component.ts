@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService, LoginResponse } from '../../../services/auth.service';
-import { MessageService } from 'primeng/api';
 import { NotifyService } from '../../../core/service/notify.service';
 
 @Component({
@@ -23,20 +22,16 @@ export class SigninComponent {
     this.authService.login(this.username, this.password).subscribe({
       next: (response: any) => {
         const loginData = response.body as LoginResponse;
-        //console.log('Login data:', loginData)
-
-        if((response != null) && (loginData.code == 200)){
-          localStorage.setItem("username",loginData.username);
-          localStorage.setItem("authorise",loginData.accessToken);
-          localStorage.setItem("fname",loginData.userFullname);
-          this.router.navigate(["/dashboard"]);
-          this.notifyService.msgSuccess("Authentication","success login");
-        }else{
-          this.notifyService.msgWarn("Authentication","login failed. Check username and password");
+        
+        if (loginData.code === 200) {
+          this.router.navigate(['/dashboard']);
+          this.notifyService.msgSuccess('Authentication', 'Success login');
+        } else {
+          this.notifyService.msgWarn('Authentication', 'Login failed. Check username and password');
         }
       },
       error: (error) => {
-        this.notifyService.msgError("Authentication","login failed");
+        this.notifyService.msgError('Authentication', 'Login failed');
       }
     });
   }

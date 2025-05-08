@@ -13,7 +13,8 @@ export class ChecklistRecordsService {
     }
     
     private baseUrl = '/api/checklist-records'; 
-
+    private fileUrl = '/api/file'; 
+    
     constructor(
         private http: HttpClient,
         private authService: AuthService
@@ -24,6 +25,10 @@ export class ChecklistRecordsService {
         return new HttpHeaders().set('Authorization', `Bearer ${token}`);
     }
 
+    getMachineImage(filename: any):any{
+        return `${this.fileUrl}/${filename}`;
+      }
+      
     getAllRecords(): Observable<Record[]> {
         return this.http.get<Record[]>(`${this.baseUrl}`, { headers: this.getHeaders() });
     }
