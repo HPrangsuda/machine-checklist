@@ -243,7 +243,8 @@ export class ChecklistComponent implements OnInit {
             note: this.note,
             machineImage: this.files.length > 0 ? this.files[0].name : '',
             userId: this.storageService.getUsername(),
-            userName: this.storageService.getFullName(),
+            //userName: this.storageService.getFullName(),
+            userName: "",
             supervisor: this.machine?.supervisorId || '',
             manager: this.machine?.managerId || ''
         };
