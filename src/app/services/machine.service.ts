@@ -10,7 +10,7 @@ import { AuthService } from './auth.service';
 })
 export class MachineService {
   private baseUrl = '/api/machines'; 
-  private fileUrl = 'http://172.188.29.82:8080/api/file'; 
+  private fileUrl = '/api/file'; 
 
   constructor(
     private http: HttpClient,
