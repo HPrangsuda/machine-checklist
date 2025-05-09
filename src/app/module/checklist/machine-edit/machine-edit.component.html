@@ -81,7 +81,7 @@
             optionValue="name" 
             placeholder="กรุณาเลือก" 
             [maxSelectedLabels]="5" 
-            styleClass="w-full md:w-80" />
+            styleClass="w-full md:w-80" disabled/>
           <label for="frequency">ความถี่ในการตรวจ</label>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
@@ -105,7 +105,7 @@
             optionLabel="machineTypeName" 
             optionValue="machineTypeName" 
             placeholder="กรุณาเลือก" 
-            styleClass="w-full md:w-56" />
+            styleClass="w-full md:w-56" [disabled]="true"/>
           <label for="type">ประเภทเครื่อง</label>
         </p-iftalabel>
         <div class="flex justify-content-center flex-wrap">

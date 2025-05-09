@@ -71,7 +71,7 @@ export class MachineListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadMachines();
+    this.loadMachinesByResponsibleAll();
     this.loadData();
   }
  

@@ -79,6 +79,7 @@ export class ChecklistComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        console.log("" +this.storageService.getFullName());
         this.machineCode = this.route.snapshot.paramMap.get('machineCode');
         if (this.machineCode) {
             this.loadMachineData(this.machineCode);

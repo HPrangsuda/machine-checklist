@@ -17,6 +17,7 @@ export interface LoginResponse {
 })
 export class AuthService {
   private baseUrl = '/api/auth'; 
+  cookieService: any;
 
   constructor(private http: HttpClient) {}
 
@@ -34,7 +35,6 @@ export class AuthService {
     localStorage.setItem('accessToken', response.accessToken);
     localStorage.setItem('refreshToken', response.refreshToken); 
     localStorage.setItem('username', response.username);
-    localStorage.setItem('fullName', response.fullName);
   }
 
   getAccessToken(): string | null {
@@ -49,8 +49,9 @@ export class AuthService {
     return localStorage.getItem('username');
   }
 
-  getFullName(): string | null {
-    return localStorage.getItem('fullName');
+  getFullName(): string {
+    const encodedFullName = this.cookieService.get('fullname');
+    return encodedFullName ? decodeURIComponent(encodedFullName) : '';
   }
 
   isAuthenticated(): boolean {
