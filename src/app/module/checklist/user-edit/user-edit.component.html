@@ -1,0 +1,168 @@
+<div class="go-back text-sm">
+  <p (click)="goBack()"><i class="icon icon-undo-2"></i> ย้อนกลับ</p>
+</div>
+
+<p-card>
+  <div *ngIf="error" class="p-error text-xs mb-2">{{ error }}</div>
+  
+  <form [formGroup]="userForm" *ngIf="user">
+    <!-- Employee ID -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="employeeId"
+        formControlName="employeeId"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('employeeId')?.touched && userForm.get('employeeId')?.invalid}"
+      />
+      <label for="employeeId">Employee ID</label>
+      <small *ngIf="userForm.get('employeeId')?.touched && userForm.get('employeeId')?.invalid" class="p-error">Please enter employee ID.</small>
+    </p-iftalabel>
+
+    <!-- First Name -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="firstName"
+        formControlName="firstName"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid}"
+      />
+      <label for="firstName">First Name</label>
+      <small *ngIf="userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid" class="p-error">Please enter first name.</small>
+    </p-iftalabel>
+
+    <!-- Last Name -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="lastName"
+        formControlName="lastName"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid}"
+      />
+      <label for="lastName">Last Name</label>
+      <small *ngIf="userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid" class="p-error">Please enter last name.</small>
+    </p-iftalabel>
+
+    <!-- Nick Name -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="nickName"
+        formControlName="nickName"
+        autocomplete="off"
+        class="w-full text-xs"
+      />
+      <label for="nickName">Nick Name</label>
+    </p-iftalabel>
+
+    <!-- Department -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="department"
+        formControlName="department"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('department')?.touched && userForm.get('department')?.invalid}"
+      />
+      <label for="department">Department</label>
+      <small *ngIf="userForm.get('department')?.touched && userForm.get('department')?.invalid" class="p-error">Please enter department.</small>
+    </p-iftalabel>
+
+    <!-- Position -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="position"
+        formControlName="position"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('position')?.touched && userForm.get('position')?.invalid}"
+      />
+      <label for="position">Position</label>
+      <small *ngIf="userForm.get('position')?.touched && userForm.get('position')?.invalid" class="p-error">Please enter position.</small>
+    </p-iftalabel>
+
+    <!-- Status -->
+    <p-iftalabel class="text-xs mb-2">
+      <p-dropdown
+        id="status"
+        formControlName="status"
+        [options]="statusOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select Status"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('status')?.touched && userForm.get('status')?.invalid}"
+      ></p-dropdown>
+      <label for="status">Status</label>
+      <small *ngIf="userForm.get('status')?.touched && userForm.get('status')?.invalid" class="p-error">Please select status.</small>
+    </p-iftalabel>
+
+    <!-- Username -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="username"
+        formControlName="username"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('username')?.touched && userForm.get('username')?.invalid}"
+      />
+      <label for="username">Username</label>
+      <small *ngIf="userForm.get('username')?.touched && userForm.get('username')?.invalid" class="p-error">Please enter username.</small>
+    </p-iftalabel>
+
+    <!-- Password -->
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="password"
+        type="password"
+        formControlName="password"
+        autocomplete="off"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('password')?.touched && userForm.get('password')?.invalid}"
+      />
+      <label for="password">Password</label>
+      <small *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid" class="p-error">Please enter password.</small>
+    </p-iftalabel>
+
+    <!-- Role -->
+    <p-iftalabel class="text-xs mb-2">
+      <p-dropdown
+        id="role"
+        formControlName="role"
+        [options]="roleOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select a role"
+        [autoDisplayFirst]="false"
+        class="w-full text-xs"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('role')?.touched && userForm.get('role')?.invalid}"
+      ></p-dropdown>
+      <label for="role">Role</label>
+      <small *ngIf="userForm.get('role')?.touched && userForm.get('role')?.invalid" class="p-error">Please select role.</small>
+    </p-iftalabel>
+  </form>
+</p-card>
+
+<div class="flex justify-content-center flex-wrap">
+  <div class="flex align-items-center justify-content-center">
+    <p-button
+      pButton
+      pRipple
+      class="p-0 mt-3"
+      [disabled]="loading || userForm.invalid || !userForm.get('password')?.value"
+      (click)="saveUser()"
+    >
+      <i class="icon icon-save"></i>
+      <span class="text-xs font-bold">{{ loading ? 'กำลังบันทึก...' : 'บันทึก' }}</span>
+    </p-button>
+  </div>
+</div>

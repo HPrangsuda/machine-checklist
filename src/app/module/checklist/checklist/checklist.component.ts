@@ -129,7 +129,6 @@ export class ChecklistComponent implements OnInit {
                         answerChoice: validChoice ? item.answerChoice : ''
                     };
                 });
-                //console.log('Checklist Data:', this.checklist);
             },
             error: (error) => {
                 console.error('Error loading checklist:', error);

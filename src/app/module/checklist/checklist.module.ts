@@ -18,6 +18,8 @@ import { ChecklistDetailComponent } from './checklist-detail/checklist-detail.co
 import { MachineEditComponent } from './machine-edit/machine-edit.component';
 import { MachineAddComponent } from './machine-add/machine-add.component';
 import { UserAddComponent } from './user-add/user-add.component';
+import { UserListComponent } from './user-list/user-list.component';
+import { UserEditComponent } from './user-edit/user-edit.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { UserAddComponent } from './user-add/user-add.component';
     ChecklistDetailComponent,
     MachineEditComponent,
     MachineAddComponent,
-    UserAddComponent
+    UserAddComponent,
+    UserListComponent,
+    UserEditComponent
   ],
   imports: [
     CommonModule,

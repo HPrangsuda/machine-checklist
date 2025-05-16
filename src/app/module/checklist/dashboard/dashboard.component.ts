@@ -26,7 +26,7 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-   this.loadMachinesByResponsiblePerson();
+    this.loadMachinesByResponsiblePerson();
   }
 
   loadMachinesByResponsiblePerson(): void {

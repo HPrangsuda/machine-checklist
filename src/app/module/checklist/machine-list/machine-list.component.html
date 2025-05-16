@@ -6,11 +6,21 @@
   <div class="list-header">
     <div class="flex align-items-center justify-content-between mb-1">
       <h4 class="text-sm text-surface-900 m-0">รายการเครื่องจักรทั้งหมด</h4>
-      <div>
-        <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="exportToExcel()"><i class="pi pi-file-export text-sm"></i></button>
-        <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="onUserAdd()"><i class="pi pi-user text-sm"></i></button>
-        <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="onAdd()"><i class="pi pi-plus text-sm"></i></button>
-        <button pButton type="button" class="p-button-outlined clear-button p-1" (click)="clearFilters()"><i class="pi pi-filter-slash text-sm"></i></button>    
+      <div class="button-container">
+        <div *ngIf="isAdmin">
+          <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="exportToExcel()">
+            <i class="pi pi-file-export text-sm"></i>
+          </button>
+          <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="onUserList()">
+            <i class="pi pi-user text-sm"></i>
+          </button>
+          <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="onAdd()">
+            <i class="pi pi-plus text-sm"></i>
+          </button>
+        </div>
+        <button pButton type="button" class="p-button-outlined clear-button p-1" (click)="clearFilters()">
+          <i class="pi pi-filter-slash text-sm"></i>
+        </button>
       </div>
     </div>
   </div>
@@ -65,7 +75,7 @@
                   <span class="card-subtitle">{{ machine.responsiblePersonName }}</span>
                   <div class="mc-list">
                     <p-button icon="icon icon-pencil" text severity="secondary" (click)="onEdit(machine.id)"/>
-                    <p-button icon="icon icon-trash-2" text severity="secondary" (click)="onDelete(machine.id)"/>
+                    <p-button [hidden]="!isAdmin" icon="icon icon-trash-2" text severity="secondary" (click)="onDelete(machine.id)"/>
                   </div>
                 </div>                      
               </div>

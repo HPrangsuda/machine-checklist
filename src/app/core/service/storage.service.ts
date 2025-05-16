@@ -30,6 +30,9 @@ export class StorageService {
     getFullName(): string {
         return this.cookieService.get('fullname');
     }
+    getRole(): string {
+        return this.cookieService.get('role');
+    }
     checkAccessKey(): boolean {
         return this.cookieService.check('authorise');
     }

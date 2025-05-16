@@ -19,8 +19,8 @@ export class UserAddComponent implements OnInit {
   loading: boolean = false;
   
   statusOptions = [
-    { label: 'Active', value: 'ACTIVE' },
-    { label: 'Inactive', value: 'INACTIVE' }
+    { label: 'ACTIVE', value: 'ACTIVE' },
+    { label: 'INACTIVE', value: 'INACTIVE' }
   ];
 
   roleOptions: { label: string; value: RoleType }[] = [];

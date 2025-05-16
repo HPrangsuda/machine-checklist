@@ -19,8 +19,24 @@ export class UserService {
         return new HttpHeaders().set('Authorization', `Bearer ${token}`);
     }
 
+    getUsers(): Observable<User[]> {
+        return this.http.get<User[]>(this.baseUrl, { headers: this.getHeaders() });
+    }
+
+    getUserById(id: number): Observable<User> {
+        return this.http.get<User>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
+    }
+      
     addUser(user: User): Observable<User> {
         return this.http.post<User>(`${this.baseUrl}`, user, { headers: this.getHeaders() });
+    }
+
+    updateUser(id: number, user: any): Observable<User> {
+        return this.http.put<User>(`${this.baseUrl}/update/${id}`, user, { headers: this.getHeaders() });
+    }
+    
+    deleteUser(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
     }
 
     checkUsernameExists(username: string): Observable<boolean> {

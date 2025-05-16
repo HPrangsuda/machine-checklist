@@ -1,0 +1,61 @@
+<p-confirmDialog 
+  [style]="{width: '75%'}" 
+  styleClass="custom-confirm-dialog">
+</p-confirmDialog>
+<div class="transactions mt-2">
+  <div class="list-header">
+    <div class="flex align-items-center justify-content-between mb-1">
+      <h4 class="text-sm text-surface-900 m-0">User List</h4>
+      <div class="button-container">
+        <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="onAdd()">
+          <i class="pi pi-plus text-sm"></i>
+        </button>
+        <button pButton type="button" class="p-button-outlined clear-button p-1" (click)="clearFilters()">
+          <i class="pi pi-filter-slash text-sm"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="loading">loading...</div>
+  <div class="filter-row text-xs mb-2">
+    <div class="p-field search-field">
+      <input type="text" pInputText [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()" placeholder="Search" class="text-xs w-full mb-1">
+    </div>
+  </div>
+  <div class="list-container" *ngIf="!loading">
+    <p-dataview 
+      [value]="filteredUsers" 
+      [rows]="5" 
+      [paginator]="true"
+      [emptyMessage]="'ไม่พบข้อมูล'" 
+      styleClass="custom-dataview-h-full text-sm"
+    >
+      <ng-template #list>
+        <div class="card-list-wrap">
+          <div class="col-12 custom-col-12" *ngFor="let user of paginatedUser">
+            <div class="custom-card">
+              <div class="card-right">
+                <span class="card-header text-xs">{{ user.firstName + " " + user.lastName + " (" + user.employeeId + ")" + " - " + user.department}}</span>
+                <div class="custom-card-subtitle">
+                  <div class="div-p-tag gap-1">
+                    <p-tag [ngClass]="getRoleClass(user.role)" [value]="user.role"></p-tag>
+                  </div>
+                  <div class="mc-list">
+                    <p-button icon="icon icon-pencil" text severity="secondary" (click)="onEdit(user.id ?? 0)"/>
+                    <p-button icon="icon icon-trash-2" text severity="secondary" (click)="onDelete(user.id ?? 0)"/>
+                  </div>
+                </div>                      
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="empty">
+        <div class="text-center p-3">
+          <i class="pi pi-exclamation-circle text-2xl text-gray-500"></i>
+          <p class="mt-2">ไม่พบข้อมูล</p>
+        </div>
+      </ng-template>        
+    </p-dataview>
+  </div>
+</div>

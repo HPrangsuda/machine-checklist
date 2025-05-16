@@ -48,6 +48,7 @@ export class MachineListComponent implements OnInit {
   selectedFrequency: Frequency | null = null;
   machineStatus: MachineStatus[] = [];
   selectedStatus: MachineStatus | null = null;
+  isAdmin: boolean | undefined;
 
   machineStatusOptions: string[] = [
     'ใช้งานได้',
@@ -61,7 +62,7 @@ export class MachineListComponent implements OnInit {
     'รอผู้จัดการฝ่ายตรวจสอบ',
     'ดำเนินการเสร็จสิ้น'
   ];
-
+  
   constructor(
     private machineService: MachineService,
     private messageService: MessageService,
@@ -71,7 +72,13 @@ export class MachineListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadMachinesByResponsibleAll();
+    this.isAdmin = this.storageService.getRole() === 'ADMIN';
+    if(this.storageService.getRole() === 'ADMIN') {
+      this.loadMachines();
+    }else{
+      this.loadMachinesByResponsibleAll();
+    }
+
     this.loadData();
   }
  
@@ -212,8 +219,8 @@ export class MachineListComponent implements OnInit {
     this.router.navigate(['/machine-detail', machineId]);
   }
 
-  onUserAdd(): void {
-    this.router.navigate(['/user-add']);
+  onUserList(): void {
+    this.router.navigate(['/user-list']);
   }
   
   onAdd(): void {
@@ -270,6 +277,4 @@ export class MachineListComponent implements OnInit {
       }
     });
   }
-
-
 }

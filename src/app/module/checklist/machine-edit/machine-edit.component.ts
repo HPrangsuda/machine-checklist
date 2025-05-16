@@ -40,6 +40,9 @@ export class MachineEditComponent implements OnInit {
   type: MachineType[] = [];
   selectedType: string | null = null;
 
+  selectedFile: File | null = null;
+  previewImageSrc: string | ArrayBuffer | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private machineService: MachineService,
@@ -169,40 +172,73 @@ export class MachineEditComponent implements OnInit {
     }
   }
 
+  onFileSelected(event: any): void {
+    const file: File = event.files[0]; // Use PrimeNG's event.files
+    if (file) {
+      this.selectedFile = file;
+
+      // Create image preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewImageSrc = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  clearImage(): void {
+    this.selectedFile = null;
+    this.previewImageSrc = null;
+  }
+
   saveMachine(): void {
     if (!this.machineResponse?.machine) {
       this.error = 'ไม่มีข้อมูลเครื่องจักรสำหรับบันทึก';
       return;
     }
-  
-    const updatedMachine = {
-      ...this.machineResponse.machine,
-      responsiblePersonId: this.selectedEmployee || null,
-      responsiblePersonName: this.getEmployeeFullName(this.selectedEmployee),
-      supervisorId: this.selectedSupervisor || null,
-      supervisorName: this.getEmployeeFullName(this.selectedSupervisor),
-      managerId: this.selectedManager || null,
-      managerName: this.getEmployeeFullName(this.selectedManager),
-      frequency: this.selectedFrequency && this.selectedFrequency.length > 0 ? this.selectedFrequency.join(',') : null, 
-      machineStatus: this.selectedStatus || null,
-      machineTypeName: this.selectedType || null
-    };
-  
+
+    const formData = new FormData();
+
+    // Append machine details
+    formData.append('id', this.machineResponse.machine.id.toString());
+    formData.append('machineName', this.machineResponse.machine.machineName || '');
+    formData.append('machineModel', this.machineResponse.machine.machineModel || '');
+    formData.append('machineCode', this.machineResponse.machine.machineCode || '');
+    formData.append('machineNumber', this.machineResponse.machine.machineNumber || '');
+    formData.append('responsiblePersonId', this.selectedEmployee?.toString() || '');
+    formData.append('responsiblePersonName', this.getEmployeeFullName(this.selectedEmployee) || '');
+    formData.append('supervisorId', this.selectedSupervisor?.toString() || '');
+    formData.append('supervisorName', this.getEmployeeFullName(this.selectedSupervisor) || '');
+    formData.append('managerId', this.selectedManager?.toString() || '');
+    formData.append('managerName', this.getEmployeeFullName(this.selectedManager) || '');
+    formData.append('frequency', this.selectedFrequency && this.selectedFrequency.length > 0 ? this.selectedFrequency.join(',') : '');
+    formData.append('machineStatus', this.selectedStatus || '');
+    formData.append('machineTypeName', this.selectedType || '');
+
+    // Append image only if a new one is selected
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile, this.selectedFile.name);
+    } else if (this.machineResponse.machine.image) {
+      // Optionally send existing image URL to ensure backend retains it
+      formData.append('existingImage', this.machineResponse.machine.image);
+    }
+
     this.loading = true;
-    this.machineService.updateMachine(this.machineResponse.machine.id, updatedMachine)
-      .subscribe({
-        next: (response: MachineResponse) => {
-          this.machineResponse = response;
-          this.loading = false;
-          this.notifyService.msgSuccess("สำเร็จ","อัปเดตข้อมูลเครื่องจักรเรียบร้อยแล้ว");
-          console.log('Update successful:', response);
-        },
-        error: (err) => {
-          this.notifyService.msgWarn("ผิดพลาด","ไม่สามารถอัปเดตข้อมูลเครื่องจักรเรียบร้อยแล้ว");
-          console.error('Update error:', err);
-          this.loading = false;
-        }
-      });
+    this.machineService.updateMachine(this.machineResponse.machine.id, formData).subscribe({
+      next: (response: MachineResponse) => {
+        this.machineResponse = response;
+        this.previewImageSrc = null; // Clear preview after successful save
+        this.selectedFile = null; // Clear selected file
+        this.loading = false;
+        this.notifyService.msgSuccess('สำเร็จ', 'อัปเดตข้อมูลเครื่องจักรเรียบร้อยแล้ว');
+        console.log('Update successful:', response);
+      },
+      error: (err) => {
+        this.notifyService.msgWarn('ผิดพลาด', 'ไม่สามารถอัปเดตข้อมูลเครื่องจักรได้');
+        console.error('Update error:', err);
+        this.loading = false;
+      }
+    });
   }
 
   private getEmployeeFullName(employeeId: number | null): string | null {
@@ -210,7 +246,7 @@ export class MachineEditComponent implements OnInit {
     const employee = this.employeeList.find(emp => emp.id === employeeId);
     return employee ? `${employee.firstName} ${employee.lastName}` : null;
   }
-  
+
   goBack(): void {
     this.location.back();
   }
