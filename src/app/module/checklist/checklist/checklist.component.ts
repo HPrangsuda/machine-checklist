@@ -79,7 +79,6 @@ export class ChecklistComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        console.log("" +this.storageService.getFullName());
         this.machineCode = this.route.snapshot.paramMap.get('machineCode');
         if (this.machineCode) {
             this.loadMachineData(this.machineCode);
@@ -243,8 +242,7 @@ export class ChecklistComponent implements OnInit {
             note: this.note,
             machineImage: this.files.length > 0 ? this.files[0].name : '',
             userId: this.storageService.getUsername(),
-            //userName: this.storageService.getFullName(),
-            userName: "",
+            userName: this.storageService.getFullName().replace("+"," "),
             supervisor: this.machine?.supervisorId || '',
             manager: this.machine?.managerId || ''
         };

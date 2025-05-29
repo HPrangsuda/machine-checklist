@@ -36,26 +36,43 @@
       <div class="flex justify-content-center flex-wrap">
         <div class="flex align-items-center justify-content-center">
           <img 
-          [src]="machineImage" 
-          style="width: 150px;" 
-          [alt]="record.machineName + ' image'"
+            [src]="machineImage" 
+            style="width: 150px;" 
+            [alt]="record.machineName + ' image'"
           />
         </div>    
       </div>
+      <div *ngIf="record?.reasonNotChecked && record.reasonNotChecked !== ''">
+        <p-divider type="dotted" class="text-xs">
+          <b>สาเหตุที่ไม่ได้ตรวจสอบ</b>
+        </p-divider>
+        <div class="question text-xs mb-2">
+          <div>
+            <p-select 
+              [options]="Reason"
+              [(ngModel)]="selectedReason"
+              (ngModelChange)="onReasonChange($event)"
+              name="reasonNotChecked"
+              id="reasonNotChecked"
+              optionLabel="name"
+              optionValue="name"
+              placeholder="กรุณาระบุสาเหตุ"
+              styleClass="w-full md:w-56" />
+            <small *ngIf="submitted && !selectedReason" class="p-error">กรุณาระบุสาเหตุ</small>
+          </div>
+        </div>
+      </div>
     </p-fieldset>
   </div>
-  
   <div class="flex justify-content-center flex-wrap">
     <div class="flex align-items-center justify-content-center">
-        <p-button pButton pRipple class="p-0 mt-3" (onClick)="approveChecklist(record.checklistId)">
-            <i class="pi pi-check"></i>
-            <span class="text-xs font-bold">อนุมัติ</span>
-        </p-button>
+      <p-button pButton pRipple class="p-0 mt-3" (onClick)="approveChecklist(record.checklistId)">
+        <i class="pi pi-check"></i>
+        <span class="text-xs font-bold">อนุมัติ</span>
+      </p-button>
     </div>    
   </div>
 </div>
-
-<!-- แสดงเมื่อไม่มีข้อมูล -->
 <div *ngIf="!loading && !error && !record" class="text-center">
   ไม่พบข้อมูลเครื่องจักร
 </div>

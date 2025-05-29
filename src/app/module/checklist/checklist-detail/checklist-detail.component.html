@@ -42,11 +42,18 @@
           />
         </div>    
       </div>
+      <div *ngIf="record?.reasonNotChecked && record.reasonNotChecked !== ''">
+        <p-divider type="dotted" class="text-xs">
+          <b>สาเหตุที่ไม่ได้ตรวจสอบ</b>
+        </p-divider>
+        <div class="question text-xs mb-2">
+          <input pInputText [ngModel]="record.reasonNotChecked" class="text-xs w-full md:w-56" disabled />
+        </div>
+      </div>
     </p-fieldset>
   </div>
 </div>
 
-<!-- แสดงเมื่อไม่มีข้อมูล -->
 <div *ngIf="!loading && !error && !record" class="text-center">
   ไม่พบข้อมูลเครื่องจักร
 </div>

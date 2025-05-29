@@ -53,4 +53,8 @@ export class ChecklistRecordsService {
     saveChecklistRecord(record: any): Observable<any> {
         return this.http.post(this.baseUrl, record);
     }
+
+    saveRecheck(checklistId: number, payload: any): Observable<any> {
+        return this.http.put(`${this.baseUrl}/approve/${checklistId}`, payload);
+    }
 }

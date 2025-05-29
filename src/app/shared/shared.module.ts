@@ -30,6 +30,9 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PaginatorModule } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
+import { DividerModule } from 'primeng/divider';
+import { MeterGroupModule } from 'primeng/metergroup';
+
 @NgModule({
   declarations: [],
   imports: [
@@ -67,7 +70,9 @@ import { SkeletonModule } from 'primeng/skeleton';
     ConfirmDialog,
     ProgressSpinnerModule,
     PaginatorModule,
-    SkeletonModule
+    SkeletonModule,
+    DividerModule,
+    MeterGroupModule
   ],
   providers: [ConfirmationService, MessageService]
 })

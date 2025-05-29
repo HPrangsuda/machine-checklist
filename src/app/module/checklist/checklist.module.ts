@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { QuestionComponent } from './question/question.component';
-import { AnswerComponent } from './answer/answer.component';
 import { MachineListComponent } from './machine-list/machine-list.component';
 import { ChecklistComponent } from './checklist/checklist.component';
 import { MachineTypeComponent } from './machine-type/machine-type.component';
@@ -25,7 +24,6 @@ import { UserEditComponent } from './user-edit/user-edit.component';
   declarations: [
     DashboardComponent,
     QuestionComponent,
-    AnswerComponent,
     MachineListComponent,
     ChecklistComponent,
     MachineTypeComponent,

@@ -1,16 +1,19 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { ChecklistRecordsService } from '../../../services/checklist-records.service';
 import { Record } from '../../../models/checklist-record.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { NotifyService } from '../../../core/service/notify.service';
 
 interface ChecklistItem {
   questionDetail: string;
   answerChoice: string;
+}
+
+interface Reason {
+  name: string;
 }
 
 @Component({
@@ -19,13 +22,21 @@ interface ChecklistItem {
   templateUrl: './recheck-detail.component.html',
   styleUrl: './recheck-detail.component.scss'
 })
-export class RecheckDetailComponent {
+export class RecheckDetailComponent implements OnInit, OnDestroy {
   record: Record | null = null;
   checklistItems: ChecklistItem[] = []; 
   loading: boolean = true;
   error: string | null = null;
   private subscription?: Subscription;
-  machineImage:string = "assets/images/default-machine.jpg";
+  machineImage: string = "assets/images/default-machine.jpg";
+  Reason: Reason[] = [
+    { name: 'ลางาน' },
+    { name: 'เข้ากะ' },
+    { name: 'ทำงานนอกสถานที่' },
+    { name: 'ผู้รับผิดชอบไม่ดำเนินการ' }
+  ];
+  selectedReason: string | null = null;
+  submitted: boolean = false;
 
   constructor(
     private recordService: ChecklistRecordsService,
@@ -33,49 +44,42 @@ export class RecheckDetailComponent {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    private http: HttpClient,
     private notifyService: NotifyService
   ) {}
 
   ngOnInit(): void {
     this.loading = true;
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (!isNaN(id)) {
-      this.subscription = this.recordService.getRecordById(id).subscribe({
-        next: (data: Record) => {
-          this.record = data;
-          if(this.record.machineImage){
-            this.machineImage =  this.recordService.getMachineImage(this.record.machineImage);
-          }
-          this.parseChecklist(data.machineChecklist); 
-          this.loading = false;
-        },
-        error: (err) => {
-          this.error = 'ไม่สามารถโหลดข้อมูลเครื่องจักรได้';
-          this.loading = false;
-          console.error('ข้อผิดพลาด:', err);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'ข้อผิดพลาด',
-            detail: 'ไม่สามารถโหลดข้อมูลเครื่องจักรได้'
-          });
-        }
-      });
-    } else {
-      this.error = 'รหัสไม่ถูกต้อง';
-      this.loading = false;
-      this.messageService.add({
-        severity: 'error',
-        summary: 'ข้อผิดพลาด',
-        detail: 'รหัสเครื่องจักรไม่ถูกต้อง'
-      });
+
+    if (isNaN(id)) {
+      this.handleError('รหัสเครื่องจักรไม่ถูกต้อง');
+      return;
     }
+
+    this.subscription = this.recordService.getRecordById(id).subscribe({
+      next: (data: Record) => {
+        this.record = data;
+        this.machineImage = data.machineImage 
+          ? this.recordService.getMachineImage(data.machineImage) 
+          : this.machineImage;
+        
+        this.parseChecklist(data.machineChecklist);
+
+        if (data.reasonNotChecked && data.reasonNotChecked !== '') {
+          this.selectedReason = this.Reason.find(r => r.name === data.reasonNotChecked.trim())?.name || null;
+        }
+
+        this.loading = false;
+      },
+      error: (err) => {
+        this.handleError('ไม่สามารถโหลดข้อมูลเครื่องจักรได้', err);
+      }
+    });
   }
 
   private parseChecklist(checklist: string | undefined | null): void {
-    this.checklistItems = []; // รีเซ็ต checklistItems ก่อน
+    this.checklistItems = [];
     if (!checklist) {
-      console.warn('machineChecklist is undefined or null');
       this.messageService.add({
         severity: 'warn',
         summary: 'คำเตือน',
@@ -88,7 +92,6 @@ export class RecheckDetailComponent {
       this.checklistItems = JSON.parse(checklist) as ChecklistItem[];
     } catch (e) {
       console.error('Error parsing machineChecklist:', e);
-      this.checklistItems = [];
       this.messageService.add({
         severity: 'error',
         summary: 'ข้อผิดพลาด',
@@ -98,19 +101,35 @@ export class RecheckDetailComponent {
   }
 
   approveChecklist(checklistId: number) {
-    this.http.put(`/api/checklist-records/approve/${checklistId}`, {})
-      .subscribe({
-        next: (response: any) => {
-          console.log('Checklist approved:', response);
-          this.router.navigate(['/recheck']);
-          this.notifyService.msgSuccess("Approve","success approve");
-        },
-        error: (error: any) => {
-          this.notifyService.msgError("Approve","approve failed");
-        }
+    this.submitted = true;
+
+    if (this.record?.reasonNotChecked && !this.selectedReason) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'ข้อผิดพลาด',
+        detail: 'กรุณาเลือกสาเหตุก่อนอนุมัติ'
       });
+      return;
+    }
+
+    const payload = this.selectedReason ? { reasonNotChecked: this.selectedReason } : {};
+    
+    this.recordService.saveRecheck(checklistId, payload).subscribe({
+      next: (response: any) => {
+        this.notifyService.msgSuccess("Approve", "success approve");
+        this.router.navigate(['/recheck']);
+      },
+      error: (error: any) => {
+        this.notifyService.msgError("Approve", error.error?.message || "approve failed");
+      }
+    });
   }
-  
+
+  onReasonChange(event: any) {
+    this.selectedReason = event;
+    console.log('Reason changed:', this.selectedReason);
+  }
+
   getRoleClass(status: string): string {
     switch (status.toLowerCase()) {
       case 'ไม่พร้อมใช้งาน (ปรับเปลี่ยนอุปกรณ์)': return 'tag-warn';
@@ -127,6 +146,17 @@ export class RecheckDetailComponent {
 
   goBack(): void {
     this.location.back();
+  }
+
+  private handleError(message: string, err?: any): void {
+    this.error = message;
+    this.loading = false;
+    console.error('ข้อผิดพลาด:', err);
+    this.messageService.add({
+      severity: 'error',
+      summary: 'ข้อผิดพลาด',
+      detail: message
+    });
   }
 
   ngOnDestroy(): void {
