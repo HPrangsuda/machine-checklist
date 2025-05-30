@@ -35,7 +35,7 @@ interface ChecklistRequestDTO {
     machineCode: string;
     machineName: string;
     machineStatus: string;
-    checklistItems: { questionDetail: string; answerChoice: string }[];
+    checklistItems: { id: number; questionDetail: string; answerChoice: string; checkStatus: boolean }[];
     note: string;
     machineImage: string;
     userId: string;
@@ -257,7 +257,7 @@ export class ChecklistComponent implements OnInit {
 
         this.checklist = this.checklist.map(item => ({
             ...item,
-            checkStatus: 'true' 
+            checkStatus: 'true'
         }));
 
         const request: ChecklistRequestDTO = {
@@ -265,8 +265,10 @@ export class ChecklistComponent implements OnInit {
             machineName: this.machine?.machineName || '',
             machineStatus: this.selectedStatus.value,
             checklistItems: this.checklist.map(item => ({
+                id: item.id, 
                 questionDetail: item.question?.questionDetail || 'N/A',
-                answerChoice: item.answerChoice || ''
+                answerChoice: item.answerChoice || '',
+                checkStatus: item.checkStatus === 'true' 
             })),
             note: this.note,
             machineImage: this.files.length > 0 ? this.files[0].name : '',
