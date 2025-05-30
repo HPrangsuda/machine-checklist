@@ -31,7 +31,6 @@ export class MachineListComponent implements OnInit {
   role: string | undefined;
   machines: Machine[] = [];
   filteredMachines: Machine[] = [];
-  paginatedMachines: Machine[] = [];
   loading: boolean = true;
   searchQuery: string = '';
   selectedMachineStatus: string = '';
@@ -73,18 +72,16 @@ export class MachineListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAdmin = this.storageService.getRole() === 'ADMIN';
-    if(this.storageService.getRole() === 'ADMIN') {
+    if(this.isAdmin) {
       this.loadMachines();
-    }else{
+    } else {
       this.loadMachinesByResponsibleAll();
     }
-
     this.loadData();
   }
  
   loadData(): void {
     this.loading = true;
-
     this.frequency = [
       { name: 'ทุกวัน' },
       { name: '1 ครั้ง/สัปดาห์' },
@@ -92,7 +89,6 @@ export class MachineListComponent implements OnInit {
       { name: '1 ครั้ง/3 เดือน' },
       { name: '1 ครั้ง/6 เดือน' }
     ];
-
     this.machineStatus = [
       { name: 'ใช้งานได้' },
       { name: 'ไม่ได้ใช้งาน' },
@@ -107,7 +103,6 @@ export class MachineListComponent implements OnInit {
         this.machines = data;
         this.filteredMachines = [...this.machines]; 
         this.first = 0;
-        this.paginate();
         this.loading = false;
       },
       error: (err: any) => {
@@ -128,7 +123,6 @@ export class MachineListComponent implements OnInit {
         this.machines = data;
         this.filteredMachines = [...this.machines]; 
         this.first = 0;
-        this.paginate();
         this.loading = false;
       },
       error: (err: any) => {
@@ -177,8 +171,7 @@ export class MachineListComponent implements OnInit {
     }
 
     this.filteredMachines = tempMachines;
-    this.first = 0;
-    this.paginate();
+    this.first = 0; 
   }
 
   clearFilters(): void {
@@ -187,19 +180,11 @@ export class MachineListComponent implements OnInit {
     this.selectedCheckStatus = '';
     this.filteredMachines = [...this.machines];
     this.first = 0;
-    this.paginate();
-  }
-
-  paginate(): void {
-    const start = this.first;
-    const end = this.first + this.rows;
-    this.paginatedMachines = this.filteredMachines.slice(start, end);
   }
 
   onPageChange(event: PaginatorState): void {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? 5;
-    this.paginate();
   }
 
   getRoleClass(status: string): string {
@@ -252,7 +237,7 @@ export class MachineListComponent implements OnInit {
           next: () => {
             this.machines = this.machines.filter(machine => machine.id !== machineId);
             this.filteredMachines = this.filteredMachines.filter(machine => machine.id !== machineId);
-            this.paginate();
+            this.first = 0;
             this.messageService.add({
               severity: 'info',
               summary: 'สำเร็จ',

@@ -13,11 +13,9 @@ import { PaginatorState } from 'primeng/paginator';
   styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent implements OnInit {
-
   role: string | undefined;
   user: User[] = [];
   filteredUsers: User[] = [];
-  paginatedUser: User[] = [];
   loading: boolean = true;
   searchQuery: string = '';
   
@@ -28,7 +26,6 @@ export class UserListComponent implements OnInit {
     private userService: UserService,
     private messageService: MessageService,
     private router: Router,
-    private storageService: StorageService,
     private confirmationService: ConfirmationService,
   ) {}
 
@@ -43,7 +40,6 @@ export class UserListComponent implements OnInit {
         this.user = data;
         this.filteredUsers = [...this.user]; 
         this.first = 0;
-        this.paginate();
         this.loading = false;
       },
       error: (err: any) => {
@@ -63,33 +59,24 @@ export class UserListComponent implements OnInit {
     if (this.searchQuery.trim()) {
       tempUsers = tempUsers.filter(user =>
         user.firstName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        (user.employeeId ?? '').toLowerCase().includes(this.searchQuery.toLowerCase())  ||
+        (user.employeeId ?? '').toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         (user.department ?? '').toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     }
 
     this.filteredUsers = tempUsers;
-    this.first = 0;
-    this.paginate();
+    this.first = 0; 
   }
 
   clearFilters(): void {
     this.searchQuery = '';
     this.filteredUsers = [...this.user];
     this.first = 0;
-    this.paginate();
-  }
-
-  paginate(): void {
-    const start = this.first;
-    const end = this.first + this.rows;
-    this.paginatedUser = this.filteredUsers.slice(start, end);
   }
 
   onPageChange(event: PaginatorState): void {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? 5;
-    this.paginate();
   }
 
   onUserDetail(id: number): void {
@@ -106,7 +93,7 @@ export class UserListComponent implements OnInit {
 
   onDelete(id: number): void {
     this.confirmationService.confirm({
-      message: 'คุณต้องการลบรายการนี้หรือไม่?',
+      message: 'คุณต้องการลบผู้ใช้นี้หรือไม่?',
       header: 'ยืนยันการลบ',
       rejectLabel: 'ยกเลิก',
       rejectButtonProps: {
@@ -125,18 +112,18 @@ export class UserListComponent implements OnInit {
           next: () => {
             this.user = this.user.filter(user => user.id !== id);
             this.filteredUsers = this.filteredUsers.filter(user => user.id !== id);
-            this.paginate();
+            this.first = 0; 
             this.messageService.add({
               severity: 'info',
               summary: 'สำเร็จ',
-              detail: 'ลบเครื่องจักรเรียบร้อยแล้ว'
+              detail: 'ลบผู้ใช้เรียบร้อยแล้ว'
             });
           },
           error: (err: any) => {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'ไม่สามารถลบเครื่องจักรได้: ' + (err.message || 'Unknown error')
+              detail: 'ไม่สามารถลบผู้ใช้ได้: ' + (err.message || 'Unknown error')
             });
           }
         });

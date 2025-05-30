@@ -57,41 +57,59 @@
     <p>ไม่พบข้อมูล</p>
   </div>
 </p-card>
-      
+
 <div class="transactions mt-4">
   <div class="list-header">
-    <h4 class="text-sm text-surface-900 mb-1">เครื่องจักรที่รับผิดชอบทั้งหมด</h4>
+    <div class="flex align-items-center justify-content-between mb-1">
+      <h4 class="text-sm text-surface-900 m-0">เครื่องจักรที่รับผิดชอบทั้งหมด</h4>
+      <button pButton type="button" class="p-button-outlined clear-button p-1" (click)="clearFilters()">
+        <i class="pi pi-filter-slash text-sm"></i>
+      </button>
+    </div>
+  </div>
+  <div class="filter-row text-xs mb-2">
+    <div class="p-field search-field">
+      <input type="text" pInputText [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()" placeholder="ค้นหา" class="text-xs w-full mb-1">
+    </div>
   </div>
   <div *ngIf="loading">กำลังโหลด...</div>
   <div class="list-container acme-scroll" *ngIf="!loading">
-    <p-dataview [value]="machines" [emptyMessage]="'ไม่พบข้อมูล'" styleClass="custom-dataview-h-full text-sm">
-        <ng-template #list>
-          <div class="card-list-wrap">
-            <div class="col-12 custom-col-12" *ngFor="let machine of machines">
-              <div class="custom-card" (click)="onMachineDetail(machine.id)">
-                <div class="card-left">
-                  <img src="assets/images/engineerings.png">
-                </div>
-                <div class="card-right">
-                  <span class="card-header text-xs">{{ machine.machineName }}</span>
-                  <div class="custom-card-subtitle">
-                    <span class="card-subtitle">{{ machine.machineCode }}</span>
-                    <div class="div-p-tag gap-1">
-                      <p-tag [ngClass]="getRoleClass(machine.machineStatus)" [value]="machine.machineStatus"></p-tag>
-                      <p-tag [ngClass]="getRoleClass(machine.checkStatus)" [value]="machine.checkStatus"></p-tag>
-                    </div>
-                  </div>                      
-                </div>
+    <p-dataview 
+      [value]="filteredMachines" 
+      [rows]="rows"
+      [first]="first"
+      [paginator]="true"
+      (onPage)="onPageChange($event)"
+      [emptyMessage]="'ไม่พบข้อมูล'" 
+      styleClass="custom-dataview-h-full text-sm"
+    >
+      <ng-template #list>
+        <div class="card-list-wrap">
+          <div class="col-12 custom-col-12" *ngFor="let machine of filteredMachines | slice:first:(first + rows)">
+            <div class="custom-card" (click)="onMachineDetail(machine.id)">
+              <div class="card-left">
+                <img src="assets/images/engineerings.png">
+              </div>
+              <div class="card-right">
+                <span class="card-header text-xs">{{ machine.machineName }}</span>
+                <div class="custom-card-subtitle">
+                  <span class="card-subtitle">{{ machine.machineCode }}</span>
+                  <div class="div-p-tag gap-1">
+                    <p-tag [ngClass]="getRoleClass(machine.machineStatus)" [value]="machine.machineStatus"></p-tag>
+                    <p-tag [ngClass]="getRoleClass(machine.checkStatus)" [value]="machine.checkStatus"></p-tag>
+                  </div>
+                </div>                      
               </div>
             </div>
           </div>
-        </ng-template>
-        <ng-template pTemplate="empty">
-          <div class="text-center p-3">
-            <i class="pi pi-exclamation-circle text-2xl text-gray-500"></i>
-            <p class="mt-2">ไม่พบข้อมูล</p>
-          </div>
-        </ng-template>        
+        </div>
+      </ng-template>
+      <ng-template pTemplate="empty">
+        <div class="text-center p-3">
+          <i class="pi pi-exclamation-circle text-2xl text-gray-500"></i>
+          <p class="mt-2">ไม่พบข้อมูล</p>
+        </div>
+      </ng-template>        
     </p-dataview>
   </div>
 </div>

@@ -25,17 +25,19 @@
   <div class="list-container" *ngIf="!loading">
     <p-dataview 
       [value]="filteredUsers" 
-      [rows]="5" 
+      [rows]="rows" 
+      [first]="first"
       [paginator]="true"
+      (onPage)="onPageChange($event)"
       [emptyMessage]="'ไม่พบข้อมูล'" 
       styleClass="custom-dataview-h-full text-sm"
     >
       <ng-template #list>
         <div class="card-list-wrap">
-          <div class="col-12 custom-col-12" *ngFor="let user of paginatedUser">
+          <div class="col-12 custom-col-12" *ngFor="let user of filteredUsers | slice:first:(first + rows)">
             <div class="custom-card">
               <div class="card-right">
-                <span class="card-header text-xs">{{ user.firstName + " " + user.lastName + " (" + user.employeeId + ")" + " - " + user.department}}</span>
+                <span class="card-header text-xs" (click)="onUserDetail(user.id ?? 0)">{{ user.firstName + " " + user.lastName + " (" + user.employeeId + ")" + " - " + user.department}}</span>
                 <div class="custom-card-subtitle">
                   <div class="div-p-tag gap-1">
                     <p-tag [ngClass]="getRoleClass(user.role)" [value]="user.role"></p-tag>

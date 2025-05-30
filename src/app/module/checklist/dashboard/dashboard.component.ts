@@ -6,7 +6,8 @@ import { MessageService } from 'primeng/api';
 import { StorageService } from '../../../core/service/storage.service';
 import { Kpi } from '../../../models/kpi.model';
 import { KpiService } from '../../../services/kpi.service';
-import { ChangeDetectorRef } from '@angular/core'
+import { PaginatorState } from 'primeng/paginator';
+
 @Component({
   selector: 'app-dashboard',
   standalone: false,
@@ -15,12 +16,14 @@ import { ChangeDetectorRef } from '@angular/core'
 })
 export class DashboardComponent implements OnInit {
   machines: Machine[] = [];
+  filteredMachines: Machine[] = [];
   loading: boolean = true;
+  searchQuery: string = '';
   totalCount: number = 0;
   completedCount: number = 0;
   pendingCount: number = 0;
   meterValue: any[] = [];
-  record!: Kpi | null;
+  record: Kpi | null = null;
   months: { name: string, value: number }[] = [
     { name: 'มกราคม', value: 1 },
     { name: 'กุมภาพันธ์', value: 2 },
@@ -35,23 +38,29 @@ export class DashboardComponent implements OnInit {
     { name: 'พฤศจิกายน', value: 11 },
     { name: 'ธันวาคม', value: 12 }
   ];
-  years: { name: string, value: string }[] = [
-    { name: new Date().getFullYear().toString(), value: new Date().getFullYear().toString() },
-    { name: (new Date().getFullYear() - 1).toString(), value: (new Date().getFullYear() - 1).toString() }
-  ];
-  selectedMonth: number = new Date().getMonth() + 1; 
+  years: { name: string, value: string }[] = [];
+  selectedMonth: number = new Date().getMonth() + 1;
   selectedYear: string = new Date().getFullYear().toString();
   
+  first: number = 0;
+  rows: number = 5;
+
   constructor(
     private machineService: MachineService,
     private messageService: MessageService,
     private router: Router,
     private storageService: StorageService,
-    private kpiService: KpiService,
-    private cdr: ChangeDetectorRef
+    private kpiService: KpiService
   ) {}
 
   ngOnInit(): void {
+    // สร้างรายการปีแบบ dynamic (5 ปีล่าสุด)
+    const currentYear = new Date().getFullYear();
+    this.years = Array.from({ length: 5 }, (_, i) => ({
+      name: (currentYear - i).toString(),
+      value: (currentYear - i).toString()
+    }));
+    
     this.loadMachinesByResponsiblePerson();
     this.loadKpi();
   }
@@ -60,11 +69,14 @@ export class DashboardComponent implements OnInit {
     this.loading = true;
     this.machineService.getMachinesByResponsiblePersonId(this.storageService.getUsername()).subscribe({
       next: (data: Machine[]) => {
-        this.machines = data;
-        this.loading = false;
+        // เรียงลำดับตาม id DESC
+        this.machines = data.sort((a, b) => (b.id || 0) - (a.id || 0));
+        this.filteredMachines = [...this.machines];
         this.totalCount = this.machines.length;
         this.completedCount = this.machines.filter(machine => machine.checkStatus === 'ดำเนินการเสร็จสิ้น').length;
         this.pendingCount = this.machines.filter(machine => machine.checkStatus === 'รอดำเนินการ').length;
+        this.first = 0;
+        this.loading = false;
       },
       error: (err: any) => {
         this.messageService.add({
@@ -79,7 +91,6 @@ export class DashboardComponent implements OnInit {
 
   loadKpi(): void {
     this.loading = true;
-    
     this.kpiService.getKpi(this.storageService.getUsername(), this.selectedYear, this.selectedMonth).subscribe({
       next: (data: Kpi) => {
         this.record = data;
@@ -92,7 +103,6 @@ export class DashboardComponent implements OnInit {
           }
         ];
         this.loading = false;
-        this.cdr.detectChanges();
       },
       error: (err: any) => {
         this.messageService.add({
@@ -105,9 +115,40 @@ export class DashboardComponent implements OnInit {
           { label: 'คิดเป็นร้อยละ', value: 0, color: 'var(--p-primary-color)', max: 100 }
         ];
         this.loading = false;
-        this.cdr.detectChanges();
       }
     });
+  }
+
+  applyFilters(): void {
+    let tempMachines = [...this.machines];
+
+    if (this.searchQuery.trim()) {
+      tempMachines = tempMachines.filter(machine =>
+        machine.machineName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        machine.machineCode.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        (machine.responsiblePersonName && machine.responsiblePersonName.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      );
+    }
+
+    this.filteredMachines = tempMachines;
+    this.totalCount = this.filteredMachines.length;
+    this.completedCount = this.filteredMachines.filter(machine => machine.checkStatus === 'ดำเนินการเสร็จสิ้น').length;
+    this.pendingCount = this.filteredMachines.filter(machine => machine.checkStatus === 'รอดำเนินการ').length;
+    this.first = 0; // รีเซ็ตหน้าเมื่อมีการกรอง
+  }
+
+  clearFilters(): void {
+    this.searchQuery = '';
+    this.filteredMachines = [...this.machines];
+    this.totalCount = this.machines.length;
+    this.completedCount = this.machines.filter(machine => machine.checkStatus === 'ดำเนินการเสร็จสิ้น').length;
+    this.pendingCount = this.machines.filter(machine => machine.checkStatus === 'รอดำเนินการ').length;
+    this.first = 0;
+  }
+
+  onPageChange(event: PaginatorState): void {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 5;
   }
 
   onMonthChange(): void {

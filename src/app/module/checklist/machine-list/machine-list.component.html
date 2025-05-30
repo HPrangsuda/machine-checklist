@@ -52,43 +52,45 @@
   </div>
   <div class="list-container" *ngIf="!loading">
     <p-dataview 
-      [value]="filteredMachines" 
-      [rows]="5" 
-      [paginator]="true"
-      [emptyMessage]="'ไม่พบข้อมูล'" 
-      styleClass="custom-dataview-h-full text-sm"
-    >
-      <ng-template #list>
-        <div class="card-list-wrap">
-          <div class="col-12 custom-col-12" *ngFor="let machine of paginatedMachines">
-            <div class="custom-card">
-              <div class="card-right">
-                <span class="card-header text-xs" (click)="machine.id ? onMachineDetail(machine.id) : null">{{ machine.machineName }}</span>
-                <div class="custom-card-subtitle">
-                  <span class="card-subtitle">{{ machine.machineCode }}</span>
-                  <div class="div-p-tag gap-1">
-                    <p-tag [ngClass]="getRoleClass(machine.machineStatus)" [value]="machine.machineStatus"></p-tag>
-                    <p-tag [ngClass]="getRoleClass(machine.checkStatus)" [value]="machine.checkStatus"></p-tag>
-                  </div>
-                </div>   
-                <div class="custom-card-subtitle">
-                  <span class="card-subtitle">{{ machine.responsiblePersonName }}</span>
-                  <div class="mc-list">
-                    <p-button icon="icon icon-pencil" text severity="secondary" (click)="onEdit(machine.id)"/>
-                    <p-button [hidden]="!isAdmin" icon="icon icon-trash-2" text severity="secondary" (click)="onDelete(machine.id)"/>
-                  </div>
-                </div>                      
+  [value]="filteredMachines" 
+  [rows]="rows" 
+  [first]="first"
+  [paginator]="true"
+  (onPage)="onPageChange($event)"
+  [emptyMessage]="'ไม่พบข้อมูล'" 
+  styleClass="custom-dataview-h-full text-sm"
+>
+  <ng-template #list>
+    <div class="card-list-wrap">
+      <div class="col-12 custom-col-12" *ngFor="let machine of filteredMachines | slice:first:(first + rows)">
+        <div class="custom-card">
+          <div class="card-right">
+            <span class="card-header text-xs" (click)="machine.id ? onMachineDetail(machine.id) : null">{{ machine.machineName }}</span>
+            <div class="custom-card-subtitle">
+              <span class="card-subtitle">{{ machine.machineCode }}</span>
+              <div class="div-p-tag gap-1">
+                <p-tag [ngClass]="getRoleClass(machine.machineStatus)" [value]="machine.machineStatus"></p-tag>
+                <p-tag [ngClass]="getRoleClass(machine.checkStatus)" [value]="machine.checkStatus"></p-tag>
               </div>
-            </div>
+            </div>   
+            <div class="custom-card-subtitle">
+              <span class="card-subtitle">{{ machine.responsiblePersonName }}</span>
+              <div class="mc-list">
+                <p-button icon="icon icon-pencil" text severity="secondary" (click)="onEdit(machine.id)"/>
+                <p-button [hidden]="!isAdmin" icon="icon icon-trash-2" text severity="secondary" (click)="onDelete(machine.id)"/>
+              </div>
+            </div>                      
           </div>
         </div>
-      </ng-template>
-      <ng-template pTemplate="empty">
-        <div class="text-center p-3">
-          <i class="pi pi-exclamation-circle text-2xl text-gray-500"></i>
-          <p class="mt-2">ไม่พบข้อมูล</p>
-        </div>
-      </ng-template>        
-    </p-dataview>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="empty">
+    <div class="text-center p-3">
+      <i class="pi pi-exclamation-circle text-2xl text-gray-500"></i>
+      <p class="mt-2">ไม่พบข้อมูล</p>
+    </div>
+  </ng-template>        
+</p-dataview>
   </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ChecklistRecordsService } from '../../../services/checklist-records.service';
@@ -14,11 +14,9 @@ import { PaginatorState } from 'primeng/paginator';
 })
 export class HistoryComponent {
   records: Record[] = [];
-  filteredRecords: Record[] = []; 
-  paginatedRecords: Record[] = [];
+  filteredRecords: Record[] = [];
   loading: boolean = true;
   searchQuery: string = '';
-  authService: any;
 
   first: number = 0;
   rows: number = 5;
@@ -37,21 +35,22 @@ export class HistoryComponent {
   loadRecordByResponsiblePerson(): void {
     this.loading = true;
     this.recordService.getRecordByResponsiblePerson(this.storageService.getUsername()).subscribe({
-          next: (data: Record[]) => {
-            this.records = data;
-            this.filteredRecords = [...this.records]; 
-            this.paginate();
-            this.loading = false;
-          },
-          error: (err: any) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to load records: ' + (err.message || 'Unknown error')
-            });
-            this.loading = false;
-          }
+      next: (data: Record[]) => {
+        // เรียงลำดับตาม checklistId DESC
+        this.records = data.sort((a, b) => (b.checklistId || 0) - (a.checklistId || 0));
+        this.filteredRecords = [...this.records]; 
+        this.first = 0;
+        this.loading = false;
+      },
+      error: (err: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load records: ' + (err.message || 'Unknown error')
         });
+        this.loading = false;
+      }
+    });
   }
 
   applyFilters(): void {
@@ -62,31 +61,30 @@ export class HistoryComponent {
         record.machineName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         record.machineCode.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         (record.userName && record.userName.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
-        (record.dateCreated && record.dateCreated.toLowerCase().includes(this.searchQuery.toLowerCase())) 
+        (record.dateCreated && new Date(record.dateCreated).toLocaleString('th-TH', { 
+          day: '2-digit', 
+          month: '2-digit', 
+          year: 'numeric', 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          hour12: false 
+        }).includes(this.searchQuery.toLowerCase()))
       );
     }
 
     this.filteredRecords = tempRecords;
-    this.first = 0;
-    this.paginate();
+    this.first = 0; // รีเซ็ตหน้าเมื่อมีการกรอง
   }
   
   clearFilters(): void {
     this.searchQuery = '';
     this.filteredRecords = [...this.records];
     this.first = 0;
-    this.paginate();
-  }
-
-  paginate(): void {
-    const end = this.first + this.rows;
-    this.paginatedRecords= this.filteredRecords.slice(this.first, end);
   }
 
   onPageChange(event: PaginatorState): void {
     this.first = event.first ?? 0;
-    this.rows = event.rows ?? 5; 
-    this.paginate();
+    this.rows = event.rows ?? 5;
   }
 
   getRoleClass(status: string): string {
