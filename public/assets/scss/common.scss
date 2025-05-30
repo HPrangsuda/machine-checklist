@@ -149,7 +149,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   width: 100%;
-  height: 18vh;
+  height: 14vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -167,7 +167,13 @@ body {
     letter-spacing: 0.15px;
   }
 }
+.kpi-card .p-card-body {
+  padding: 1rem 1.25rem;
 
+  p {
+    margin-bottom: 0;
+  }
+}
 .transactions {
   margin-bottom: 1rem;
 
@@ -254,7 +260,7 @@ body {
   .p-dataview-content {
     background: transparent;
     border: none;
-    height: 470px;
+    height: 420px;
     overflow-y: auto;
     scroll-behavior: auto;
     scrollbar-color: transparent transparent;

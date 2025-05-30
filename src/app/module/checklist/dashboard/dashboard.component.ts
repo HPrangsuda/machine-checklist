@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
   selectedYear: string = new Date().getFullYear().toString();
   
   first: number = 0;
-  rows: number = 5;
+  rows: number = 10;
 
   constructor(
     private machineService: MachineService,
@@ -54,7 +54,6 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // สร้างรายการปีแบบ dynamic (5 ปีล่าสุด)
     const currentYear = new Date().getFullYear();
     this.years = Array.from({ length: 5 }, (_, i) => ({
       name: (currentYear - i).toString(),
@@ -134,7 +133,7 @@ export class DashboardComponent implements OnInit {
     this.totalCount = this.filteredMachines.length;
     this.completedCount = this.filteredMachines.filter(machine => machine.checkStatus === 'ดำเนินการเสร็จสิ้น').length;
     this.pendingCount = this.filteredMachines.filter(machine => machine.checkStatus === 'รอดำเนินการ').length;
-    this.first = 0; // รีเซ็ตหน้าเมื่อมีการกรอง
+    this.first = 0; 
   }
 
   clearFilters(): void {
@@ -148,7 +147,7 @@ export class DashboardComponent implements OnInit {
 
   onPageChange(event: PaginatorState): void {
     this.first = event.first ?? 0;
-    this.rows = event.rows ?? 5;
+    this.rows = event.rows ?? 10;
   }
 
   onMonthChange(): void {
