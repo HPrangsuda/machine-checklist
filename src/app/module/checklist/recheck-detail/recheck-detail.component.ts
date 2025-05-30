@@ -104,11 +104,7 @@ export class RecheckDetailComponent implements OnInit, OnDestroy {
     this.submitted = true;
 
     if (this.record?.reasonNotChecked && !this.selectedReason) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'ข้อผิดพลาด',
-        detail: 'กรุณาเลือกสาเหตุก่อนอนุมัติ'
-      });
+      this.notifyService.msgWarn('ข้อมูลไม่ครบถ้วน', 'กรุณาเลือกเหตุผลที่ไม่สามารถตรวจสอบได้');
       return;
     }
 
@@ -116,11 +112,11 @@ export class RecheckDetailComponent implements OnInit, OnDestroy {
     
     this.recordService.saveRecheck(checklistId, payload).subscribe({
       next: (response: any) => {
-        this.notifyService.msgSuccess("Approve", "success approve");
+        this.notifyService.msgSuccess("สำเร็จ", "รายการตรวจสอบได้รับการอนุมัติเรียบร้อยแล้ว");
         this.router.navigate(['/recheck']);
       },
       error: (error: any) => {
-        this.notifyService.msgError("Approve", error.error?.message || "approve failed");
+        this.notifyService.msgError("เกิดข้อผิดพลาด", error.error?.message || "ไม่สามารถอนุมัติรายการตรวจสอบได้ กรุณาติดต่อผู้ดูแลระบบ");
       }
     });
   }

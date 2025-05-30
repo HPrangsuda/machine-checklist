@@ -177,7 +177,6 @@ export class MachineEditComponent implements OnInit {
     if (file) {
       this.selectedFile = file;
 
-      // Create image preview
       const reader = new FileReader();
       reader.onload = () => {
         this.previewImageSrc = reader.result;
@@ -199,7 +198,6 @@ export class MachineEditComponent implements OnInit {
 
     const formData = new FormData();
 
-    // Append machine details
     formData.append('id', this.machineResponse.machine.id.toString());
     formData.append('machineName', this.machineResponse.machine.machineName || '');
     formData.append('machineModel', this.machineResponse.machine.machineModel || '');
@@ -215,11 +213,9 @@ export class MachineEditComponent implements OnInit {
     formData.append('machineStatus', this.selectedStatus || '');
     formData.append('machineTypeName', this.selectedType || '');
 
-    // Append image only if a new one is selected
     if (this.selectedFile) {
       formData.append('image', this.selectedFile, this.selectedFile.name);
     } else if (this.machineResponse.machine.image) {
-      // Optionally send existing image URL to ensure backend retains it
       formData.append('existingImage', this.machineResponse.machine.image);
     }
 
@@ -234,7 +230,7 @@ export class MachineEditComponent implements OnInit {
         console.log('Update successful:', response);
       },
       error: (err) => {
-        this.notifyService.msgWarn('ผิดพลาด', 'ไม่สามารถอัปเดตข้อมูลเครื่องจักรได้');
+        this.notifyService.msgWarn('เกิดข้อผิดพลาด', 'ไม่สามารถอัปเดตข้อมูลเครื่องจักรได้ กรุณาติดต่อผู้ดูแลระบบ');
         console.error('Update error:', err);
         this.loading = false;
       }

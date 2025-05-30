@@ -6,6 +6,7 @@ import { MachineChecklistService } from '../../../services/machine-checklist.ser
 import { ChecklistRecordsService } from '../../../services/checklist-records.service';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from '../../../core/service/storage.service';
+import { NotifyService } from '../../../core/service/notify.service';
 
 interface Choice {
     name: string;
@@ -75,7 +76,8 @@ export class ChecklistComponent implements OnInit {
         private messageService: MessageService,
         private router: Router,
         private http: HttpClient,
-        private storageService: StorageService
+        private storageService: StorageService,
+        private notifyService: NotifyService
     ) {}
 
     ngOnInit() {
@@ -235,23 +237,13 @@ export class ChecklistComponent implements OnInit {
         this.formSubmitted = true; 
 
         if (!this.selectedStatus) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Warning',
-                detail: 'กรุณาเลือกสถานะเครื่องจักร',
-                life: 3000
-            });
+            this.notifyService.msgWarn('ข้อมูลไม่ครบถ้วน', 'กรุณาเลือกสถานะของเครื่องจักร');
             return;
         }
 
         const incompleteItems = this.checklist.filter(item => !item.answerChoice || item.answerChoice.trim() === '');
         if (incompleteItems.length > 0) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Warning',
-                detail: 'กรุณาตอบคำถามทุกข้อในรายการตรวจสอบ',
-                life: 3000
-            });
+            this.notifyService.msgWarn('ข้อมูลไม่ครบถ้วน', 'กรุณาตอบคำถามทุกข้อในรายการตรวจสอบ');
             return;
         }
 
@@ -286,22 +278,12 @@ export class ChecklistComponent implements OnInit {
 
         this.checklistRecordsService.saveChecklistRecord(formData).subscribe({
             next: (response) => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Success',
-                    detail: 'บันทึกสำเร็จ',
-                    life: 3000
-                });
+                this.notifyService.msgSuccess('สำเร็จ', 'รายการตรวจสอบถูกบันทึกเรียบร้อยแล้ว');
                 this.router.navigate(['/dashboard']);
             },
             error: (error) => {
                 console.error('Error saving checklist:', error);
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'เกิดข้อผิดพลาดในการบันทึก',
-                    life: 3000
-                });
+                this.notifyService.msgError('เกิดข้อผิดพลาด', 'ไม่สามารถบันทึกรายการตรวจสอบได้ กรุณาติดต่อผู้ดูแลระบบ');
             }
         });
     }

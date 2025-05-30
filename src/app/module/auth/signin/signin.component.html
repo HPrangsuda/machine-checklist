@@ -5,11 +5,11 @@
         </div>
         <h2 class="text-center text-primary">Sign in</h2>
         <div class="mb-2">
-            <label for="username" class="block font-medium mb-1">Username</label>
+            <span for="username" class="block font-medium mb-1">Username</span>
             <input class="w-full" id="username" type="text" pInputText placeholder="Enter username" [(ngModel)]="username" />
         </div>
         <div class="mb-4">
-            <label for="password" class="block font-medium mb-1">Password</label>
+            <span for="password" class="block font-medium mb-1">Password</span>
             <input class="w-full" id="password" type="password" pInputText placeholder="Enter password" [(ngModel)]="password" />
         </div>
         <button pButton label="SIGN IN" class="w-full p-button-primary" (click)="onSignIn()"></button>
