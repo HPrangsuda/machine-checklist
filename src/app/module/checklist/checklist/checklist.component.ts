@@ -82,7 +82,6 @@ export class ChecklistComponent implements OnInit {
         this.machineCode = this.route.snapshot.paramMap.get('machineCode');
         if (this.machineCode) {
             this.loadMachineData(this.machineCode);
-            this.loadChecklist(this.machineCode);
         }
 
         this.choices = [
@@ -110,6 +109,12 @@ export class ChecklistComponent implements OnInit {
         this.machineService.getMachineByMachineCode(machineCode).subscribe({
             next: (data) => {
                 this.machine = data;
+
+                if(data.responsiblePersonId == this.storageService.getUsername()) {
+                    this.loadChecklist(machineCode);
+                }else{
+                    this.loadChecklistGeneral(machineCode);
+                }
             },
             error: (error) => {
                 console.error('Error loading machine data:', error);
@@ -119,6 +124,25 @@ export class ChecklistComponent implements OnInit {
 
     loadChecklist(machineCode: string) {
         this.checklistService.getMachineByMachineCode(machineCode).subscribe({
+            next: (data) => {
+                this.checklist = (data || []).sort((a: any, b: any) => a.id - b.id).map((item: any) => {
+                    const validChoice = this.choices.some(choice => choice.value === item.answerChoice);
+                    return {
+                        ...item,
+                        question: item.question || { id: 0, questionId: '', questionDetail: 'N/A', questionDescription: 'N/A' },
+                        answerChoice: validChoice ? item.answerChoice : ''
+                    };
+                });
+            },
+            error: (error) => {
+                console.error('Error loading checklist:', error);
+                this.checklist = [];
+            }
+        });
+    }
+
+    loadChecklistGeneral(machineCode: string) {
+        this.checklistService.getChecklistGeneral(machineCode).subscribe({
             next: (data) => {
                 this.checklist = (data || []).sort((a: any, b: any) => a.id - b.id).map((item: any) => {
                     const validChoice = this.choices.some(choice => choice.value === item.answerChoice);
@@ -230,6 +254,11 @@ export class ChecklistComponent implements OnInit {
             });
             return;
         }
+
+        this.checklist = this.checklist.map(item => ({
+            ...item,
+            checkStatus: 'true' 
+        }));
 
         const request: ChecklistRequestDTO = {
             machineCode: this.machineCode || '',
