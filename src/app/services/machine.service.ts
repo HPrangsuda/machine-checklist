@@ -68,21 +68,10 @@ export class MachineService {
     return this.http.post<Machine>(`${this.baseUrl}/create`, formData);
   }
 
-  updateMachine(id: number, machine: any, file?: File): Observable<MachineResponse> {
-    const formData = new FormData();
-    
-    formData.append('id', id.toString());
-    formData.append('machine', new Blob([JSON.stringify(machine)], {
-      type: 'application/json'
-    }));
-    
-    if (file) {
-      formData.append('file', file);
-    }
-
-    return this.http.put<MachineResponse>(`${this.baseUrl}/update/${id}`, machine, { headers: this.getHeaders() });
+  updateMachine(id: number, machineData: any): Observable<MachineResponse> {
+    return this.http.put<MachineResponse>(`${this.baseUrl}/update/${id}`, machineData, { headers: this.getHeaders() });
   }
-
+  
   deleteMachine(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
   }

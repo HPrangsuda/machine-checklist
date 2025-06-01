@@ -114,37 +114,6 @@
           />
         </div>
       </div>
-      <div class="mt-1 upload">
-        <p-card>
-          <div class="upload">
-            <div class="flex flex-column">
-              <div class="flex align-items-center">
-                <p-fileUpload
-                  mode="basic"
-                  chooseLabel="เลือกรูปภาพ"
-                  class="p-button-sm"
-                  accept="image/*"
-                  [auto]="false"
-                  [maxFileSize]="5000000"
-                  (onSelect)="onFileSelected($event)"
-                  [showUploadButton]="false"
-                  [showCancelButton]="false"
-                ></p-fileUpload>
-                <button
-                  *ngIf="selectedFile || previewImageSrc"
-                  pButton
-                  type="button"
-                  icon="pi pi-times"
-                  class="p-button-danger p-button-sm ml-2"
-                  (click)="clearImage()"
-                  pTooltip="ลบรูปภาพ"
-                ></button>
-              </div>
-            </div>
-          </div>
-          </p-card>
-        
-      </div>
       <div class="flex justify-content-center flex-wrap">
         <div class="flex align-items-center justify-content-center">
           <div *ngIf="qrCodeImage" class="machine-image">

@@ -172,68 +172,43 @@ export class MachineEditComponent implements OnInit {
     }
   }
 
-  onFileSelected(event: any): void {
-    const file: File = event.files[0]; // Use PrimeNG's event.files
-    if (file) {
-      this.selectedFile = file;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewImageSrc = reader.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  clearImage(): void {
-    this.selectedFile = null;
-    this.previewImageSrc = null;
-  }
-
   saveMachine(): void {
     if (!this.machineResponse?.machine) {
-      this.error = 'ไม่มีข้อมูลเครื่องจักรสำหรับบันทึก';
-      return;
+        this.error = 'ไม่มีข้อมูลเครื่องจักรสำหรับบันทึก';
+        return;
     }
 
-    const formData = new FormData();
-
-    formData.append('id', this.machineResponse.machine.id.toString());
-    formData.append('machineName', this.machineResponse.machine.machineName || '');
-    formData.append('machineModel', this.machineResponse.machine.machineModel || '');
-    formData.append('machineCode', this.machineResponse.machine.machineCode || '');
-    formData.append('machineNumber', this.machineResponse.machine.machineNumber || '');
-    formData.append('responsiblePersonId', this.selectedEmployee?.toString() || '');
-    formData.append('responsiblePersonName', this.getEmployeeFullName(this.selectedEmployee) || '');
-    formData.append('supervisorId', this.selectedSupervisor?.toString() || '');
-    formData.append('supervisorName', this.getEmployeeFullName(this.selectedSupervisor) || '');
-    formData.append('managerId', this.selectedManager?.toString() || '');
-    formData.append('managerName', this.getEmployeeFullName(this.selectedManager) || '');
-    formData.append('frequency', this.selectedFrequency && this.selectedFrequency.length > 0 ? this.selectedFrequency.join(',') : '');
-    formData.append('machineStatus', this.selectedStatus || '');
-    formData.append('machineTypeName', this.selectedType || '');
-
-    if (this.selectedFile) {
-      formData.append('image', this.selectedFile, this.selectedFile.name);
-    } else if (this.machineResponse.machine.image) {
-      formData.append('existingImage', this.machineResponse.machine.image);
+    if (!this.selectedEmployee || !this.selectedSupervisor || !this.selectedManager || !this.selectedStatus) {
+        this.notifyService.msgWarn('ข้อมูลไม่ครบถ้วน', 'กรุณากรอกข้อมูลให้ครบทุกช่อง');
+        return;
     }
+
+    // สร้าง JSON object
+    const machineData = {
+        id: this.machineResponse.machine.id,
+        responsiblePersonId: this.selectedEmployee,
+        responsiblePersonName: this.getEmployeeFullName(this.selectedEmployee) || '',
+        supervisorId: this.selectedSupervisor,
+        supervisorName: this.getEmployeeFullName(this.selectedSupervisor) || '',
+        managerId: this.selectedManager,
+        managerName: this.getEmployeeFullName(this.selectedManager) || '',
+        frequency: this.selectedFrequency?.length > 0 ? this.selectedFrequency.join(',') : '',
+        machineStatus: this.selectedStatus
+    };
 
     this.loading = true;
-    this.machineService.updateMachine(this.machineResponse.machine.id, formData).subscribe({
-      next: (response: MachineResponse) => {
-        this.machineResponse = response;
-        this.previewImageSrc = null; // Clear preview after successful save
-        this.selectedFile = null; // Clear selected file
-        this.loading = false;
-        this.notifyService.msgSuccess('สำเร็จ', 'อัปเดตข้อมูลเครื่องจักรเรียบร้อยแล้ว');
-        console.log('Update successful:', response);
-      },
-      error: (err) => {
-        this.notifyService.msgWarn('เกิดข้อผิดพลาด', 'ไม่สามารถอัปเดตข้อมูลเครื่องจักรได้ กรุณาติดต่อผู้ดูแลระบบ');
-        console.error('Update error:', err);
-        this.loading = false;
-      }
+    this.machineService.updateMachine(this.machineResponse.machine.id, machineData).subscribe({
+        next: (response: MachineResponse) => {
+            this.machineResponse = response;
+            this.loading = false;
+            this.notifyService.msgSuccess('สำเร็จ', 'อัปเดตข้อมูลเครื่องจักรเรียบร้อยแล้ว');
+            console.log('Update successful:', response);
+        },
+        error: (err) => {
+            this.notifyService.msgWarn('เกิดข้อผิดพลาด', `ไม่สามารถอัปเดตข้อมูลเครื่องจักรได้: ${err.message || err.statusText}`);
+            console.error('Update error:', err);
+            this.loading = false;
+        }
     });
   }
 
