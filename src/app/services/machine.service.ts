@@ -50,6 +50,10 @@ export class MachineService {
     return this.http.get<Machine[]>(`${this.baseUrl}/responsible/${personId}`, { headers: this.getHeaders() });
   }
 
+  getMachinesByDepartment(personId: string): Observable<Machine[]> {
+    return this.http.get<Machine[]>(`${this.baseUrl}/department/${personId}`, { headers: this.getHeaders() });
+  }
+
   getMachinesByResponsibleAll(personId: string): Observable<Machine[]> {
     return this.http.get<Machine[]>(`${this.baseUrl}/responsible-all/${personId}`, { headers: this.getHeaders() });
   }

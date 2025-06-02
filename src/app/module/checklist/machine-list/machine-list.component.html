@@ -7,7 +7,7 @@
     <div class="flex align-items-center justify-content-between mb-1">
       <h4 class="text-sm text-surface-900 m-0">รายการเครื่องจักรทั้งหมด</h4>
       <div class="button-container">
-        <div *ngIf="isAdmin">
+        <div *ngIf="isSuperAdmin">
           <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="exportToExcel()">
             <i class="pi pi-file-export text-sm"></i>
           </button>
@@ -52,14 +52,14 @@
   </div>
   <div class="list-container" *ngIf="!loading">
     <p-dataview 
-  [value]="filteredMachines" 
-  [rows]="rows" 
-  [first]="first"
-  [paginator]="true"
-  (onPage)="onPageChange($event)"
-  [emptyMessage]="'ไม่พบข้อมูล'" 
-  styleClass="custom-dataview-h-full text-sm"
->
+      [value]="filteredMachines" 
+      [rows]="rows" 
+      [first]="first"
+      [paginator]="true"
+      (onPage)="onPageChange($event)"
+      [emptyMessage]="'ไม่พบข้อมูล'" 
+      styleClass="custom-dataview-h-full text-sm"
+    >
   <ng-template #list>
     <div class="card-list-wrap">
       <div class="col-12 custom-col-12" *ngFor="let machine of filteredMachines | slice:first:(first + rows)">
@@ -77,7 +77,7 @@
               <span class="card-subtitle">{{ machine.responsiblePersonName }}</span>
               <div class="mc-list">
                 <p-button icon="icon icon-pencil" text severity="secondary" (click)="onEdit(machine.id)"/>
-                <p-button [hidden]="!isAdmin" icon="icon icon-trash-2" text severity="secondary" (click)="onDelete(machine.id)"/>
+                <p-button [hidden]="!isSuperAdmin" icon="icon icon-trash-2" text severity="secondary" (click)="onDelete(machine.id)"/>
               </div>
             </div>                      
           </div>

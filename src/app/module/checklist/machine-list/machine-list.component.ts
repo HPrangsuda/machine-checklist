@@ -47,6 +47,7 @@ export class MachineListComponent implements OnInit {
   selectedFrequency: Frequency | null = null;
   machineStatus: MachineStatus[] = [];
   selectedStatus: MachineStatus | null = null;
+  isSuperAdmin: boolean | undefined;
   isAdmin: boolean | undefined;
 
   machineStatusOptions: string[] = [
@@ -71,10 +72,12 @@ export class MachineListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.isAdmin = this.storageService.getRole() === 'ADMIN';
-    if(this.isAdmin) {
+    this.isSuperAdmin = this.storageService.getRole() === 'SUPERADMIN';
+    if(this.isSuperAdmin) {
       this.loadMachines();
-    } else {
+    } else if(this.isAdmin) {
+      this.loadMachinesByDepartment();
+    } else{
       this.loadMachinesByResponsibleAll();
     }
     this.loadData();
@@ -99,6 +102,26 @@ export class MachineListComponent implements OnInit {
   loadMachines(): void {
     this.loading = true;
     this.machineService.getMachines().subscribe({
+      next: (data: Machine[]) => {
+        this.machines = data;
+        this.filteredMachines = [...this.machines]; 
+        this.first = 0;
+        this.loading = false;
+      },
+      error: (err: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load machines: ' + (err.message || 'Unknown error')
+        });
+        this.loading = false;
+      }
+    });
+  }
+  
+  loadMachinesByDepartment(): void {
+    this.loading = true;
+    this.machineService.getMachinesByDepartment(this.storageService.getUsername()).subscribe({
       next: (data: Machine[]) => {
         this.machines = data;
         this.filteredMachines = [...this.machines]; 
