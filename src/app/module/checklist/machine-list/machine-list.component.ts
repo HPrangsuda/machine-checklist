@@ -74,7 +74,7 @@ export class MachineListComponent implements OnInit {
   ngOnInit(): void {
     this.isSuperAdmin = this.storageService.getRole() === 'SUPERADMIN';
     this.isAdmin = this.storageService.getRole() === 'ADMIN';
-    console.log('User Role:', this.storageService.getRole());
+    
     if(this.isSuperAdmin) {
       this.loadMachines();
     } else if(this.isAdmin) {

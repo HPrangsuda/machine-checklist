@@ -79,10 +79,6 @@ export class UserListComponent implements OnInit {
     this.rows = event.rows ?? 5;
   }
 
-  onUserDetail(id: number): void {
-    this.router.navigate(['/user-detail', id]);
-  }
-
   onAdd(): void {
     this.router.navigate(['/user-add']);
   }
