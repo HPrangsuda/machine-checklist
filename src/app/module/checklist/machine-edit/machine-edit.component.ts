@@ -178,7 +178,7 @@ export class MachineEditComponent implements OnInit {
         return;
     }
 
-    if (!this.selectedEmployee || !this.selectedSupervisor || !this.selectedManager || !this.selectedStatus) {
+    if (!this.selectedEmployee || !this.selectedStatus) {
         this.notifyService.msgWarn('ข้อมูลไม่ครบถ้วน', 'กรุณากรอกข้อมูลให้ครบทุกช่อง');
         return;
     }
