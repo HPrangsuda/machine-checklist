@@ -33,6 +33,7 @@ export class RecheckDetailComponent implements OnInit, OnDestroy {
     { name: 'ลางาน' },
     { name: 'เข้ากะ' },
     { name: 'ทำงานนอกสถานที่' },
+    { name: 'อยู่ระหว่างซ่อมบำรุง' },
     { name: 'ผู้รับผิดชอบไม่ดำเนินการ' }
   ];
   selectedReason: string | null = null;
