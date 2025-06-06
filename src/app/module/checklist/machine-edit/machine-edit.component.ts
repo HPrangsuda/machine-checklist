@@ -30,9 +30,9 @@ export class MachineEditComponent implements OnInit {
   loading: boolean = false;
 
   employeeList: Employee[] = [];
-  selectedEmployee: number | null = null;
-  selectedSupervisor: number | null = null;
-  selectedManager: number | null = null;
+  selectedEmployee: string | null = null;
+  selectedSupervisor: string | null = null;
+  selectedManager: string | null = null;
   frequency: Frequency[] = [];
   selectedFrequency: string[] = [];
   machineStatus: MachineStatus[] = [];
@@ -109,30 +109,39 @@ export class MachineEditComponent implements OnInit {
   loadEmployeeList(): void {
     this.emplService.getAllUser().subscribe({
       next: (employees: Employee[]) => {
-        this.employeeList = employees.map(employee => ({
-          ...employee,
-          name: `${employee.firstName} ${employee.lastName}`
-        }));
+        this.employeeList = [
+          {
+            employeeId: '', firstName: '', lastName: '', name: '----- กรุณาเลือก -----',
+            id: 0,
+            department: '',
+            nickName: '',
+            position: ''
+          }, 
+          ...employees.map(employee => ({
+            ...employee,
+            name: `${employee.firstName} ${employee.lastName}`
+          }))
+        ];
 
         if (this.machineResponse?.machine?.responsiblePersonName) {
           const responsibleEmp = this.employeeList.find(
             emp => `${emp.firstName} ${emp.lastName}` === this.machineResponse!.machine.responsiblePersonName
           );
-          this.selectedEmployee = responsibleEmp ? responsibleEmp.id : null;
+          this.selectedEmployee = responsibleEmp ? responsibleEmp.employeeId : null;
         }
 
         if (this.machineResponse?.machine?.supervisorName) {
           const supervisorEmp = this.employeeList.find(
             emp => `${emp.firstName} ${emp.lastName}` === this.machineResponse!.machine.supervisorName
           );
-          this.selectedSupervisor = supervisorEmp ? supervisorEmp.id : null;
+          this.selectedSupervisor = supervisorEmp ? supervisorEmp.employeeId : null;
         }
 
         if (this.machineResponse?.machine?.managerName) {
           const managerEmp = this.employeeList.find(
             emp => `${emp.firstName} ${emp.lastName}` === this.machineResponse!.machine.managerName
           );
-          this.selectedManager = managerEmp ? managerEmp.id : null;
+          this.selectedManager = managerEmp ? managerEmp.employeeId : null;
         }
       },
       error: (err) => {
@@ -183,7 +192,6 @@ export class MachineEditComponent implements OnInit {
         return;
     }
 
-    // สร้าง JSON object
     const machineData = {
         id: this.machineResponse.machine.id,
         responsiblePersonId: this.selectedEmployee,
@@ -212,9 +220,9 @@ export class MachineEditComponent implements OnInit {
     });
   }
 
-  private getEmployeeFullName(employeeId: number | null): string | null {
+  private getEmployeeFullName(employeeId: string | null): string | null {
     if (!employeeId) return null;
-    const employee = this.employeeList.find(emp => emp.id === employeeId);
+    const employee = this.employeeList.find(emp => emp.employeeId === employeeId);
     return employee ? `${employee.firstName} ${employee.lastName}` : null;
   }
 

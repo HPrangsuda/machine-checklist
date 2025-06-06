@@ -24,14 +24,14 @@
         <label for="number">หมายเลขเครื่อง</label>
       </p-iftalabel>
       <p-iftalabel class="text-xs mb-2">
-        <input type="hidden" id="responsible_id" [value]="selectedEmployee" class="w-full text-xs" disabled />
+        <input type="text" id="responsible_id" [value]="selectedEmployee" class="w-full text-xs" disabled />
         <p-dropdown
           [options]="employeeList"
           [(ngModel)]="selectedEmployee"
           name="employeeList"
           id="responsible"
           optionLabel="name"
-          optionValue="id"
+          optionValue="employeeId"
           placeholder="กรุณาเลือก"
           styleClass="w-full md:w-56"
         />
@@ -45,21 +45,21 @@
           name="supervisorList"
           id="supervisor"
           optionLabel="name"
-          optionValue="id"
+          optionValue="employeeId"
           placeholder="กรุณาเลือก"
           styleClass="w-full md:w-56"
         />
         <label for="supervisor">หัวหน้างาน</label>
       </p-iftalabel>
       <p-iftalabel class="text-xs mb-2">
-        <input type="hidden" id="manager_hidden_id" [value]="selectedManager" class="w-full text-xs" disabled />
+        <input type="hidden" id="employee_id" [value]="selectedManager" class="w-full text-xs" disabled />
         <p-dropdown
           [options]="employeeList"
           [(ngModel)]="selectedManager"
           name="managerList"
           id="manager"
           optionLabel="name"
-          optionValue="id"
+          optionValue="employeeId"
           placeholder="กรุณาเลือก"
           styleClass="w-full md:w-56"
         />
@@ -75,6 +75,7 @@
           placeholder="กรุณาเลือก"
           [maxSelectedLabels]="5"
           styleClass="w-full md:w-80"
+          [disabled]="true"
         />
         <label for="frequency">ความถี่ในการตรวจ</label>
       </p-iftalabel>

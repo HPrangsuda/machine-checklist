@@ -6,4 +6,5 @@ export interface Employee {
     lastName: string;
     nickName: string;
     position: string;
+    name?: string;
 }
