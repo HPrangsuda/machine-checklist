@@ -112,7 +112,7 @@ export class ChecklistComponent implements OnInit {
             next: (data) => {
                 this.machine = data;
 
-                if(data.responsiblePersonId == this.storageService.getUsername()) {
+                if (data.responsiblePersonId === this.storageService.getUsername() && data.check_status === 'รอดำเนินการ') {
                     this.loadChecklist(machineCode);
                 }else{
                     this.loadChecklistGeneral(machineCode);
