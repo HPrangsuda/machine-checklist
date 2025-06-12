@@ -161,6 +161,7 @@ export class MachineAddComponent implements OnInit {
       machineModel: this.machineForm.value.model || null,
       machineCode: this.machineForm.value.code,
       machineNumber: this.machineForm.value.number || null,
+      department: this.machineForm.value.department,
       responsiblePersonId: this.machineForm.value.responsibleId || null,
       responsiblePersonName: this.getEmployeeFullName(this.machineForm.value.responsibleId),
       supervisorId: this.machineForm.value.supervisorId || null,
@@ -172,7 +173,7 @@ export class MachineAddComponent implements OnInit {
       machineTypeName: this.machineForm.value.type,
       note: this.machineForm.value.note || null
     };
-
+console.log('Machine Data:', machineData);
     // เรียกใช้ service ที่ปรับปรุงแล้วเพื่อส่งทั้งข้อมูลและไฟล์รูปภาพ
     this.machineService.addMachine(machineData, this.selectedFile || undefined).subscribe({
       next: () => {

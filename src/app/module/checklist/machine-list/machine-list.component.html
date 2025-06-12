@@ -11,6 +11,9 @@
           <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="exportToExcel()">
             <i class="pi pi-file-export text-sm"></i>
           </button>
+          <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="kpiReport()">
+            <i class="pi pi-chart-bar text-sm"></i>
+          </button>
           <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="onUserList()">
             <i class="pi pi-user text-sm"></i>
           </button>
@@ -30,24 +33,24 @@
       <input type="text" pInputText [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()" placeholder="ค้นหา" class="text-xs w-full mb-1">
     </div>
     <div class="p-field dropdown-field">
-      <p-dropdown
+      <p-select
         [options]="machineStatusOptions"
         [(ngModel)]="selectedMachineStatus"
         (ngModelChange)="applyFilters()"
         placeholder="เลือกสถานะเครื่องจักร"
         [showClear]="true"
         class="w-full mb-1"
-      ></p-dropdown>
+      ></p-select>
     </div>
     <div class="p-field dropdown-field">
-      <p-dropdown
+      <p-select
         [options]="checkStatusOptions"
         [(ngModel)]="selectedCheckStatus"
         (ngModelChange)="applyFilters()"
         placeholder="เลือกสถานะการตรวจสอบ"
         [showClear]="true"
         class="w-full mb-1"
-      ></p-dropdown>
+      ></p-select>
     </div>
   </div>
   <div class="list-container" *ngIf="!loading">

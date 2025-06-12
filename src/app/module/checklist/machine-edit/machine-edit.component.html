@@ -2,147 +2,160 @@
   <p (click)="goBack()"><i class="icon icon-undo-2"></i> ย้อนกลับ</p>
 </div>
 
-<p-fieldset>
-  <ng-template pTemplate="header">
-    <div class="flex items-center gap-2">
-      <img src="assets/images/engineerings.png" style="width: 24px; height: 24px;" />
-      <span class="font-bold text-sm">{{ machineResponse?.machine?.machineName }}</span>
-    </div>
-  </ng-template>
-  <div>
-    <form class="machine-detail">
-      <p-iftalabel class="text-xs mb-2">
-        <input pInputText id="model" [value]="machineResponse?.machine?.machineModel" autocomplete="off" class="w-full text-xs" disabled />
-        <label for="model">รุ่น</label>
-      </p-iftalabel>
-      <p-iftalabel class="text-xs mb-2">
-        <input pInputText id="code" [value]="machineResponse?.machine?.machineCode" autocomplete="off" class="w-full text-xs" disabled />
-        <label for="code">รหัส</label>
-      </p-iftalabel>
-      <p-iftalabel class="text-xs mb-2">
-        <input pInputText id="number" [value]="machineResponse?.machine?.machineNumber" autocomplete="off" class="w-full text-xs" disabled />
-        <label for="number">หมายเลขเครื่อง</label>
-      </p-iftalabel>
-      <p-iftalabel class="text-xs mb-2">
-        <input type="text" id="responsible_id" [value]="selectedEmployee" class="w-full text-xs" disabled />
-        <p-dropdown
-          [options]="employeeList"
-          [(ngModel)]="selectedEmployee"
-          name="employeeList"
-          id="responsible"
-          optionLabel="name"
-          optionValue="employeeId"
-          placeholder="กรุณาเลือก"
-          styleClass="w-full md:w-56"
-        />
-        <label for="responsible">ผู้รับผิดชอบ</label>
-      </p-iftalabel>
-      <p-iftalabel class="text-xs mb-2">
-        <input type="hidden" id="supervisor_hidden_id" [value]="selectedSupervisor" class="w-full text-xs" disabled />
-        <p-dropdown
-          [options]="employeeList"
-          [(ngModel)]="selectedSupervisor"
-          name="supervisorList"
-          id="supervisor"
-          optionLabel="name"
-          optionValue="employeeId"
-          placeholder="กรุณาเลือก"
-          styleClass="w-full md:w-56"
-        />
-        <label for="supervisor">หัวหน้างาน</label>
-      </p-iftalabel>
-      <p-iftalabel class="text-xs mb-2">
-        <input type="hidden" id="employee_id" [value]="selectedManager" class="w-full text-xs" disabled />
-        <p-dropdown
-          [options]="employeeList"
-          [(ngModel)]="selectedManager"
-          name="managerList"
-          id="manager"
-          optionLabel="name"
-          optionValue="employeeId"
-          placeholder="กรุณาเลือก"
-          styleClass="w-full md:w-56"
-        />
-        <label for="manager">ผู้จัดการฝ่าย</label>
-      </p-iftalabel>
-      <p-iftalabel class="text-xs mb-2">
-        <p-multiSelect
-          [options]="frequency"
-          [(ngModel)]="selectedFrequency"
-          name="frequency"
-          optionLabel="name"
-          optionValue="name"
-          placeholder="กรุณาเลือก"
-          [maxSelectedLabels]="5"
-          styleClass="w-full md:w-80"
-          [disabled]="true"
-        />
-        <label for="frequency">ความถี่ในการตรวจ</label>
-      </p-iftalabel>
-      <p-iftalabel class="text-xs mb-2">
-        <p-dropdown
-          [options]="machineStatus"
-          [(ngModel)]="selectedStatus"
-          name="status"
-          id="status"
-          optionLabel="name"
-          optionValue="name"
-          placeholder="กรุณาเลือก"
-          styleClass="w-full md:w-56"
-        />
-        <label for="status">สถานะ</label>
-      </p-iftalabel>
-      <p-iftalabel class="text-xs mb-2">
-        <p-dropdown
-          [options]="type"
-          [(ngModel)]="selectedType"
-          name="type"
-          id="type"
-          optionLabel="machineTypeName"
-          optionValue="machineTypeName"
-          placeholder="กรุณาเลือก"
-          styleClass="w-full md:w-56"
-          [disabled]="true"
-        />
-        <label for="type">ประเภทเครื่อง</label>
-      </p-iftalabel>
-      <div class="flex justify-content-center flex-wrap">
-        <div class="flex align-items-center justify-content-center">
-          <img
-            [src]="previewImageSrc || machineResponse?.machine?.image || 'assets/images/default-machine.jpg'"
-            style="width: 100%; max-width: 200px; max-height: 200px; object-fit: contain;"
-            [alt]="machineResponse?.machine?.machineName + ' image' || 'Machine image'"
-          />
-        </div>
+<div *ngIf="machineResponse && machineResponse.machine">
+  <p-fieldset>
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-2">
+        <img src="assets/images/engineerings.png" style="width: 24px; height: 24px;" />
+        <span class="font-bold text-sm">{{ machineResponse.machine.machineName }}</span>
       </div>
-      <div class="flex justify-content-center flex-wrap">
-        <div class="flex align-items-center justify-content-center">
-          <div *ngIf="qrCodeImage" class="machine-image">
-            <img [src]="qrCodeImage" alt="Machine QR Code" />
+    </ng-template>
+    <div>
+      <form class="machine-detail">
+        <p-iftalabel class="text-xs mb-2">
+          <input pInputText id="model" [value]="machineResponse.machine.machineModel" autocomplete="off" class="w-full text-xs" disabled />
+          <label for="model">รุ่น</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <input pInputText id="code" [value]="machineResponse.machine.machineCode" autocomplete="off" class="w-full text-xs" disabled />
+          <label for="code">รหัส</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <input pInputText id="number" [value]="machineResponse.machine.machineNumber" autocomplete="off" class="w-full text-xs" disabled />
+          <label for="number">หมายเลขเครื่อง</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <input
+            pInputText
+            id="department"
+            [(ngModel)]="machineResponse.machine.department"
+            name="department"
+            autocomplete="off"
+            class="w-full text-xs"
+          />
+          <label for="department">หน่วยงาน</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <input type="hidden" id="responsible_id" [value]="selectedEmployee" class="w-full text-xs" disabled />
+          <p-select
+            [options]="employeeList"
+            [(ngModel)]="selectedEmployee"
+            name="employeeList"
+            id="responsible"
+            optionLabel="name"
+            optionValue="employeeId"
+            placeholder="กรุณาเลือก"
+            styleClass="w-full md:w-56"
+          />
+          <label for="responsible">ผู้รับผิดชอบ</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <input type="hidden" id="supervisor_hidden_id" [value]="selectedSupervisor" class="w-full text-xs" disabled />
+          <p-select
+            [options]="employeeList"
+            [(ngModel)]="selectedSupervisor"
+            name="supervisorList"
+            id="supervisor"
+            optionLabel="name"
+            optionValue="employeeId"
+            placeholder="กรุณาเลือก"
+            styleClass="w-full md:w-56"
+          />
+          <label for="supervisor">หัวหน้างาน</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <input type="hidden" id="employee_id" [value]="selectedManager" class="w-full text-xs" disabled />
+          <p-select
+            [options]="employeeList"
+            [(ngModel)]="selectedManager"
+            name="managerList"
+            id="manager"
+            optionLabel="name"
+            optionValue="employeeId"
+            placeholder="กรุณาเลือก"
+            styleClass="w-full md:w-56"
+          />
+          <label for="manager">ผู้จัดการฝ่าย</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <p-multiSelect
+            [options]="frequency"
+            [(ngModel)]="selectedFrequency"
+            name="frequency"
+            optionLabel="name"
+            optionValue="name"
+            placeholder="กรุณาเลือก"
+            [maxSelectedLabels]="5"
+            styleClass="w-full md:w-80"
+            [disabled]="true"
+          />
+          <label for="frequency">ความถี่ในการตรวจ</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <p-select
+            [options]="machineStatus"
+            [(ngModel)]="selectedStatus"
+            name="status"
+            id="status"
+            optionLabel="name"
+            optionValue="name"
+            placeholder="กรุณาเลือก"
+            styleClass="w-full md:w-56"
+          />
+          <label for="status">สถานะ</label>
+        </p-iftalabel>
+        <p-iftalabel class="text-xs mb-2">
+          <p-select
+            [options]="type"
+            [(ngModel)]="selectedType"
+            name="type"
+            id="type"
+            optionLabel="machineTypeName"
+            optionValue="machineTypeName"
+            placeholder="กรุณาเลือก"
+            styleClass="w-full md:w-56"
+            [disabled]="true"
+          />
+          <label for="type">ประเภทเครื่อง</label>
+        </p-iftalabel>
+        <div class="flex justify-content-center flex-wrap">
+          <div class="flex align-items-center justify-content-center">
+            <img
+              [src]="previewImageSrc || machineResponse.machine.image || 'assets/images/default-machine.jpg'"
+              style="width: 100%; max-width: 200px; max-height: 200px; object-fit: contain;"
+              [alt]="machineResponse.machine.machineName + ' image' || 'Machine image'"
+            />
           </div>
         </div>
-      </div>
-      <div class="flex justify-content-center flex-wrap">
-        <div class="flex align-items-center justify-content-center">
-          <p-button severity="secondary" pButton pRipple class="p-0" (click)="downloadQRCode()">
-            <span class="text-xs font-bold">ดาวน์โหลด</span>
-          </p-button>
+        <div class="flex justify-content-center flex-wrap">
+          <div class="flex align-items-center justify-content-center">
+            <div *ngIf="qrCodeImage" class="machine-image">
+              <img [src]="qrCodeImage" alt="Machine QR Code" />
+            </div>
+          </div>
         </div>
-      </div>
-    </form>
-  </div>
-</p-fieldset>
-<div class="flex justify-content-center flex-wrap">
-  <div class="flex align-items-center justify-content-center">
-    <p-button
-      pButton
-      pRipple
-      class="p-0 mt-3"
-      (click)="saveMachine()"
-      [disabled]="loading"
-    >
-      <i class="icon icon-save"></i>
-      <span class="text-xs font-bold">{{ loading ? 'กำลังบันทึก...' : 'บันทึก' }}</span>
-    </p-button>
+        <div class="flex justify-content-center flex-wrap">
+          <div class="flex align-items-center justify-content-center">
+            <p-button severity="secondary" pButton pRipple class="p-0" (click)="downloadQRCode()">
+              <span class="text-xs font-bold">ดาวน์โหลด</span>
+            </p-button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </p-fieldset>
+  <div class="flex justify-content-center flex-wrap">
+    <div class="flex align-items-center justify-content-center">
+      <p-button
+        pButton
+        pRipple
+        class="p-0 mt-3"
+        (click)="saveMachine()"
+        [disabled]="loading"
+      >
+        <i class="icon icon-save"></i>
+        <span class="text-xs font-bold">{{ loading ? 'กำลังบันทึก...' : 'บันทึก' }}</span>
+      </p-button>
+    </div>
   </div>
 </div>

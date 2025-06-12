@@ -17,6 +17,7 @@ export interface Machine {
   machineTypeName: string;
   checkStatus: string;
   qrCode: string; 
+  department: string;
 }
 
 export interface MachineResponse {

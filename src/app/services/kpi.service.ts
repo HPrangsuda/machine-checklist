@@ -20,6 +20,11 @@ export class KpiService {
     return new HttpHeaders().set('Authorization', `Bearer ${token || ''}`);
   }
 
+  getKpiAll(year: string, month: number): Observable<Kpi[]> {
+    const formattedMonth = month.toString().padStart(2, '0');
+    return this.http.get<Kpi[]>(`${this.baseUrl}?year=${year}&month=${formattedMonth}`, { headers: this.getHeaders() });
+  }
+  
   getKpi(employeeId: string, year: string, month: number): Observable<Kpi> {
     const formattedMonth = month.toString().padStart(2, '0'); 
     return this.http.get<Kpi>(`${this.baseUrl}/${employeeId}?year=${year}&month=${formattedMonth}`, { headers: this.getHeaders() });

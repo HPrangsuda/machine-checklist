@@ -42,6 +42,7 @@ export class MachineEditComponent implements OnInit {
 
   selectedFile: File | null = null;
   previewImageSrc: string | ArrayBuffer | null = null;
+department: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -183,40 +184,42 @@ export class MachineEditComponent implements OnInit {
 
   saveMachine(): void {
     if (!this.machineResponse?.machine) {
-        this.error = 'ไม่มีข้อมูลเครื่องจักรสำหรับบันทึก';
-        return;
+      this.error = 'ไม่มีข้อมูลเครื่องจักรสำหรับบันทึก';
+      return;
     }
 
-    if (!this.selectedEmployee || !this.selectedStatus) {
-        this.notifyService.msgWarn('ข้อมูลไม่ครบถ้วน', 'กรุณากรอกข้อมูลให้ครบทุกช่อง');
-        return;
+    if (!this.selectedEmployee || !this.selectedStatus || !this.machineResponse.machine.department) {
+      this.notifyService.msgWarn('ข้อมูลไม่ครบถ้วน', 'กรุณากรอกข้อมูลให้ครบทุกช่อง รวมถึงแผนก');
+      return;
     }
 
     const machineData = {
-        id: this.machineResponse.machine.id,
-        responsiblePersonId: this.selectedEmployee,
-        responsiblePersonName: this.getEmployeeFullName(this.selectedEmployee) || '',
-        supervisorId: this.selectedSupervisor,
-        supervisorName: this.getEmployeeFullName(this.selectedSupervisor) || '',
-        managerId: this.selectedManager,
-        managerName: this.getEmployeeFullName(this.selectedManager) || '',
-        frequency: this.selectedFrequency?.length > 0 ? this.selectedFrequency.join(',') : '',
-        machineStatus: this.selectedStatus
+      id: this.machineResponse.machine.id,
+      responsiblePersonId: this.selectedEmployee,
+      responsiblePersonName: this.getEmployeeFullName(this.selectedEmployee) || '',
+      supervisorId: this.selectedSupervisor,
+      supervisorName: this.getEmployeeFullName(this.selectedSupervisor) || '',
+      managerId: this.selectedManager,
+      managerName: this.getEmployeeFullName(this.selectedManager) || '',
+      frequency: this.selectedFrequency?.length > 0 ? this.selectedFrequency.join(',') : '',
+      machineStatus: this.selectedStatus,
+      department: this.machineResponse.machine.department || '',
     };
 
     this.loading = true;
     this.machineService.updateMachine(this.machineResponse.machine.id, machineData).subscribe({
-        next: (response: MachineResponse) => {
-            this.machineResponse = response;
-            this.loading = false;
-            this.notifyService.msgSuccess('สำเร็จ', 'อัปเดตข้อมูลเครื่องจักรเรียบร้อยแล้ว');
-            console.log('Update successful:', response);
-        },
-        error: (err) => {
-            this.notifyService.msgWarn('เกิดข้อผิดพลาด', `ไม่สามารถอัปเดตข้อมูลเครื่องจักรได้: ${err.message || err.statusText}`);
-            console.error('Update error:', err);
-            this.loading = false;
-        }
+      next: (response: MachineResponse) => {
+        this.machineResponse = response;
+        this.loading = false;
+        this.notifyService.msgSuccess('สำเร็จ', 'อัปเดตข้อมูลเครื่องจักรเรียบร้อยแล้ว');
+        console.log('Update successful:', response);
+        window.location.reload();
+      },
+      error: (err) => {
+        this.notifyService.msgWarn('เกิดข้อผิดพลาด', `ไม่สามารถอัปเดตข้อมูลเครื่องจักรได้: ${err.message || err.statusText}`);
+        console.error('Update error:', err);
+        this.loading = false;
+      }
     });
   }
 

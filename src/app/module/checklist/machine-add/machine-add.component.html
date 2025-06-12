@@ -48,8 +48,19 @@
         formControlName="number"
         autocomplete="off"
         class="w-full text-xs"
-      />
+        [disabled]="true"/>
       <label for="number">หมายเลขเครื่อง</label>
+    </p-iftalabel>
+
+    <p-iftalabel class="text-xs mb-2">
+      <input
+        pInputText
+        id="department"
+        formControlName="department"
+        autocomplete="off"
+        class="w-full text-xs"
+      />
+      <label for="department">หน่วยงาน</label>
     </p-iftalabel>
 
     <p-iftalabel class="text-xs mb-2">
@@ -60,7 +71,7 @@
         class="w-full text-xs"
         readonly
       />
-      <p-dropdown
+      <p-select
         [options]="employeeList"
         formControlName="responsibleId"
         name="employeeList"
@@ -83,7 +94,7 @@
         class="w-full text-xs"
         readonly
       />
-      <p-dropdown
+      <p-select
         [options]="employeeList"
         formControlName="supervisorId"
         name="supervisorList"
@@ -106,7 +117,7 @@
         class="w-full text-xs"
         readonly
       />
-      <p-dropdown
+      <p-select
         [options]="employeeList"
         formControlName="managerId"
         name="managerList"
@@ -136,7 +147,7 @@
     </p-iftalabel>
 
     <p-iftalabel class="text-xs mb-2">
-      <p-dropdown
+      <p-select
         [options]="machineStatus"
         formControlName="status"
         name="status"
@@ -151,7 +162,7 @@
     </p-iftalabel>
 
     <p-iftalabel class="text-xs mb-2">
-      <p-dropdown
+      <p-select
         [options]="type"
         formControlName="type"
         name="type"

@@ -230,6 +230,10 @@ export class MachineListComponent implements OnInit {
     this.router.navigate(['/machine-detail', machineId]);
   }
 
+  kpiReport(): void {
+    this.router.navigate(['/kpi-report']);
+  }
+  
   onUserList(): void {
     this.router.navigate(['/user-list']);
   }

@@ -1,0 +1,73 @@
+<div class="go-back text-sm">
+  <p (click)="goBack()"><i class="icon icon-undo-2"></i> ย้อนกลับ</p>
+</div>
+
+<p-card class="kpi-card text-xs">
+  <div class="dropdown-container text-xs pb-2">
+    <div class="flex justify-content-center flex-wrap text-xs">
+      <div class="flex align-items-center justify-content-center w-full">
+        <div class="dropdown-item">
+          <label for="year">ปี </label>
+          <p-dropdown
+            id="year"
+            [options]="years"
+            [(ngModel)]="selectedYear"
+            optionLabel="name"
+            optionValue="value"
+            placeholder="เลือกปี"
+            (onChange)="onYearChange()"
+          ></p-dropdown>
+        </div>
+        <div class="dropdown-item pl-2">
+          <label for="month">เดือน </label>
+          <p-dropdown
+            id="month"
+            [options]="months"
+            [(ngModel)]="selectedMonth"
+            optionLabel="name"
+            optionValue="value"
+            placeholder="เลือกเดือน"
+            (onChange)="onMonthChange()"
+          ></p-dropdown>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-table 
+    *ngIf="records && records.length > 0" 
+    [value]="records" 
+    [tableStyle]="{'min-width': '18rem'}"
+    [paginator]="true"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="ทั้งหมด {totalRecords} รายการ"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ผู้รับผิดชอบ</th>
+        <th class="text-center">ทั้งหมด</th>
+        <th class="text-center">เสร็จสิ้น</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-record let-rowIndex="rowIndex">
+      <tr>
+        <td>
+          {{ record.employeeId }}
+          <br/>
+          {{ record.employeeName }}
+        </td>
+        <td class="text-center">{{ record.checkAll }}</td>
+        <td class="text-center">{{ record.checked }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <div class="flex justify-content-center flex-wrap text-xs">
+    <div class="flex align-items-center justify-content-center w-full">
+      <div *ngIf="!records || records.length === 0" class="kpi-info text-xs">
+        <p>ไม่พบข้อมูล</p>
+      </div>
+    </div>
+  </div>
+</p-card>
