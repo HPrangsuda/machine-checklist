@@ -54,7 +54,7 @@
                                 type="text" 
                                 pInputText 
                                 [(ngModel)]="item.answerChoice" 
-                                (ngModelChange)="formSubmitted = false; item.answerChoice = $event"
+                                (ngModelChange)="formSubmitted = false"
                                 class="w-full text-xs" 
                                 placeholder="กรุณาระบุ"
                                 [ngClass]="{'ng-invalid ng-dirty': !item.answerChoice && formSubmitted}"
