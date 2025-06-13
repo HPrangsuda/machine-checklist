@@ -33,9 +33,9 @@
                 <div *ngFor="let item of checklist; let i = index" class="checklist-item mb-3">
                     <div class="question text-xs mb-2">
                         <p class="text-xs font-bold white-space-normal mb-1">
-                            {{ item.question?.questionDetail || 'N/A' }} <span class="text-red-500">*</span>
+                            {{ item.question?.questionDetail || '' }} <span class="text-red-500">*</span>
                         </p>
-                        <small class="white-space-normal">{{ item.question?.questionDescription || 'N/A' }}</small>
+                        <small class="white-space-normal">{{ item.question?.questionDescription || '' }}</small>
                     </div>
                     <div class="answer">
                         <ng-container *ngIf="shouldUseDropdown(item); else inputField">
@@ -54,7 +54,7 @@
                                 type="text" 
                                 pInputText 
                                 [(ngModel)]="item.answerChoice" 
-                                (ngModelChange)="formSubmitted = false"
+                                (ngModelChange)="formSubmitted = false; item.answerChoice = $event"
                                 class="w-full text-xs" 
                                 placeholder="กรุณาระบุ"
                                 [ngClass]="{'ng-invalid ng-dirty': !item.answerChoice && formSubmitted}"
