@@ -67,7 +67,7 @@
       <input
         type="hidden"
         id="responsible_id"
-        formControlName="responsibleId"
+        [value]="getEmployeeId(machineForm.get('responsibleId')?.value)"
         class="w-full text-xs"
         readonly
       />
@@ -77,20 +77,19 @@
         name="employeeList"
         id="responsible"
         optionLabel="name"
-        optionValue="id"
+        optionValue="employeeId"
         placeholder="กรุณาเลือก"
-        styleClass="w-full md:w-56"
+        styleClass="w-full md:w-56 text-xs"
         [showClear]="true"
-        (onChange)="onResponsibleChange($event)"
       />
-      <label for="responsible">ผู้รับผิดชอบ</label>
+      <label for="responsible_id">ผู้รับผิดชอบ</label>
     </p-iftalabel>
 
     <p-iftalabel class="text-xs mb-2">
       <input
         type="hidden"
         id="supervisor_id"
-        formControlName="supervisorId"
+        [value]="getEmployeeId(machineForm.get('supervisorId')?.value)"
         class="w-full text-xs"
         readonly
       />
@@ -100,20 +99,19 @@
         name="supervisorList"
         id="supervisor"
         optionLabel="name"
-        optionValue="id"
+        optionValue="employeeId"
         placeholder="กรุณาเลือก"
-        styleClass="w-full md:w-56"
+        styleClass="w-full md:w-56 text-xs"
         [showClear]="true"
-        (onChange)="onSupervisorChange($event)"
       />
-      <label for="supervisor">หัวหน้างาน</label>
+      <label for="supervisor_id">หัวหน้างาน</label>
     </p-iftalabel>
 
     <p-iftalabel class="text-xs mb-2">
       <input
         type="hidden"
         id="manager_id"
-        formControlName="managerId"
+        [value]="getEmployeeId(machineForm.get('managerId')?.value)"
         class="w-full text-xs"
         readonly
       />
@@ -123,13 +121,12 @@
         name="managerList"
         id="manager"
         optionLabel="name"
-        optionValue="id"
+        optionValue="employeeId"
         placeholder="กรุณาเลือก"
-        styleClass="w-full md:w-56"
+        styleClass="w-full md:w-56 text-xs"
         [showClear]="true"
-        (onChange)="onManagerChange($event)"
       />
-      <label for="manager">ผู้จัดการฝ่าย</label>
+      <label for="manager_id">ผู้จัดการฝ่าย</label>
     </p-iftalabel>
 
     <p-iftalabel class="text-xs mb-2">

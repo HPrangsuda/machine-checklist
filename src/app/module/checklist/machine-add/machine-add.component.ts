@@ -3,7 +3,6 @@ import { Location } from '@angular/common';
 import { MachineType } from '../../../models/machine-type.model';
 import { MachineTypeService } from '../../../services/machine-type.service';
 import { MessageService } from 'primeng/api';
-import { StorageService } from '../../../core/service/storage.service';
 import { ActivatedRoute } from '@angular/router';
 import { Employee } from '../../../models/employee.model';
 import { EmployeeService } from '../../../services/employee.service';
@@ -29,9 +28,7 @@ export class MachineAddComponent implements OnInit {
   employeeList: Employee[] = [];
   frequency: Frequency[] = [];
   machineStatus: MachineStatus[] = [];
-  selectedStatus: string | null = null;
   type: MachineType[] = [];
-  selectedType: string | null = null;
   machineForm: FormGroup;
   loading: boolean = false;
   
@@ -52,6 +49,7 @@ export class MachineAddComponent implements OnInit {
       model: [''],
       code: ['', Validators.required],
       number: [''],
+      department: [''],
       responsibleId: [null],
       supervisorId: [null],
       managerId: [null],
@@ -87,10 +85,22 @@ export class MachineAddComponent implements OnInit {
   loadEmployeeList(): void {
     this.emplService.getAllUser().subscribe({
       next: (employees: Employee[]) => {
-        this.employeeList = employees.map(employee => ({
-          ...employee,
-          name: `${employee.firstName} ${employee.lastName}`
-        }));
+        this.employeeList = [
+          {
+            employeeId: '',
+            firstName: '',
+            lastName: '',
+            name: '----- กรุณาเลือก -----',
+            id: 0,
+            department: '',
+            nickName: '',
+            position: ''
+          },
+          ...employees.map(employee => ({
+            ...employee,
+            name: `${employee.firstName} ${employee.lastName}`
+          }))
+        ];
       },
       error: (err: any) => {
         console.error('ไม่สามารถโหลดรายชื่อพนักงานได้:', err);
@@ -128,19 +138,10 @@ export class MachineAddComponent implements OnInit {
     this.previewImageSrc = null;
   }
 
-  onResponsibleChange(event: any): void {
-    const selectedId = event.value;
-    this.machineForm.get('responsibleId')?.setValue(selectedId);
-  }
-
-  onSupervisorChange(event: any): void {
-    const selectedId = event.value;
-    this.machineForm.get('supervisorId')?.setValue(selectedId);
-  }
-
-  onManagerChange(event: any): void {
-    const selectedId = event.value;
-    this.machineForm.get('managerId')?.setValue(selectedId);
+  getEmployeeId(employeeId: string | null): string | null {
+    if (!employeeId) return null;
+    const employee = this.employeeList.find(emp => emp.employeeId === employeeId);
+    return employee ? employee.employeeId.toString() : null;
   }
 
   saveMachine(): void {
@@ -161,7 +162,7 @@ export class MachineAddComponent implements OnInit {
       machineModel: this.machineForm.value.model || null,
       machineCode: this.machineForm.value.code,
       machineNumber: this.machineForm.value.number || null,
-      department: this.machineForm.value.department,
+      department: this.machineForm.value.department || null,
       responsiblePersonId: this.machineForm.value.responsibleId || null,
       responsiblePersonName: this.getEmployeeFullName(this.machineForm.value.responsibleId),
       supervisorId: this.machineForm.value.supervisorId || null,
@@ -173,7 +174,7 @@ export class MachineAddComponent implements OnInit {
       machineTypeName: this.machineForm.value.type,
       note: this.machineForm.value.note || null
     };
-console.log('Machine Data:', machineData);
+    console.log('Machine Data:', machineData);
     // เรียกใช้ service ที่ปรับปรุงแล้วเพื่อส่งทั้งข้อมูลและไฟล์รูปภาพ
     this.machineService.addMachine(machineData, this.selectedFile || undefined).subscribe({
       next: () => {
@@ -197,9 +198,9 @@ console.log('Machine Data:', machineData);
     });
   }
   
-  getEmployeeFullName(employeeId: number | null): string | null {
+  getEmployeeFullName(employeeId: string | null): string | null {
     if (!employeeId) return null;
-    const employee = this.employeeList.find(emp => emp.id === employeeId);
+    const employee = this.employeeList.find(emp => emp.employeeId === employeeId);
     return employee ? `${employee.firstName} ${employee.lastName}` : null;
   }
 

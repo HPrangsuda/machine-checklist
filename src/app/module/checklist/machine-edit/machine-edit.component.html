@@ -11,7 +11,7 @@
       </div>
     </ng-template>
     <div>
-      <form class="machine-detail">
+      <form [formGroup]="machineForm" class="machine-detail">
         <p-iftalabel class="text-xs mb-2">
           <input pInputText id="model" [value]="machineResponse.machine.machineModel" autocomplete="off" class="w-full text-xs" disabled />
           <label for="model">รุ่น</label>
@@ -28,59 +28,82 @@
           <input
             pInputText
             id="department"
-            [(ngModel)]="machineResponse.machine.department"
-            name="department"
+            formControlName="department"
             autocomplete="off"
             class="w-full text-xs"
+            [ngClass]="{'ng-invalid ng-dirty': machineForm.get('department')?.touched && machineForm.get('department')?.invalid}"
           />
           <label for="department">หน่วยงาน</label>
+          <small *ngIf="machineForm.get('department')?.touched && machineForm.get('department')?.invalid" class="p-error">กรุณากรอกหน่วยงาน</small>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
-          <input type="hidden" id="responsible_id" [value]="selectedEmployee" class="w-full text-xs" disabled />
+          <input
+            type="hidden"
+            id="responsible_id"
+            [value]="getEmployeeId(machineForm.get('responsibleId')?.value)"
+            class="w-full text-xs"
+            readonly
+          />
           <p-select
             [options]="employeeList"
-            [(ngModel)]="selectedEmployee"
+            formControlName="responsibleId"
             name="employeeList"
             id="responsible"
             optionLabel="name"
             optionValue="employeeId"
             placeholder="กรุณาเลือก"
-            styleClass="w-full md:w-56"
+            styleClass="w-full md:w-56 text-xs"
+            [showClear]="true"
           />
-          <label for="responsible">ผู้รับผิดชอบ</label>
+          <label for="responsible_id">ผู้รับผิดชอบ</label>
+          <small *ngIf="machineForm.get('responsibleId')?.touched && machineForm.get('responsibleId')?.invalid" class="p-error">กรุณาเลือกผู้รับผิดชอบ</small>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
-          <input type="hidden" id="supervisor_hidden_id" [value]="selectedSupervisor" class="w-full text-xs" disabled />
+          <input
+            type="hidden"
+            id="supervisor_hidden_id"
+            [value]="getEmployeeId(machineForm.get('supervisorId')?.value)"
+            class="w-full text-xs"
+            readonly
+          />
           <p-select
             [options]="employeeList"
-            [(ngModel)]="selectedSupervisor"
+            formControlName="supervisorId"
             name="supervisorList"
             id="supervisor"
             optionLabel="name"
             optionValue="employeeId"
             placeholder="กรุณาเลือก"
-            styleClass="w-full md:w-56"
+            styleClass="w-full md:w-56 text-xs"
+            [showClear]="true"
           />
-          <label for="supervisor">หัวหน้างาน</label>
+          <label for="supervisor_hidden_id">หัวหน้างาน</label>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
-          <input type="hidden" id="employee_id" [value]="selectedManager" class="w-full text-xs" disabled />
+          <input
+            type="hidden"
+            id="employee_id"
+            [value]="getEmployeeId(machineForm.get('managerId')?.value)"
+            class="w-full text-xs"
+            readonly
+          />
           <p-select
             [options]="employeeList"
-            [(ngModel)]="selectedManager"
+            formControlName="managerId"
             name="managerList"
             id="manager"
             optionLabel="name"
             optionValue="employeeId"
             placeholder="กรุณาเลือก"
-            styleClass="w-full md:w-56"
+            styleClass="w-full md:w-56 text-xs"
+            [showClear]="true"
           />
-          <label for="manager">ผู้จัดการฝ่าย</label>
+          <label for="employee_id">ผู้จัดการฝ่าย</label>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
           <p-multiSelect
             [options]="frequency"
-            [(ngModel)]="selectedFrequency"
+            formControlName="frequency"
             name="frequency"
             optionLabel="name"
             optionValue="name"
@@ -94,7 +117,7 @@
         <p-iftalabel class="text-xs mb-2">
           <p-select
             [options]="machineStatus"
-            [(ngModel)]="selectedStatus"
+            formControlName="status"
             name="status"
             id="status"
             optionLabel="name"
@@ -107,7 +130,7 @@
         <p-iftalabel class="text-xs mb-2">
           <p-select
             [options]="type"
-            [(ngModel)]="selectedType"
+            formControlName="type"
             name="type"
             id="type"
             optionLabel="machineTypeName"

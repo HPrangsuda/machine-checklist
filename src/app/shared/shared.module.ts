@@ -32,6 +32,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { DividerModule } from 'primeng/divider';
 import { MeterGroupModule } from 'primeng/metergroup';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @NgModule({
   declarations: [],
@@ -72,7 +73,8 @@ import { MeterGroupModule } from 'primeng/metergroup';
     PaginatorModule,
     SkeletonModule,
     DividerModule,
-    MeterGroupModule
+    MeterGroupModule,
+    AutoCompleteModule
   ],
   providers: [ConfirmationService, MessageService]
 })

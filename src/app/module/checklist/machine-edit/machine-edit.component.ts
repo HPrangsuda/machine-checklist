@@ -8,6 +8,7 @@ import { Location } from '@angular/common';
 import { MachineTypeService } from '../../../services/machine-type.service';
 import { MachineType } from '../../../models/machine-type.model';
 import { NotifyService } from '../../../core/service/notify.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 interface Frequency {
   name: string;
@@ -30,19 +31,12 @@ export class MachineEditComponent implements OnInit {
   loading: boolean = false;
 
   employeeList: Employee[] = [];
-  selectedEmployee: string | null = null;
-  selectedSupervisor: string | null = null;
-  selectedManager: string | null = null;
   frequency: Frequency[] = [];
-  selectedFrequency: string[] = [];
   machineStatus: MachineStatus[] = [];
-  selectedStatus: string | null = null;
   type: MachineType[] = [];
-  selectedType: string | null = null;
-
   selectedFile: File | null = null;
   previewImageSrc: string | ArrayBuffer | null = null;
-department: any;
+  machineForm: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
@@ -50,8 +44,19 @@ department: any;
     private emplService: EmployeeService,
     private machineTypeService: MachineTypeService,
     private location: Location,
-    private notifyService: NotifyService
-  ) {}
+    private notifyService: NotifyService,
+    private fb: FormBuilder
+  ) {
+    this.machineForm = this.fb.group({
+      department: ['', Validators.required],
+      responsibleId: [null, Validators.required],
+      supervisorId: [null],
+      managerId: [null],
+      frequency: [[]],
+      status: [null, Validators.required],
+      type: [null]
+    });
+  }
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -91,17 +96,25 @@ department: any;
 
     if (this.machineResponse?.machine?.frequency) {
       const frequencyValue = this.machineResponse.machine.frequency;
-      this.selectedFrequency = typeof frequencyValue === 'string' && frequencyValue
-        ? frequencyValue.split(',').map(f => f.trim()).filter(f => this.frequency.some(fq => fq.name === f))
-        : [];
-    } else {
-      this.selectedFrequency = [];
+      this.machineForm.patchValue({
+        frequency: typeof frequencyValue === 'string' && frequencyValue
+          ? frequencyValue.split(',').map(f => f.trim()).filter(f => this.frequency.some(fq => fq.name === f))
+          : []
+      });
     }
 
     if (this.machineResponse?.machine?.machineStatus) {
-      this.selectedStatus = this.machineStatus.some(status => status.name === this.machineResponse!.machine.machineStatus)
-        ? this.machineResponse!.machine.machineStatus
-        : null;
+      this.machineForm.patchValue({
+        status: this.machineStatus.some(status => status.name === this.machineResponse!.machine.machineStatus)
+          ? this.machineResponse!.machine.machineStatus
+          : null
+      });
+    }
+
+    if (this.machineResponse?.machine?.department) {
+      this.machineForm.patchValue({
+        department: this.machineResponse.machine.department
+      });
     }
 
     this.loading = false;
@@ -112,12 +125,15 @@ department: any;
       next: (employees: Employee[]) => {
         this.employeeList = [
           {
-            employeeId: '', firstName: '', lastName: '', name: '----- กรุณาเลือก -----',
+            employeeId: '',
+            firstName: '',
+            lastName: '',
+            name: '----- กรุณาเลือก -----',
             id: 0,
             department: '',
             nickName: '',
             position: ''
-          }, 
+          },
           ...employees.map(employee => ({
             ...employee,
             name: `${employee.firstName} ${employee.lastName}`
@@ -128,21 +144,27 @@ department: any;
           const responsibleEmp = this.employeeList.find(
             emp => `${emp.firstName} ${emp.lastName}` === this.machineResponse!.machine.responsiblePersonName
           );
-          this.selectedEmployee = responsibleEmp ? responsibleEmp.employeeId : null;
+          this.machineForm.patchValue({
+            responsibleId: responsibleEmp ? responsibleEmp.employeeId : null
+          });
         }
 
         if (this.machineResponse?.machine?.supervisorName) {
           const supervisorEmp = this.employeeList.find(
             emp => `${emp.firstName} ${emp.lastName}` === this.machineResponse!.machine.supervisorName
           );
-          this.selectedSupervisor = supervisorEmp ? supervisorEmp.employeeId : null;
+          this.machineForm.patchValue({
+            supervisorId: supervisorEmp ? supervisorEmp.employeeId : null
+          });
         }
 
         if (this.machineResponse?.machine?.managerName) {
           const managerEmp = this.employeeList.find(
             emp => `${emp.firstName} ${emp.lastName}` === this.machineResponse!.machine.managerName
           );
-          this.selectedManager = managerEmp ? managerEmp.employeeId : null;
+          this.machineForm.patchValue({
+            managerId: managerEmp ? managerEmp.employeeId : null
+          });
         }
       },
       error: (err) => {
@@ -157,7 +179,9 @@ department: any;
       next: (data: MachineType[]) => {
         this.type = data;
         if (this.machineResponse?.machine?.machineTypeName) {
-          this.selectedType = this.type.find(t => t.machineTypeName === this.machineResponse!.machine.machineTypeName)?.machineTypeName || null;
+          this.machineForm.patchValue({
+            type: this.type.find(t => t.machineTypeName === this.machineResponse!.machine.machineTypeName)?.machineTypeName || null
+          });
         }
         this.loading = false;
       },
@@ -167,6 +191,12 @@ department: any;
         this.loading = false;
       }
     });
+  }
+
+  getEmployeeId(employeeId: string | null): string | null {
+    if (!employeeId) return null;
+    const employee = this.employeeList.find(emp => emp.employeeId === employeeId);
+    return employee ? employee.employeeId.toString() : null;
   }
 
   downloadQRCode(): void {
@@ -184,26 +214,27 @@ department: any;
 
   saveMachine(): void {
     if (!this.machineResponse?.machine) {
-      this.error = 'ไม่มีข้อมูลเครื่องจักรสำหรับบันทึก';
+      this.notifyService.msgWarn('ไม่มีข้อมูลเครื่องจักร', 'ไม่มีข้อมูลเครื่องจักรสำหรับบันทึก');
       return;
     }
 
-    if (!this.selectedEmployee || !this.selectedStatus || !this.machineResponse.machine.department) {
-      this.notifyService.msgWarn('ข้อมูลไม่ครบถ้วน', 'กรุณากรอกข้อมูลให้ครบทุกช่อง รวมถึงแผนก');
+    if (this.machineForm.invalid) {
+      this.notifyService.msgWarn('ข้อมูลไม่ครบถ้วน', 'กรุณากรอกข้อมูลที่จำเป็น (หน่วยงาน, ผู้รับผิดชอบ, สถานะ)');
+      this.machineForm.markAllAsTouched();
       return;
     }
 
     const machineData = {
       id: this.machineResponse.machine.id,
-      responsiblePersonId: this.selectedEmployee,
-      responsiblePersonName: this.getEmployeeFullName(this.selectedEmployee) || '',
-      supervisorId: this.selectedSupervisor,
-      supervisorName: this.getEmployeeFullName(this.selectedSupervisor) || '',
-      managerId: this.selectedManager,
-      managerName: this.getEmployeeFullName(this.selectedManager) || '',
-      frequency: this.selectedFrequency?.length > 0 ? this.selectedFrequency.join(',') : '',
-      machineStatus: this.selectedStatus,
-      department: this.machineResponse.machine.department || '',
+      responsiblePersonId: this.machineForm.value.responsibleId || null,
+      responsiblePersonName: this.getEmployeeFullName(this.machineForm.value.responsibleId) || '',
+      supervisorId: this.machineForm.value.supervisorId || null,
+      supervisorName: this.getEmployeeFullName(this.machineForm.value.supervisorId) || '',
+      managerId: this.machineForm.value.managerId || null,
+      managerName: this.getEmployeeFullName(this.machineForm.value.managerId) || '',
+      frequency: this.machineForm.value.frequency?.length > 0 ? this.machineForm.value.frequency.join(',') : '',
+      machineStatus: this.machineForm.value.status,
+      department: this.machineForm.value.department || ''
     };
 
     this.loading = true;
@@ -213,7 +244,7 @@ department: any;
         this.loading = false;
         this.notifyService.msgSuccess('สำเร็จ', 'อัปเดตข้อมูลเครื่องจักรเรียบร้อยแล้ว');
         console.log('Update successful:', response);
-        window.location.reload();
+        setTimeout(() => this.location.back(), 1000);
       },
       error: (err) => {
         this.notifyService.msgWarn('เกิดข้อผิดพลาด', `ไม่สามารถอัปเดตข้อมูลเครื่องจักรได้: ${err.message || err.statusText}`);
