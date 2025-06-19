@@ -44,17 +44,27 @@
             class="w-full text-xs"
             readonly
           />
-          <p-select
-            [options]="employeeList"
+          <p-autoComplete
+            [suggestions]="filteredEmployees"
+            (completeMethod)="filterEmployees($event)"
             formControlName="responsibleId"
-            name="employeeList"
-            id="responsible"
-            optionLabel="name"
-            optionValue="employeeId"
+            field="name"
+            [dropdown]="true"
+            [forceSelection]="true"
             placeholder="กรุณาเลือก"
-            styleClass="w-full md:w-56 text-xs"
+            styleClass="w-full md:w-56"
+            inputStyleClass="text-xs"
             [showClear]="true"
-          />
+            (onSelect)="onResponsibleChange($event)"
+            (onClear)="onResponsibleClear()"
+          >
+            <ng-template pTemplate="item" let-employee>
+              {{ employee.name }}
+            </ng-template>
+            <ng-template pTemplate="selectedItem" let-employee>
+              {{ employee.name }}
+            </ng-template>
+          </p-autoComplete>
           <label for="responsible_id">ผู้รับผิดชอบ</label>
           <small *ngIf="machineForm.get('responsibleId')?.touched && machineForm.get('responsibleId')?.invalid" class="p-error">กรุณาเลือกผู้รับผิดชอบ</small>
         </p-iftalabel>
@@ -66,17 +76,27 @@
             class="w-full text-xs"
             readonly
           />
-          <p-select
-            [options]="employeeList"
+          <p-autoComplete
+            [suggestions]="filteredEmployees"
+            (completeMethod)="filterEmployees($event)"
             formControlName="supervisorId"
-            name="supervisorList"
-            id="supervisor"
-            optionLabel="name"
-            optionValue="employeeId"
+            field="name"
+            [dropdown]="true"
+            [forceSelection]="true"
             placeholder="กรุณาเลือก"
-            styleClass="w-full md:w-56 text-xs"
+            styleClass="w-full md:w-56"
+            inputStyleClass="text-xs"
             [showClear]="true"
-          />
+            (onSelect)="onSupervisorChange($event)"
+            (onClear)="onSupervisorClear()"
+          >
+            <ng-template pTemplate="item" let-employee>
+              {{ employee.name }}
+            </ng-template>
+            <ng-template pTemplate="selectedItem" let-employee>
+              {{ employee.name }}
+            </ng-template>
+          </p-autoComplete>
           <label for="supervisor_hidden_id">หัวหน้างาน</label>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">
@@ -87,17 +107,27 @@
             class="w-full text-xs"
             readonly
           />
-          <p-select
-            [options]="employeeList"
+          <p-autoComplete
+            [suggestions]="filteredEmployees"
+            (completeMethod)="filterEmployees($event)"
             formControlName="managerId"
-            name="managerList"
-            id="manager"
-            optionLabel="name"
-            optionValue="employeeId"
+            field="name"
+            [dropdown]="true"
+            [forceSelection]="true"
             placeholder="กรุณาเลือก"
-            styleClass="w-full md:w-56 text-xs"
+            styleClass="w-full md:w-56"
+            inputStyleClass="text-xs"
             [showClear]="true"
-          />
+            (onSelect)="onManagerChange($event)"
+            (onClear)="onManagerClear()"
+          >
+            <ng-template pTemplate="item" let-employee>
+              {{ employee.name }}
+            </ng-template>
+            <ng-template pTemplate="selectedItem" let-employee>
+              {{ employee.name }}
+            </ng-template>
+          </p-autoComplete>
           <label for="employee_id">ผู้จัดการฝ่าย</label>
         </p-iftalabel>
         <p-iftalabel class="text-xs mb-2">

@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { MachineType } from '../../../models/machine-type.model';
 import { MachineTypeService } from '../../../services/machine-type.service';
 import { MessageService } from 'primeng/api';
+import { StorageService } from '../../../core/service/storage.service';
 import { ActivatedRoute } from '@angular/router';
 import { Employee } from '../../../models/employee.model';
 import { EmployeeService } from '../../../services/employee.service';
@@ -26,9 +27,12 @@ interface MachineStatus {
 })
 export class MachineAddComponent implements OnInit {
   employeeList: Employee[] = [];
+  filteredEmployees: Employee[] = [];
   frequency: Frequency[] = [];
   machineStatus: MachineStatus[] = [];
+  selectedStatus: string | null = null;
   type: MachineType[] = [];
+  selectedType: string | null = null;
   machineForm: FormGroup;
   loading: boolean = false;
   
@@ -87,11 +91,11 @@ export class MachineAddComponent implements OnInit {
       next: (employees: Employee[]) => {
         this.employeeList = [
           {
+            id: 0,
             employeeId: '',
             firstName: '',
             lastName: '',
             name: '----- กรุณาเลือก -----',
-            id: 0,
             department: '',
             nickName: '',
             position: ''
@@ -101,9 +105,15 @@ export class MachineAddComponent implements OnInit {
             name: `${employee.firstName} ${employee.lastName}`
           }))
         ];
+        this.filteredEmployees = this.employeeList;
       },
       error: (err: any) => {
         console.error('ไม่สามารถโหลดรายชื่อพนักงานได้:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'ข้อผิดพลาด',
+          detail: 'ไม่สามารถโหลดรายชื่อพนักงานได้'
+        });
       }
     });
   }
@@ -115,12 +125,55 @@ export class MachineAddComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Error fetching machine types:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'ข้อผิดพลาด',
+          detail: 'ไม่สามารถโหลดประเภทเครื่องได้'
+        });
       }
     });
   }
 
+  filterEmployees(event: any): void {
+    const query = event.query.toLowerCase();
+    this.filteredEmployees = this.employeeList.filter(employee =>
+      employee.name?.toLowerCase().includes(query)
+    );
+  }
+
+  onResponsibleChange(event: any): void {
+    const selectedEmployee = event.value;
+    this.machineForm.get('responsibleId')?.setValue(selectedEmployee ? selectedEmployee : null);
+  }
+
+  onResponsibleClear(): void {
+    this.machineForm.get('responsibleId')?.setValue(null);
+  }
+
+  onSupervisorChange(event: any): void {
+    const selectedEmployee = event.value;
+    this.machineForm.get('supervisorId')?.setValue(selectedEmployee ? selectedEmployee : null);
+  }
+
+  onSupervisorClear(): void {
+    this.machineForm.get('supervisorId')?.setValue(null);
+  }
+
+  onManagerChange(event: any): void {
+    const selectedEmployee = event.value;
+    this.machineForm.get('managerId')?.setValue(selectedEmployee ? selectedEmployee : null);
+  }
+
+  onManagerClear(): void {
+    this.machineForm.get('managerId')?.setValue(null);
+  }
+
+  getEmployeeId(employee: Employee | null): string | null {
+    return employee ? employee.employeeId.toString() : null;
+  }
+
   onFileSelected(event: any): void {
-    const file = event.target.files[0];
+    const file = event.files[0];
     if (file) {
       this.selectedFile = file;
       
@@ -136,12 +189,6 @@ export class MachineAddComponent implements OnInit {
   clearImage(): void {
     this.selectedFile = null;
     this.previewImageSrc = null;
-  }
-
-  getEmployeeId(employeeId: string | null): string | null {
-    if (!employeeId) return null;
-    const employee = this.employeeList.find(emp => emp.employeeId === employeeId);
-    return employee ? employee.employeeId.toString() : null;
   }
 
   saveMachine(): void {
@@ -163,19 +210,19 @@ export class MachineAddComponent implements OnInit {
       machineCode: this.machineForm.value.code,
       machineNumber: this.machineForm.value.number || null,
       department: this.machineForm.value.department || null,
-      responsiblePersonId: this.machineForm.value.responsibleId || null,
-      responsiblePersonName: this.getEmployeeFullName(this.machineForm.value.responsibleId),
-      supervisorId: this.machineForm.value.supervisorId || null,
-      supervisorName: this.getEmployeeFullName(this.machineForm.value.supervisorId),
-      managerId: this.machineForm.value.managerId || null,
-      managerName: this.getEmployeeFullName(this.machineForm.value.managerId),
+      responsiblePersonId: this.machineForm.value.responsibleId ? this.machineForm.value.responsibleId.employeeId : null,
+      responsiblePersonName: this.getEmployeeFullName(this.machineForm.value.responsibleId) || null,
+      supervisorId: this.machineForm.value.supervisorId ? this.machineForm.value.supervisorId.employeeId : null,
+      supervisorName: this.getEmployeeFullName(this.machineForm.value.supervisorId) || null,
+      managerId: this.machineForm.value.managerId ? this.machineForm.value.managerId.employeeId : null,
+      managerName: this.getEmployeeFullName(this.machineForm.value.managerId) || null,
       frequency: selectedFrequency && selectedFrequency.length > 0 ? selectedFrequency.join(',') : null,
       machineStatus: this.machineForm.value.status || null,
       machineTypeName: this.machineForm.value.type,
       note: this.machineForm.value.note || null
     };
+
     console.log('Machine Data:', machineData);
-    // เรียกใช้ service ที่ปรับปรุงแล้วเพื่อส่งทั้งข้อมูลและไฟล์รูปภาพ
     this.machineService.addMachine(machineData, this.selectedFile || undefined).subscribe({
       next: () => {
         this.messageService.add({
@@ -197,10 +244,8 @@ export class MachineAddComponent implements OnInit {
       }
     });
   }
-  
-  getEmployeeFullName(employeeId: string | null): string | null {
-    if (!employeeId) return null;
-    const employee = this.employeeList.find(emp => emp.employeeId === employeeId);
+
+  getEmployeeFullName(employee: Employee | null): string | null {
     return employee ? `${employee.firstName} ${employee.lastName}` : null;
   }
 

@@ -48,7 +48,8 @@
         formControlName="number"
         autocomplete="off"
         class="w-full text-xs"
-        [disabled]="true"/>
+        [disabled]="true"
+      />
       <label for="number">หมายเลขเครื่อง</label>
     </p-iftalabel>
 
@@ -71,17 +72,27 @@
         class="w-full text-xs"
         readonly
       />
-      <p-select
-        [options]="employeeList"
+      <p-autoComplete
+        [suggestions]="filteredEmployees"
+        (completeMethod)="filterEmployees($event)"
         formControlName="responsibleId"
-        name="employeeList"
-        id="responsible"
-        optionLabel="name"
-        optionValue="employeeId"
+        field="name"
+        [dropdown]="true"
+        [forceSelection]="true"
         placeholder="กรุณาเลือก"
-        styleClass="w-full md:w-56 text-xs"
+        styleClass="w-full md:w-56"
+        inputStyleClass="text-xs"
         [showClear]="true"
-      />
+        (onSelect)="onResponsibleChange($event)"
+        (onClear)="onResponsibleClear()"
+      >
+        <ng-template pTemplate="item" let-employee>
+          {{ employee.name }}
+        </ng-template>
+        <ng-template pTemplate="selectedItem" let-employee>
+          {{ employee.name }}
+        </ng-template>
+      </p-autoComplete>
       <label for="responsible_id">ผู้รับผิดชอบ</label>
     </p-iftalabel>
 
@@ -93,17 +104,27 @@
         class="w-full text-xs"
         readonly
       />
-      <p-select
-        [options]="employeeList"
+      <p-autoComplete
+        [suggestions]="filteredEmployees"
+        (completeMethod)="filterEmployees($event)"
         formControlName="supervisorId"
-        name="supervisorList"
-        id="supervisor"
-        optionLabel="name"
-        optionValue="employeeId"
+        field="name"
+        [dropdown]="true"
+        [forceSelection]="true"
         placeholder="กรุณาเลือก"
-        styleClass="w-full md:w-56 text-xs"
+        styleClass="w-full md:w-56"
+        inputStyleClass="text-xs"
         [showClear]="true"
-      />
+        (onSelect)="onSupervisorChange($event)"
+        (onClear)="onSupervisorClear()"
+      >
+        <ng-template pTemplate="item" let-employee>
+          {{ employee.name }}
+        </ng-template>
+        <ng-template pTemplate="selectedItem" let-employee>
+          {{ employee.name }}
+        </ng-template>
+      </p-autoComplete>
       <label for="supervisor_id">หัวหน้างาน</label>
     </p-iftalabel>
 
@@ -115,17 +136,27 @@
         class="w-full text-xs"
         readonly
       />
-      <p-select
-        [options]="employeeList"
+      <p-autoComplete
+        [suggestions]="filteredEmployees"
+        (completeMethod)="filterEmployees($event)"
         formControlName="managerId"
-        name="managerList"
-        id="manager"
-        optionLabel="name"
-        optionValue="employeeId"
+        field="name"
+        [dropdown]="true"
+        [forceSelection]="true"
         placeholder="กรุณาเลือก"
-        styleClass="w-full md:w-56 text-xs"
+        styleClass="w-full md:w-56"
+        inputStyleClass="text-xs"
         [showClear]="true"
-      />
+        (onSelect)="onManagerChange($event)"
+        (onClear)="onManagerClear()"
+      >
+        <ng-template pTemplate="item" let-employee>
+          {{ employee.name }}
+        </ng-template>
+        <ng-template pTemplate="selectedItem" let-employee>
+          {{ employee.name }}
+        </ng-template>
+      </p-autoComplete>
       <label for="manager_id">ผู้จัดการฝ่าย</label>
     </p-iftalabel>
 
@@ -174,6 +205,7 @@
       <label for="type">ประเภทเครื่อง</label>
       <small *ngIf="machineForm.get('type')?.touched && machineForm.get('type')?.invalid" class="p-error">กรุณาเลือกประเภทเครื่อง</small>
     </p-iftalabel>
+
     <div class="mt-1 upload">
       <p-card>
         <div class="upload">
@@ -191,8 +223,8 @@
                 [maxFileSize]="5000000"
                 (onSelect)="onFileSelected($event)"
                 [showUploadButton]="false"
-                [showCancelButton]="false">
-              </p-fileUpload>
+                [showCancelButton]="false"
+              />
               <button 
                 *ngIf="selectedFile" 
                 pButton 
@@ -200,8 +232,8 @@
                 icon="pi pi-times" 
                 class="p-button-danger p-button-sm ml-2" 
                 (click)="clearImage()"
-                pTooltip="ลบรูปภาพ">
-              </button>
+                pTooltip="ลบรูปภาพ"
+              ></button>
             </div>
           </div>
         </div>

@@ -31,6 +31,7 @@ export class MachineEditComponent implements OnInit {
   loading: boolean = false;
 
   employeeList: Employee[] = [];
+  filteredEmployees: Employee[] = [];
   frequency: Frequency[] = [];
   machineStatus: MachineStatus[] = [];
   type: MachineType[] = [];
@@ -140,30 +141,30 @@ export class MachineEditComponent implements OnInit {
           }))
         ];
 
-        if (this.machineResponse?.machine?.responsiblePersonName) {
+        if (this.machineResponse?.machine?.responsiblePersonId) {
           const responsibleEmp = this.employeeList.find(
-            emp => `${emp.firstName} ${emp.lastName}` === this.machineResponse!.machine.responsiblePersonName
+            emp => emp.employeeId === this.machineResponse!.machine.responsiblePersonId.toString()
           );
           this.machineForm.patchValue({
-            responsibleId: responsibleEmp ? responsibleEmp.employeeId : null
+            responsibleId: responsibleEmp || null
           });
         }
 
-        if (this.machineResponse?.machine?.supervisorName) {
+        if (this.machineResponse?.machine?.supervisorId) {
           const supervisorEmp = this.employeeList.find(
-            emp => `${emp.firstName} ${emp.lastName}` === this.machineResponse!.machine.supervisorName
+            emp => emp.employeeId === this.machineResponse!.machine.supervisorId.toString()
           );
           this.machineForm.patchValue({
-            supervisorId: supervisorEmp ? supervisorEmp.employeeId : null
+            supervisorId: supervisorEmp || null
           });
         }
 
-        if (this.machineResponse?.machine?.managerName) {
+        if (this.machineResponse?.machine?.managerId) {
           const managerEmp = this.employeeList.find(
-            emp => `${emp.firstName} ${emp.lastName}` === this.machineResponse!.machine.managerName
+            emp => emp.employeeId === this.machineResponse!.machine.managerId.toString()
           );
           this.machineForm.patchValue({
-            managerId: managerEmp ? managerEmp.employeeId : null
+            managerId: managerEmp || null
           });
         }
       },
@@ -193,9 +194,41 @@ export class MachineEditComponent implements OnInit {
     });
   }
 
-  getEmployeeId(employeeId: string | null): string | null {
-    if (!employeeId) return null;
-    const employee = this.employeeList.find(emp => emp.employeeId === employeeId);
+  filterEmployees(event: any): void {
+    const query = event.query.toLowerCase();
+    this.filteredEmployees = this.employeeList.filter(employee =>
+      (employee.name ?? '').toLowerCase().includes(query)
+    );
+  }
+
+  onResponsibleChange(event: any): void {
+    const selectedEmployee = event.value;
+    this.machineForm.get('responsibleId')?.setValue(selectedEmployee ? selectedEmployee : null);
+  }
+
+  onResponsibleClear(): void {
+    this.machineForm.get('responsibleId')?.setValue(null);
+  }
+
+  onSupervisorChange(event: any): void {
+    const selectedEmployee = event.value;
+    this.machineForm.get('supervisorId')?.setValue(selectedEmployee ? selectedEmployee : null);
+  }
+
+  onSupervisorClear(): void {
+    this.machineForm.get('supervisorId')?.setValue(null);
+  }
+
+  onManagerChange(event: any): void {
+    const selectedEmployee = event.value;
+    this.machineForm.get('managerId')?.setValue(selectedEmployee ? selectedEmployee : null);
+  }
+
+  onManagerClear(): void {
+    this.machineForm.get('managerId')?.setValue(null);
+  }
+
+  getEmployeeId(employee: Employee | null): string | null {
     return employee ? employee.employeeId.toString() : null;
   }
 
@@ -226,11 +259,11 @@ export class MachineEditComponent implements OnInit {
 
     const machineData = {
       id: this.machineResponse.machine.id,
-      responsiblePersonId: this.machineForm.value.responsibleId || null,
+      responsiblePersonId: this.machineForm.value.responsibleId ? this.machineForm.value.responsibleId.employeeId : null,
       responsiblePersonName: this.getEmployeeFullName(this.machineForm.value.responsibleId) || '',
-      supervisorId: this.machineForm.value.supervisorId || null,
+      supervisorId: this.machineForm.value.supervisorId ? this.machineForm.value.supervisorId.employeeId : null,
       supervisorName: this.getEmployeeFullName(this.machineForm.value.supervisorId) || '',
-      managerId: this.machineForm.value.managerId || null,
+      managerId: this.machineForm.value.managerId ? this.machineForm.value.managerId.employeeId : null,
       managerName: this.getEmployeeFullName(this.machineForm.value.managerId) || '',
       frequency: this.machineForm.value.frequency?.length > 0 ? this.machineForm.value.frequency.join(',') : '',
       machineStatus: this.machineForm.value.status,
@@ -254,9 +287,7 @@ export class MachineEditComponent implements OnInit {
     });
   }
 
-  private getEmployeeFullName(employeeId: string | null): string | null {
-    if (!employeeId) return null;
-    const employee = this.employeeList.find(emp => emp.employeeId === employeeId);
+  private getEmployeeFullName(employee: Employee | null): string | null {
     return employee ? `${employee.firstName} ${employee.lastName}` : null;
   }
 
