@@ -32,6 +32,8 @@ export class KpiReportComponent implements OnInit {
   years: { name: string, value: string }[] = [];
   selectedMonth: number = new Date().getMonth() + 1;
   selectedYear: string = new Date().getFullYear().toString();
+  isSuperAdmin: boolean | undefined;
+  isManager: boolean | undefined;
 
   constructor(
     private messageService: MessageService,
@@ -41,13 +43,20 @@ export class KpiReportComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.isSuperAdmin = this.storageService.getRole() === 'SUPERADMIN';
+    this.isManager = this.storageService.getRole() === 'MANAGER';
+
     const currentYear = new Date().getFullYear();
     this.years = Array.from({ length: 5 }, (_, i) => ({
       name: (currentYear - i).toString(),
       value: (currentYear - i).toString()
     }));
     
-    this.loadKpi();
+    if(this.isSuperAdmin) {
+      this.loadKpi();
+    } else if(this.isManager) {
+      this.loadKpiResponsible();
+    } 
   }
 
   loadKpi(): void {
@@ -72,12 +81,42 @@ export class KpiReportComponent implements OnInit {
     });
   }
 
+  loadKpiResponsible(): void {
+    this.loading = true;
+    this.kpiService.getKpiResponsible(this.storageService.getUsername(), this.selectedYear, this.selectedMonth).subscribe({
+      next: (data: Kpi[]) => {
+        this.records = data;
+        this.loading = false;
+      },
+      error: (err: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'ข้อผิดพลาด',
+          detail: 'ไม่สามารถโหลดข้อมูล KPI ได้: ' + (err.message || 'ข้อผิดพลาดที่ไม่ทราบสาเหตุ')
+        });
+        this.records = [];
+        this.meterValue = [
+          { label: 'คิดเป็นร้อยละ', value: 0, color: 'var(--p-primary-color)', max: 100 }
+        ];
+        this.loading = false;
+      }
+    });
+  }
+
   onMonthChange(): void {
-    this.loadKpi();
+    if(this.isSuperAdmin) {
+      this.loadKpi();
+    } else if(this.isManager) {
+      this.loadKpiResponsible();
+    } 
   }
 
   onYearChange(): void {
-    this.loadKpi();
+    if(this.isSuperAdmin) {
+      this.loadKpi();
+    } else if(this.isManager) {
+      this.loadKpiResponsible();
+    } 
   }
 
   goBack(): void {

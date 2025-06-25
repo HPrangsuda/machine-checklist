@@ -49,6 +49,7 @@ export class MachineListComponent implements OnInit {
   selectedStatus: MachineStatus | null = null;
   isSuperAdmin: boolean | undefined;
   isAdmin: boolean | undefined;
+  isManager: boolean | undefined;
 
   machineStatusOptions: string[] = [
     'ใช้งานได้',
@@ -74,7 +75,7 @@ export class MachineListComponent implements OnInit {
   ngOnInit(): void {
     this.isSuperAdmin = this.storageService.getRole() === 'SUPERADMIN';
     this.isAdmin = this.storageService.getRole() === 'ADMIN';
-    
+    this.isManager = this.storageService.getRole() === 'MANAGER';
     if(this.isSuperAdmin) {
       this.loadMachines();
     } else if(this.isAdmin) {

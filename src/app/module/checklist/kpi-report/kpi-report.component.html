@@ -8,7 +8,7 @@
       <div class="flex align-items-center justify-content-center w-full">
         <div class="dropdown-item">
           <label for="year">ปี </label>
-          <p-dropdown
+          <p-select
             id="year"
             [options]="years"
             [(ngModel)]="selectedYear"
@@ -16,11 +16,11 @@
             optionValue="value"
             placeholder="เลือกปี"
             (onChange)="onYearChange()"
-          ></p-dropdown>
+          ></p-select>
         </div>
         <div class="dropdown-item pl-2">
           <label for="month">เดือน </label>
-          <p-dropdown
+          <p-select
             id="month"
             [options]="months"
             [(ngModel)]="selectedMonth"
@@ -28,7 +28,7 @@
             optionValue="value"
             placeholder="เลือกเดือน"
             (onChange)="onMonthChange()"
-          ></p-dropdown>
+          ></p-select>
         </div>
       </div>
     </div>

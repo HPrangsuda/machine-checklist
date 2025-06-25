@@ -92,7 +92,8 @@ export class MachineEditComponent implements OnInit {
     this.machineStatus = [
       { name: 'ใช้งานได้' },
       { name: 'ไม่ได้ใช้งาน' },
-      { name: 'ซ่อมบำรุง' }
+      { name: 'ซ่อมบำรุง' },
+      { name: 'ยกเลิกใช้งาน'}
     ];
 
     if (this.machineResponse?.machine?.frequency) {

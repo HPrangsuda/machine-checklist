@@ -81,7 +81,7 @@ export class FooterComponent {
         next: (machine: Machine | null) => {
           this.isLoading = false;
           if (!machine || machine.machineStatus !== 'ใช้งานได้') {
-            this.notify.msgWarn('QR Code insurer', 'ไม่สามารถใช้งานเครื่องจักรได้');
+            this.notify.msgWarn('QR Code Scan', 'ไม่สามารถใช้งานเครื่องจักรได้');
             return;
           }
           this.machines = [machine]; 
