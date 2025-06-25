@@ -79,11 +79,11 @@ export class MachineListComponent implements OnInit {
     if(this.isSuperAdmin) {
       this.loadMachines();
     } else if(this.isAdmin) {
-      console.log('department');
       this.loadMachinesByDepartment();
     } else{
       this.loadMachinesByResponsibleAll();
     }
+
     this.loadData();
   }
  

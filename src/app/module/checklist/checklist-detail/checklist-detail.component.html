@@ -17,7 +17,7 @@
         <small class="div-p-tag mb-1">สถานะเครื่องจักร : <p-tag [ngClass]="getRoleClass(record.machineStatus)" [value]="record.machineStatus"></p-tag> </small><br>
         <small class="mb-1">รหัสเครื่อง : {{ record.machineCode }} </small><br>
         <small class="mb-1"><i class="icon icon-user"></i> {{ record.userName }}</small><br>
-        <small class="mb-1"><i class="icon icon-calendar-clock"></i> {{ record.dateCreated | date:'dd/MM/yyyy hh:mm' }}</small>
+        <small class="mb-1"><i class="icon icon-calendar-clock"></i> {{ record.dateCreated | date:'dd/MM/yyyy HH:mm' }}</small>
       </div>
       <div class="checklist">
         <div *ngFor="let item of checklistItems" class="question text-xs mb-2">

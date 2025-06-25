@@ -20,6 +20,7 @@ export class HistoryComponent {
 
   first: number = 0;
   rows: number = 5;
+  isAdmin: boolean | undefined;
 
   constructor(
     private recordService: ChecklistRecordsService,
@@ -29,14 +30,38 @@ export class HistoryComponent {
   ) {}
 
   ngOnInit(): void {
-    this.loadRecordByResponsiblePerson();
+    this.isAdmin = this.storageService.getRole() === 'ADMIN';
+    if(this.isAdmin) {
+      this.loadRecordByDepartment();
+    } else {
+      this.loadRecordByResponsiblePerson();
+    } 
   }
 
+  loadRecordByDepartment(): void {
+    this.loading = true;
+    this.recordService.getRecordByDepartment(this.storageService.getUsername()).subscribe({
+      next: (data: Record[]) => {
+        this.records = data.sort((a, b) => (b.checklistId || 0) - (a.checklistId || 0));
+        this.filteredRecords = [...this.records]; 
+        this.first = 0;
+        this.loading = false;
+      },
+      error: (err: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load records: ' + (err.message || 'Unknown error')
+        });
+        this.loading = false;
+      }
+    });
+  }
+  
   loadRecordByResponsiblePerson(): void {
     this.loading = true;
     this.recordService.getRecordByResponsiblePerson(this.storageService.getUsername()).subscribe({
       next: (data: Record[]) => {
-        // เรียงลำดับตาม checklistId DESC
         this.records = data.sort((a, b) => (b.checklistId || 0) - (a.checklistId || 0));
         this.filteredRecords = [...this.records]; 
         this.first = 0;

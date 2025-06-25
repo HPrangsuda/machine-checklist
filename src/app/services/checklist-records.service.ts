@@ -38,6 +38,10 @@ export class ChecklistRecordsService {
         return this.http.get<Record>(`${this.baseUrl}/record`, { params, headers: this.getHeaders() });
     }
 
+    getRecordByDepartment(personId: string): Observable<Record[]> {
+        return this.http.get<Record[]>(`${this.baseUrl}/department/${personId}`);
+    }
+    
     getRecordByResponsiblePerson(personId: string): Observable<Record[]> {
         return this.http.get<Record[]>(`${this.baseUrl}/responsible/${personId}`);
     }
