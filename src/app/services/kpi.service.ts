@@ -25,9 +25,14 @@ export class KpiService {
     return this.http.get<Kpi[]>(`${this.baseUrl}?year=${year}&month=${formattedMonth}`, { headers: this.getHeaders() });
   }
 
-  getKpiResponsible(employeeId: string, year: string, month: number): Observable<Kpi[]> {
+  getKpiByManager(employeeId: string, year: string, month: number): Observable<Kpi[]> {
     const formattedMonth = month.toString().padStart(2, '0');
-    return this.http.get<Kpi[]>(`${this.baseUrl}/responsible/${employeeId}?year=${year}&month=${formattedMonth}`, { headers: this.getHeaders() });
+    return this.http.get<Kpi[]>(`${this.baseUrl}/manager/${employeeId}?year=${year}&month=${formattedMonth}`, { headers: this.getHeaders() });
+  }
+
+  getKpiBySupervisor(employeeId: string, year: string, month: number): Observable<Kpi[]> {
+    const formattedMonth = month.toString().padStart(2, '0');
+    return this.http.get<Kpi[]>(`${this.baseUrl}/supervisor/${employeeId}?year=${year}&month=${formattedMonth}`, { headers: this.getHeaders() });
   }
   
   getKpi(employeeId: string, year: string, month: number): Observable<Kpi> {

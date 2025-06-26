@@ -50,6 +50,7 @@ export class MachineListComponent implements OnInit {
   isSuperAdmin: boolean | undefined;
   isAdmin: boolean | undefined;
   isManager: boolean | undefined;
+  isSupervisor: boolean | undefined;
 
   machineStatusOptions: string[] = [
     'ใช้งานได้',
@@ -76,6 +77,8 @@ export class MachineListComponent implements OnInit {
     this.isSuperAdmin = this.storageService.getRole() === 'SUPERADMIN';
     this.isAdmin = this.storageService.getRole() === 'ADMIN';
     this.isManager = this.storageService.getRole() === 'MANAGER';
+    this.isSupervisor = this.storageService.getRole() === 'SUPERVISOR';
+    
     if(this.isSuperAdmin) {
       this.loadMachines();
     } else if(this.isAdmin) {

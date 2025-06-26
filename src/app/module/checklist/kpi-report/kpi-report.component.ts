@@ -34,6 +34,7 @@ export class KpiReportComponent implements OnInit {
   selectedYear: string = new Date().getFullYear().toString();
   isSuperAdmin: boolean | undefined;
   isManager: boolean | undefined;
+  isSupervisor: boolean | undefined;
 
   constructor(
     private messageService: MessageService,
@@ -45,6 +46,7 @@ export class KpiReportComponent implements OnInit {
   ngOnInit() {
     this.isSuperAdmin = this.storageService.getRole() === 'SUPERADMIN';
     this.isManager = this.storageService.getRole() === 'MANAGER';
+    this.isSupervisor = this.storageService.getRole() === 'SUPERVISOR';
 
     const currentYear = new Date().getFullYear();
     this.years = Array.from({ length: 5 }, (_, i) => ({
@@ -55,7 +57,9 @@ export class KpiReportComponent implements OnInit {
     if(this.isSuperAdmin) {
       this.loadKpi();
     } else if(this.isManager) {
-      this.loadKpiResponsible();
+      this.loadKpiByManager();
+    } else if(this.isSupervisor) {
+      this.loadKpiBySupervisor();
     } 
   }
 
@@ -81,9 +85,31 @@ export class KpiReportComponent implements OnInit {
     });
   }
 
-  loadKpiResponsible(): void {
+  loadKpiByManager(): void {
     this.loading = true;
-    this.kpiService.getKpiResponsible(this.storageService.getUsername(), this.selectedYear, this.selectedMonth).subscribe({
+    this.kpiService.getKpiByManager(this.storageService.getUsername(), this.selectedYear, this.selectedMonth).subscribe({
+      next: (data: Kpi[]) => {
+        this.records = data;
+        this.loading = false;
+      },
+      error: (err: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'ข้อผิดพลาด',
+          detail: 'ไม่สามารถโหลดข้อมูล KPI ได้: ' + (err.message || 'ข้อผิดพลาดที่ไม่ทราบสาเหตุ')
+        });
+        this.records = [];
+        this.meterValue = [
+          { label: 'คิดเป็นร้อยละ', value: 0, color: 'var(--p-primary-color)', max: 100 }
+        ];
+        this.loading = false;
+      }
+    });
+  }
+
+  loadKpiBySupervisor(): void {
+    this.loading = true;
+    this.kpiService.getKpiBySupervisor(this.storageService.getUsername(), this.selectedYear, this.selectedMonth).subscribe({
       next: (data: Kpi[]) => {
         this.records = data;
         this.loading = false;
@@ -107,7 +133,9 @@ export class KpiReportComponent implements OnInit {
     if(this.isSuperAdmin) {
       this.loadKpi();
     } else if(this.isManager) {
-      this.loadKpiResponsible();
+      this.loadKpiByManager();
+    } else if(this.isManager) {
+      this.loadKpiBySupervisor();
     } 
   }
 
@@ -115,7 +143,9 @@ export class KpiReportComponent implements OnInit {
     if(this.isSuperAdmin) {
       this.loadKpi();
     } else if(this.isManager) {
-      this.loadKpiResponsible();
+      this.loadKpiByManager();
+    } else if(this.isManager) {
+      this.loadKpiBySupervisor();
     } 
   }
 

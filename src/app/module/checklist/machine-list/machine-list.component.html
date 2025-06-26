@@ -18,7 +18,7 @@
             <i class="pi pi-plus text-sm"></i>
           </button>
         </div>
-        <div *ngIf="isSuperAdmin || isManager">
+        <div *ngIf="isSuperAdmin || isManager || isSupervisor">
           <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="kpiReport()">
             <i class="pi pi-chart-bar text-sm"></i>
           </button>
