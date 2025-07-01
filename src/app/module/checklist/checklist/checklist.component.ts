@@ -43,6 +43,7 @@ interface ChecklistRequestDTO {
     userName: string;
     supervisor: string;
     manager: string;
+    jobDetail: string;
 }
 
 @Component({
@@ -65,6 +66,8 @@ export class ChecklistComponent implements OnInit {
     totalSize: number = 0;
     totalSizePercent: number = 0;
     formSubmitted: boolean = false;
+    jobDetail: string = '';
+
     private uploadUrl = 'http://localhost:8080/api/upload';
 
     constructor(
@@ -260,6 +263,9 @@ export class ChecklistComponent implements OnInit {
                 return !inputValue || inputValue.toString().trim() === '';
             }
         });
+        if (this.jobDetail.trim() === '') {
+            return false;
+        }
         return !incompleteItems;
     }
 
@@ -286,6 +292,11 @@ export class ChecklistComponent implements OnInit {
             return;
         }
 
+        if (!this.jobDetail.trim()) {
+            this.notifyService.msgWarn('ข้อมูลไม่ครบถ้วน', 'กรุณาเลือกใส่รายละเอียดงาน');
+            return;
+        }
+
         this.checklist = this.checklist.map(item => ({
             ...item,
             checkStatus: 'true'
@@ -306,7 +317,8 @@ export class ChecklistComponent implements OnInit {
             userId: this.storageService.getUsername(),
             userName: this.storageService.getFullName().replace("+", " "),
             supervisor: this.machine?.supervisorId || '',
-            manager: this.machine?.managerId || ''
+            manager: this.machine?.managerId || '',
+            jobDetail: this.jobDetail
         };
 
         const formData = new FormData();

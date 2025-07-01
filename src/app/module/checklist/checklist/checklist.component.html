@@ -38,30 +38,44 @@
                         <small class="white-space-normal">{{ item.question?.questionDescription || '' }}</small>
                     </div>
                     <div class="answer">
-    <ng-container *ngIf="shouldUseDropdown(item); else inputField">
-        <p-select 
-            [options]="choices"
-            [ngModel]="getSelectValue(item)"
-            (ngModelChange)="updateAnswerChoice(item, $event)"
-            optionLabel="name"
-            optionValue="value"
-            placeholder="กรุณาเลือก"
-            class="text-xs w-full md:w-56"
-            [ngClass]="{'ng-invalid ng-dirty': !getSelectValue(item) && formSubmitted}" />
-    </ng-container>
-    <ng-template #inputField>
-        <input 
-            type="text"
-            pInputText
-            [ngModel]="getInputValue(item)"
-            (ngModelChange)="updateInputValue(item, $event)"
-            class="w-full text-xs"
-            placeholder="กรุณาระบุ"
-            [ngClass]="{'ng-invalid ng-dirty': !getInputValue(item) && formSubmitted}"
-            required />
-    </ng-template>
-</div>
-
+                        <ng-container *ngIf="shouldUseDropdown(item); else inputField">
+                            <p-select 
+                                [options]="choices"
+                                [ngModel]="getSelectValue(item)"
+                                (ngModelChange)="updateAnswerChoice(item, $event)"
+                                optionLabel="name"
+                                optionValue="value"
+                                placeholder="กรุณาเลือก"
+                                class="text-xs w-full md:w-56"
+                                [ngClass]="{'ng-invalid ng-dirty': !getSelectValue(item) && formSubmitted}" />
+                        </ng-container>
+                        <ng-template #inputField>
+                            <input 
+                                type="text"
+                                pInputText
+                                [ngModel]="getInputValue(item)"
+                                (ngModelChange)="updateInputValue(item, $event)"
+                                class="w-full text-xs"
+                                placeholder="กรุณาระบุ"
+                                [ngClass]="{'ng-invalid ng-dirty': !getInputValue(item) && formSubmitted}"
+                                required />
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div class="question text-xs mb-2">
+                <p class="text-xs font-bold white-space-normal mb-1">
+                    รายละเอียดงาน <span class="text-red-500">*</span>
+                </p>
+                <small class="white-space-normal">ชื่อ/เลขที่งานที่ทำ (Job No.) หากไม่มีใส่เครื่องหมาย -</small>
+                <div>
+                    <textarea 
+                        [(ngModel)]="jobDetail" 
+                        rows="2" 
+                        pTextarea 
+                        class="text-xs w-full"
+                        [ngClass]="{'ng-invalid ng-dirty': !jobDetail && formSubmitted}">
+                    </textarea>
                 </div>
             </div>
             <div class="mt-1">
