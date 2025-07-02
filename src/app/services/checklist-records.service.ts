@@ -61,4 +61,10 @@ export class ChecklistRecordsService {
     saveRecheck(checklistId: number, payload: any): Observable<any> {
         return this.http.put(`${this.baseUrl}/approve/${checklistId}`, payload);
     }
+
+    exportChecklistToExcel(): Observable<Blob> {
+        return this.http.get(`${this.baseUrl}/export-excel`, {
+        responseType: 'blob'
+        });
+    }
 }

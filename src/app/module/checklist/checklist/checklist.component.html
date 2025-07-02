@@ -70,11 +70,11 @@
                 <small class="white-space-normal">ชื่อ/เลขที่งานที่ทำ (Job No.) หากไม่มีใส่เครื่องหมาย -</small>
                 <div>
                     <textarea 
-                        [(ngModel)]="jobDetail" 
+                        [(ngModel)]="jobDetails" 
                         rows="2" 
                         pTextarea 
                         class="text-xs w-full"
-                        [ngClass]="{'ng-invalid ng-dirty': !jobDetail && formSubmitted}">
+                        [ngClass]="{'ng-invalid ng-dirty': !jobDetails && formSubmitted}">
                     </textarea>
                 </div>
             </div>

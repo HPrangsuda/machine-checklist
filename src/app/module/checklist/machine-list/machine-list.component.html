@@ -2,15 +2,22 @@
   [style]="{width: '75%'}" 
   styleClass="custom-confirm-dialog">
 </p-confirmDialog>
+        
 <div class="transactions mt-2">
+  <div class="list-header">
+    <div class="flex align-items-center justify-content-between mb-1">
+      <div class="button-container">
+        <div *ngIf="isSuperAdmin">
+          <p-splitbutton label="download" class="splitbutton-custom" (onClick)="export()" [model]="items" />
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="list-header">
     <div class="flex align-items-center justify-content-between mb-1">
       <h4 class="text-sm text-surface-900 m-0">รายการเครื่องจักรทั้งหมด</h4>
       <div class="button-container">
         <div *ngIf="isSuperAdmin">
-          <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="exportToExcel()">
-            <i class="pi pi-file-export text-sm"></i>
-          </button>
           <button pButton type="button" class="p-button-outlined clear-button p-1 mr-1" (click)="onUserList()">
             <i class="pi pi-user text-sm"></i>
           </button>

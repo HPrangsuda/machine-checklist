@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Machine } from '../../../models/machine.model';
 import { MachineService } from '../../../services/machine.service';
 import { StorageService } from '../../../core/service/storage.service';
 import { PaginatorState } from 'primeng/paginator';
 import { saveAs } from 'file-saver';
+import { ChecklistRecordsService } from '../../../services/checklist-records.service';
 
 interface Frequency {
   name: string;
@@ -28,6 +29,7 @@ interface Employee {
   styleUrls: ['./machine-list.component.scss']
 })
 export class MachineListComponent implements OnInit {
+  items: MenuItem[] | undefined;
   role: string | undefined;
   machines: Machine[] = [];
   filteredMachines: Machine[] = [];
@@ -67,11 +69,21 @@ export class MachineListComponent implements OnInit {
   
   constructor(
     private machineService: MachineService,
+    private recordService: ChecklistRecordsService,
     private messageService: MessageService,
     private router: Router,
     private storageService: StorageService,
     private confirmationService: ConfirmationService,
-  ) {}
+  ) {
+    this.items = [
+        {
+            label: 'Machines', command: () => { this.exportMachineToExcel(); }
+        },
+        {
+            label: 'Checklists', command: () => { this.exportChecklistToExcel(); }
+        }
+    ];
+  }
 
   ngOnInit(): void {
     this.isSuperAdmin = this.storageService.getRole() === 'SUPERADMIN';
@@ -166,10 +178,21 @@ export class MachineListComponent implements OnInit {
     });
   }
 
-  exportToExcel(): void {
+  exportMachineToExcel(): void {
     this.machineService.exportMachinesToExcel().subscribe({
       next: (blob) => {
         saveAs(blob, 'machines-QRCode.xlsx');
+      },
+      error: (error) => {
+        console.error('Error exporting to Excel:', error);
+      }
+    });
+  }
+
+  exportChecklistToExcel(): void {
+    this.recordService.exportChecklistToExcel().subscribe({
+      next: (blob) => {
+        saveAs(blob, 'Checklist.xlsx');
       },
       error: (error) => {
         console.error('Error exporting to Excel:', error);
@@ -295,5 +318,9 @@ export class MachineListComponent implements OnInit {
         });
       }
     });
+  }
+
+  export() {
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Saved' });
   }
 }

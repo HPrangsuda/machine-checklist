@@ -33,6 +33,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { DividerModule } from 'primeng/divider';
 import { MeterGroupModule } from 'primeng/metergroup';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { SplitButtonModule } from 'primeng/splitbutton';
 
 @NgModule({
   declarations: [],
@@ -74,7 +75,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     SkeletonModule,
     DividerModule,
     MeterGroupModule,
-    AutoCompleteModule
+    AutoCompleteModule,
+    SplitButtonModule
   ],
   providers: [ConfirmationService, MessageService]
 })

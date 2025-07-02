@@ -66,7 +66,7 @@ export class ChecklistComponent implements OnInit {
     totalSize: number = 0;
     totalSizePercent: number = 0;
     formSubmitted: boolean = false;
-    jobDetail: string = '';
+    jobDetails: string = '';
 
     private uploadUrl = 'http://localhost:8080/api/upload';
 
@@ -264,7 +264,7 @@ export class ChecklistComponent implements OnInit {
                 return !inputValue || inputValue.toString().trim() === '';
             }
         });
-        if (this.jobDetail.trim() === '') {
+        if (this.jobDetails.trim() === '') {
             return false;
         }
         return !incompleteItems;
@@ -293,7 +293,7 @@ export class ChecklistComponent implements OnInit {
             return;
         }
 
-        if (!this.jobDetail.trim()) {
+        if (!this.jobDetails.trim()) {
             this.notifyService.msgWarn('ข้อมูลไม่ครบถ้วน', 'กรุณาเลือกใส่รายละเอียดงาน');
             return;
         }
@@ -319,7 +319,7 @@ export class ChecklistComponent implements OnInit {
             userName: this.storageService.getFullName().replace("+", " "),
             supervisor: this.machine?.supervisorId || '',
             manager: this.machine?.managerId || '',
-            jobDetail: this.jobDetail
+            jobDetail: this.jobDetails
         };
 
         const formData = new FormData();
