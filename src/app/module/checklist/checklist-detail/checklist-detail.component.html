@@ -28,6 +28,12 @@
         </div>
       </div>
       <div class="mt-1 mb-1">
+        <span class="text-xs">รายละเอียดงาน</span>
+        <div>
+          <textarea [(ngModel)]="record.jobDetail" rows="2" pTextarea class="text-xs w-full" [disabled]="true"></textarea>
+        </div>
+      </div>
+      <div class="mt-1 mb-1">
         <span class="text-xs">หมายเหตุ</span>
         <div>
           <textarea [(ngModel)]="record.machineNote" rows="2" pTextarea class="text-xs w-full" [disabled]="true"></textarea>

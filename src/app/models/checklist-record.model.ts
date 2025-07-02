@@ -16,4 +16,5 @@ export interface Record {
     dateManagerChecked: string;
     checklistStatus: string;
     reasonNotChecked: string;
+    jobDetail: string;
 }
