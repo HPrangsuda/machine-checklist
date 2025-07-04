@@ -107,7 +107,7 @@
         </p-fieldset>
         <div class="flex justify-content-center flex-wrap">
             <div class="flex align-items-center justify-content-center">
-                <p-button pButton pRipple class="p-0 mt-3" (click)="saveChecklist()">
+                <p-button pButton pRipple class="p-0 mt-3" (click)="saveChecklist()" [disabled]="!isFormValid()">
                     <i class="pi pi-save"></i>
                     <span class="text-xs font-bold">บันทึก</span>
                 </p-button>
