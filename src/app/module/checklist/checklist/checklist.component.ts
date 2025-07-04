@@ -37,7 +37,7 @@ interface ChecklistRequestDTO {
     machineName: string;
     machineStatus: string;
     checklistItems: { id: number; questionDetail: string; answerChoice: string; checkStatus: boolean }[];
-    note: string;
+    machineNote: string;
     machineImage: string;
     userId: string;
     userName: string;
@@ -313,7 +313,7 @@ export class ChecklistComponent implements OnInit {
                 answerChoice: item.answerChoice?.toString() || '',
                 checkStatus: item.checkStatus === 'true'
             })),
-            note: this.note,
+            machineNote: this.note,
             machineImage: this.files.length > 0 ? this.files[0].name : '',
             userId: this.storageService.getUsername(),
             userName: this.storageService.getFullName().replace("+", " "),
