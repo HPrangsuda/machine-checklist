@@ -134,7 +134,7 @@ export class KpiReportComponent implements OnInit {
       this.loadKpi();
     } else if(this.isManager) {
       this.loadKpiByManager();
-    } else if(this.isManager) {
+    } else if(this.isSupervisor) {
       this.loadKpiBySupervisor();
     } 
   }
@@ -144,7 +144,7 @@ export class KpiReportComponent implements OnInit {
       this.loadKpi();
     } else if(this.isManager) {
       this.loadKpiByManager();
-    } else if(this.isManager) {
+    } else if(this.isSupervisor) {
       this.loadKpiBySupervisor();
     } 
   }
