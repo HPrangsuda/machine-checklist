@@ -30,6 +30,7 @@ interface MachineChecklist {
     answerChoice: string | boolean;
     checkStatus: string;
     resetTime: string;
+    isDropdown: boolean; // New property to track initial input type
 }
 
 interface ChecklistRequestDTO {
@@ -102,41 +103,38 @@ export class ChecklistComponent implements OnInit {
     }
 
     shouldUseDropdown(item: MachineChecklist): boolean {
-        // Show dropdown when answerChoice is true (boolean or string 'true')
-        // Show input when answerChoice is false (boolean or string 'false')
-        return item.answerChoice === true || item.answerChoice === 'true';
+        return item.isDropdown;
     }
 
     getSelectValue(item: MachineChecklist): string {
-        // For dropdown, return the actual choice value if it's not boolean
-        if (item.answerChoice === 'true' || item.answerChoice === true) {
-            return ''; // Default empty for new selection
+        if (this.shouldUseDropdown(item)) {
+            return typeof item.answerChoice === 'string' && 
+                   this.choices.some(choice => choice.value === item.answerChoice) 
+                   ? item.answerChoice 
+                   : '';
         }
-        return typeof item.answerChoice === 'string' && 
-               item.answerChoice !== 'false' && 
-               item.answerChoice !== 'true' ? item.answerChoice : '';
+        return '';
     }
 
     getInputValue(item: MachineChecklist): string {
-        // For input field, return the text value
-        if (item.answerChoice === 'false' || item.answerChoice === false) {
-            return ''; // Default empty for new input
+        if (!this.shouldUseDropdown(item)) {
+            return item.answerChoice === false || item.answerChoice === 'false' ? '' : String(item.answerChoice);
         }
-        return typeof item.answerChoice === 'string' && 
-               item.answerChoice !== 'true' && 
-               item.answerChoice !== 'false' ? item.answerChoice : '';
+        return '';
     }
 
     updateAnswerChoice(item: MachineChecklist, newValue: string) {
-        item.answerChoice = newValue;
-        this.formSubmitted = false;
-        console.log('Updated answerChoice:', item.answerChoice);
+        if (this.shouldUseDropdown(item)) {
+            item.answerChoice = newValue;
+            this.formSubmitted = false;
+        }
     }
 
     updateInputValue(item: MachineChecklist, newValue: string) {
-        item.answerChoice = newValue;
-        this.formSubmitted = false;
-        console.log('Updated input answerChoice:', item.answerChoice);
+        if (!this.shouldUseDropdown(item)) {
+            item.answerChoice = newValue;
+            this.formSubmitted = false;
+        }
     }
 
     loadMachineData(machineCode: string) {
@@ -163,7 +161,8 @@ export class ChecklistComponent implements OnInit {
                     return {
                         ...item,
                         question: item.question || { id: 0, questionId: '', questionDetail: 'N/A', questionDescription: 'N/A' },
-                        answerChoice: item.answerChoice
+                        answerChoice: item.answerChoice,
+                        isDropdown: item.answerChoice === true || item.answerChoice === 'true' // Set initial input type
                     };
                 });
             },
@@ -181,7 +180,8 @@ export class ChecklistComponent implements OnInit {
                     return {
                         ...item,
                         question: item.question || { id: 0, questionId: '', questionDetail: 'N/A', questionDescription: 'N/A' },
-                        answerChoice: item.answerChoice
+                        answerChoice: item.answerChoice,
+                        isDropdown: item.answerChoice === true || item.answerChoice === 'true' // Set initial input type
                     };
                 });
             },
@@ -223,7 +223,7 @@ export class ChecklistComponent implements OnInit {
     onSelectedFiles(event: any) {
         this.files = event.currentFiles;
         this.totalSize = this.files.reduce((sum, file) => sum + file.size, 0);
-        this.totalSizePercent = this.totalSize / 1000000 * 100; // Assuming maxFileSize is 1MB
+        this.totalSizePercent = this.totalSize / 1000000 * 100;
     }
 
     onRemoveTemplatingFile(file: File) {
@@ -255,13 +255,11 @@ export class ChecklistComponent implements OnInit {
         }
         const incompleteItems = this.checklist.some(item => {
             if (this.shouldUseDropdown(item)) {
-                // For dropdown, check if a valid choice is selected
                 const selectValue = this.getSelectValue(item);
                 return !selectValue || selectValue.trim() === '';
             } else {
-                // For input field, check if text is entered
                 const inputValue = this.getInputValue(item);
-                return !inputValue || inputValue.toString().trim() === '';
+                return !inputValue || inputValue.trim() === '';
             }
         });
         if (this.jobDetails.trim() === '') {
@@ -284,7 +282,7 @@ export class ChecklistComponent implements OnInit {
                 return !selectValue || selectValue.trim() === '';
             } else {
                 const inputValue = this.getInputValue(item);
-                return !inputValue || inputValue.toString().trim() === '';
+                return !inputValue || inputValue.trim() === '';
             }
         });
 
@@ -342,6 +340,6 @@ export class ChecklistComponent implements OnInit {
 
     onFileSelected(event: any): void {
         const files: File[] = event.files || (event.target?.files ? Array.from(event.target.files) : []);
-        this.files = files.length > 0 ? [files[0]] : []; // Take only the first file
+        this.files = files.length > 0 ? [files[0]] : [];
     }
 }
