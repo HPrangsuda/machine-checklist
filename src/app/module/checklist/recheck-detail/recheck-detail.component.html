@@ -57,7 +57,9 @@
               optionLabel="name"
               optionValue="name"
               placeholder="กรุณาระบุสาเหตุ"
-              styleClass="w-full md:w-56" />
+              styleClass="w-full md:w-56"
+              appendTo="body"
+              scrollHeight="200px" />
             <small *ngIf="submitted && !selectedReason" class="p-error">กรุณาระบุสาเหตุ</small>
           </div>
         </div>

@@ -142,6 +142,8 @@
         placeholder="Select a role"
         [autoDisplayFirst]="false"
         class="w-full text-xs"
+        appendTo="body"
+        scrollHeight="200px"
         [ngClass]="{'ng-invalid ng-dirty': userForm.get('role')?.touched && userForm.get('role')?.invalid}"
       ></p-select>
       <label for="role">Role</label>
