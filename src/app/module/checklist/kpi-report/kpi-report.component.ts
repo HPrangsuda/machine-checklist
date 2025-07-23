@@ -4,6 +4,7 @@ import { StorageService } from '../../../core/service/storage.service';
 import { KpiService } from '../../../services/kpi.service';
 import { MessageService } from 'primeng/api';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-kpi-report',
@@ -41,6 +42,7 @@ export class KpiReportComponent implements OnInit {
     private storageService: StorageService,
     private kpiService: KpiService,
     private location: Location,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -152,4 +154,8 @@ export class KpiReportComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
+
+  onKpiDetail(userId: number): void {
+    this.router.navigate(['/kpi-report-detail', userId]);
+  }  
 }

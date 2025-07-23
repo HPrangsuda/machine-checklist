@@ -16,6 +16,7 @@ import { UserAddComponent } from './user-add/user-add.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { KpiReportComponent } from './kpi-report/kpi-report.component';
+import { KpiReportDetailComponent } from './kpi-report-detail/kpi-report-detail.component';
 
 const routes: Routes = [
     {
@@ -97,6 +98,11 @@ const routes: Routes = [
         path: 'kpi-report',
         canActivate: [AuthGuard],   
         component: KpiReportComponent
+    },
+    {
+        path: 'kpi-report-detail/:userId',
+        canActivate: [AuthGuard],   
+        component: KpiReportDetailComponent
     }
 ];
 @NgModule({

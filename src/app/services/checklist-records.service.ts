@@ -33,6 +33,11 @@ export class ChecklistRecordsService {
         return this.http.get<Record[]>(`${this.baseUrl}`, { headers: this.getHeaders() });
     }
 
+    getRecordByPeriod(personId: string, year: string, month: number): Observable<Record[]> {
+        const formattedMonth = month.toString().padStart(2, '0');
+        return this.http.get<Record[]>(`${this.baseUrl}/period/${personId}?year=${year}&month=${formattedMonth}`);
+    }
+    
     getRecordById(checklistId: number): Observable<Record> {
         const params = new HttpParams().set('id', checklistId.toString());
         return this.http.get<Record>(`${this.baseUrl}/record`, { params, headers: this.getHeaders() });
